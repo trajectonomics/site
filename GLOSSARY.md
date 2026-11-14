@@ -39,7 +39,7 @@ _Avoid_: preload script, client router
 ## Built site
 
 **Invariant**:
-A property every built page must hold, checked after the build, so a page that breaks it cannot merge. The Page weight budget and the absence of a Web font are Invariants of the Site ([ADR 0005](docs/adr/0005-page-weight-and-web-font-budget.md)).
+A property every built page must hold, checked after the build, so a page that breaks it cannot merge. The Page weight budget, the Program JavaScript budget and the absence of a Web font are Invariants of the Site ([ADR 0005](docs/adr/0005-page-weight-and-web-font-budget.md)).
 _Avoid_: Rule, assertion
 
 **Pure Core**:

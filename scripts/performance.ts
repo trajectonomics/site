@@ -1,4 +1,4 @@
-import { chromium } from "@playwright/test"
+import { type Browser, chromium } from "@playwright/test"
 import lighthouse from "lighthouse"
 import {
 	checkPerformance,
@@ -6,7 +6,7 @@ import {
 	PERFORMANCE_RUNS,
 	type PerformanceFailure,
 } from "../src/lib/browser/performance"
-import { freePort, startDevServer, stop, waitUntilServing } from "./probe/dev-server"
+import { freePort, signalGroup, startDevServer, stop, waitUntilServing } from "./probe/dev-server"
 import { reportFailures } from "./report-failures"
 
 /** The pages the performance budget judges: the home of each Language. */
@@ -40,11 +40,11 @@ export async function main(): Promise<number> {
 	const port = await freePort()
 	const baseUrl = `http://127.0.0.1:${port}`
 	const devServer = startDevServer(port, await freePort())
-	// Chromium with a debugging port is what Lighthouse drives; Playwright installed it already.
 	const debugPort = await freePort()
-	const browser = await chromium.launch({ args: [`--remote-debugging-port=${debugPort}`] })
+	let browser: Browser | undefined
 	const hardStop = setTimeout(() => {
 		console.error(`performance: no answer within ${HARD_TIMEOUT_MS / 1000}s`)
+		signalGroup(devServer, "SIGKILL")
 		process.exit(1)
 	}, HARD_TIMEOUT_MS)
 	try {
@@ -53,6 +53,8 @@ export async function main(): Promise<number> {
 			console.error(await new Response(devServer.stderr).text())
 			return 1
 		}
+		// Chromium with a debugging port is what Lighthouse drives; Playwright installed it already.
+		browser = await chromium.launch({ args: [`--remote-debugging-port=${debugPort}`] })
 		const failures: PerformanceFailure[] = []
 		for (const path of PAGES) {
 			const scores: (number | undefined)[] = []
@@ -66,7 +68,7 @@ export async function main(): Promise<number> {
 		return reportFailures("performance", failures)
 	} finally {
 		clearTimeout(hardStop)
-		await browser.close()
+		await browser?.close()
 		await stop(devServer)
 	}
 }

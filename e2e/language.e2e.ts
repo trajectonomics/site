@@ -12,15 +12,18 @@ function unmarkedThai(page: Page): Promise<readonly string[]> {
 			}
 			return current?.getAttribute("lang") ?? ""
 		}
-		const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT)
+		const unmarkedAt = (node: Node): string | undefined => {
+			const text = node.textContent ?? ""
+			if (!isThai(text)) return undefined
+			if (node.parentElement?.closest("script, style") !== null) return undefined
+			if (languageOf(node.parentElement).toLowerCase().startsWith("th")) return undefined
+			return text.trim()
+		}
+		const walker = document.createTreeWalker(document.documentElement, NodeFilter.SHOW_TEXT)
 		const unmarked: string[] = []
 		while (walker.nextNode()) {
-			const node = walker.currentNode
-			const text = node.textContent ?? ""
-			if (!isThai(text)) continue
-			if (!languageOf(node.parentElement).toLowerCase().startsWith("th")) {
-				unmarked.push(text.trim())
-			}
+			const text = unmarkedAt(walker.currentNode)
+			if (text !== undefined) unmarked.push(text)
 		}
 		return unmarked
 	})

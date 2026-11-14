@@ -36,6 +36,18 @@ describe("the Language Thai text inherits", () => {
 		expect(codes([page("en/index.html", "", body)])).toEqual(["THAI_TEXT_LANGUAGE_WRONG"])
 	})
 
+	it("judges a Thai title against the Language it inherits", () => {
+		const thai = page("th/404.html", "<title>ไม่พบหน้านี้</title>", "", "th")
+		const english = page("404.html", "<title>ไม่พบหน้านี้</title>", "", "en")
+		expect(codes([thai])).toEqual([])
+		expect(codes([english])).toEqual(["THAI_TEXT_LANGUAGE_WRONG"])
+	})
+
+	it("lets a title declare Thai itself on an English page", () => {
+		const title = '<title lang="th">ไม่พบหน้านี้</title>'
+		expect(codes([page("404.html", title, "", "en")])).toEqual([])
+	})
+
 	it("judges the Not-found pages like any other page", () => {
 		expect(codes([page("404.html", "", "<p>สวัสดี</p>")])).toEqual(["THAI_TEXT_LANGUAGE_WRONG"])
 	})
