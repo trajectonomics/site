@@ -14,7 +14,7 @@ export const ENGLISH: LanguageEntry = Object.freeze({
 			"financial projections.",
 			"your future.",
 		] as const),
-		heroEyebrow: "Money tool for AI agents",
+		heroEyebrow: "v0.1.0-alpha.1 is launching now — 2026-11-14",
 		heroSubline:
 			"traj is a free, open-source money tool built for AI agents. One command installs it as a skill, and your agent handles the rest — no account, no dashboard, no signup.",
 		docsLink: "Docs",
