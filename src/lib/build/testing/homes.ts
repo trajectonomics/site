@@ -1,6 +1,6 @@
 import { OWNER_WRITTEN_PLACEHOLDER } from "../../language/dictionary"
 import { FALLBACK_LANGUAGE, type Language, type LanguageEntry } from "../../language/language"
-import { absoluteLocaleUrl, dictionaryFor, LANGUAGES, localeUrl } from "../../language/languages"
+import { absoluteLocaleUrl, LANGUAGES, localeUrl, otherLanguages } from "../../language/languages"
 import type { BuiltFile } from "../built-files"
 import type { BuildFailure } from "../failures"
 
@@ -13,11 +13,11 @@ export function entryAt(index: number): LanguageEntry {
 
 /** The switcher a home must show: every other Language, in that Language's own name. */
 export function switcher(language: Language): string {
-	return LANGUAGES.filter((entry) => entry.language !== language)
+	return otherLanguages(language)
 		.map((other) => {
 			const href = localeUrl(other.language)
 			const code = other.language
-			return `<a href="${href}" lang="${code}" hreflang="${code}">${dictionaryFor(other.language).languageName}</a>`
+			return `<a href="${href}" lang="${code}" hreflang="${code}">${other.dictionary.languageName}</a>`
 		})
 		.join("")
 }

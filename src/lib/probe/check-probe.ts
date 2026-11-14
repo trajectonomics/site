@@ -1,4 +1,4 @@
-import { elementsByTag, scanHtml } from "../build/html"
+import { declaredLanguage } from "../build/page-language"
 import type { ProbeFailure, ProbeFailureCode, ProbeResponse } from "./probes"
 import { PROBES } from "./probes"
 
@@ -31,12 +31,6 @@ function checkLocation(response: ProbeResponse): readonly ProbeFailure[] {
 			`expected Location ${probe.location}, got ${response.location ?? "none"}.`,
 		),
 	]
-}
-
-/** The Language a built page declares in `<html lang>`, or `undefined` when it declares none. */
-function declaredLanguage(html: string): string | undefined {
-	const [element] = elementsByTag(scanHtml(html), "html")
-	return element?.attributes["lang"]
 }
 
 /** A probe that names a Language is answered by a page that declares it. */

@@ -1,5 +1,5 @@
 import type { BuiltFile } from "./built-files"
-import { fileAt } from "./built-files"
+import { builtPages, fileAt } from "./built-files"
 import type { BuildFailure, BuildFailureCode } from "./failures"
 import { buildFailure } from "./failures"
 
@@ -45,8 +45,6 @@ export function checkStructure(files: readonly BuiltFile[]): readonly BuildFailu
 			),
 		)
 	}
-	for (const file of files) {
-		if (file.path.endsWith(".html")) failures.push(...checkSingleElements(file))
-	}
+	for (const file of builtPages(files)) failures.push(...checkSingleElements(file))
 	return failures
 }
