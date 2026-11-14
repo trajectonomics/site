@@ -20,6 +20,7 @@ import { checkSiteContent } from "./site-content"
 import { checkSiteLinks } from "./site-links"
 import { checkStructure } from "./structure"
 import { checkSwitcher } from "./switcher"
+import { checkThaiTextLanguage } from "./thai-text"
 import { checkTheme } from "./theme"
 import { checkNoWebFonts } from "./web-fonts"
 
@@ -51,6 +52,7 @@ export function checkBuild(
 		...checkSiteContent(files),
 		...checkSiteLinks(files),
 		...checkPageText(files),
+		...checkThaiTextLanguage(files),
 	]
 }
 

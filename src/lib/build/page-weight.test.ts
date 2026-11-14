@@ -68,6 +68,14 @@ describe("the page weight budget", () => {
 		expect(codes(files)).toEqual(["PAGE_WEIGHT_OVER_BUDGET"])
 	})
 
+	it("follows an @import in an inline style, which a visitor downloads too", () => {
+		const files = [
+			page("en/index.html", '<style>@import "/_astro/big.css";</style>'),
+			asset("_astro/big.css", incompressible(90_000)),
+		]
+		expect(codes(files)).toEqual(["PAGE_WEIGHT_OVER_BUDGET"])
+	})
+
 	it("fails a page that links a same-origin stylesheet the build did not produce", () => {
 		const files = [page("en/index.html", '<link rel="stylesheet" href="/_astro/missing.css">')]
 		const failures = checkPageWeight(files)

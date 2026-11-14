@@ -22,6 +22,14 @@ function linksOf(page: BuiltFile): readonly string[] {
 		})
 }
 
+/** The stylesheets an inline `<style>` element imports, counted like a linked stylesheet. */
+function inlineImports(page: BuiltFile): readonly string[] {
+	return [...page.content.matchAll(CSS_IMPORT)].flatMap((match) => {
+		const path = match[1] === undefined ? undefined : sameOriginPath(page.path, match[1])
+		return path === undefined ? [] : [path]
+	})
+}
+
 /** The stylesheets one stylesheet imports. */
 function importsOf(file: BuiltFile): readonly string[] {
 	return [...file.content.matchAll(CSS_IMPORT)].flatMap((match) => {
@@ -32,7 +40,7 @@ function importsOf(file: BuiltFile): readonly string[] {
 
 /** Every stylesheet a page paints with, each once, however many pages or imports name it. */
 export function pageStylesheets(files: readonly BuiltFile[], page: BuiltFile): PageStylesheets {
-	const queue = [...linksOf(page)]
+	const queue = [...linksOf(page), ...inlineImports(page)]
 	const found: BuiltFile[] = []
 	const missing: string[] = []
 	const seen = new Set<string>()

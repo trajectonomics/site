@@ -11,9 +11,9 @@ export function incompressible(bytes: number): string {
 	return text
 }
 
-/** One built page with the head and body fragments a check needs to see. */
-export function page(path: string, head = "", body = ""): BuiltFile {
-	const content = `<!DOCTYPE html><html lang="en" data-theme="light"><head>${head}</head><body>${body}</body></html>`
+/** One built page, declaring `language`, with the head and body fragments a check needs to see. */
+export function page(path: string, head = "", body = "", language = "en"): BuiltFile {
+	const content = `<!DOCTYPE html><html lang="${language}" data-theme="light"><head>${head}</head><body>${body}</body></html>`
 	return { path, content }
 }
 

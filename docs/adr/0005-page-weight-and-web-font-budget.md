@@ -18,6 +18,8 @@ Every built HTML page, including each Not-found page, satisfies all three rules.
 
 **No web font.** A font file, an `@font-face` rule, a remote font URL, and a `data:` font URL each fail with their own Error Code. The Site draws Thai from the visitor's own fonts.
 
+A same-origin stylesheet or script a page names that the build did not produce fails with its own Error Code, so a broken link is not a silent pass.
+
 The measurement reads the build output only. Bytes the router injects later are outside it. A missing build fails, and the existing Language-home and Not-found checks still require `/th/`, `/en/` and the Not-found documents in the build.
 
 These rules are a Pure Core in `src/lib/build/`, taking the built files and returning failures, with no clock, randomness, network or filesystem access. `scripts/verify-build.ts` reads `dist/` after the build and calls it, so `bun run check` is the gate and an empty build is not a pass. Every rule has its own Error Code, and one run reports every rule a page breaks.
