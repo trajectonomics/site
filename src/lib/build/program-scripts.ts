@@ -13,24 +13,37 @@ export interface PageScripts extends AssetGraph {
 	readonly inline: readonly string[]
 }
 
-/** The inline text each `<script>` runs, leaving out data blocks and scripts that name a source. */
-function inlineOf(page: BuiltFile): readonly string[] {
-	return [...page.content.matchAll(SCRIPT)].flatMap((match) => {
-		const attributes = parseAttributes(match[1] ?? "")
-		if (JSON_LD.test(attributes["type"] ?? "") || attributes["src"] !== undefined) return []
-		return [match[2] ?? ""]
-	})
+/** The inline text and same-origin sources a page names, before their imports are followed. */
+interface PageScriptElements {
+	readonly inline: readonly string[]
+	readonly sources: readonly string[]
 }
 
-/** The same-origin source each `<script>` names, leaving out data blocks and other origins. */
-function sourceOf(page: BuiltFile): readonly string[] {
-	return [...page.content.matchAll(SCRIPT)].flatMap((match) => {
-		const attributes = parseAttributes(match[1] ?? "")
-		if (JSON_LD.test(attributes["type"] ?? "")) return []
-		const src = attributes["src"]
-		const path = src === undefined ? undefined : sameOriginPath(page.path, src)
-		return path === undefined ? [] : [path]
-	})
+/** The text or the same-origin source one `<script>` names; neither for a data block. */
+interface ScriptElement {
+	readonly inline: string | null
+	readonly source: string | null
+}
+
+/** What one `<script>` element contributes: its text, or the file it loads, or nothing. */
+function scriptOf(page: BuiltFile, match: RegExpMatchArray): ScriptElement {
+	const attributes = parseAttributes(match[1] ?? "")
+	if (JSON_LD.test(attributes["type"] ?? "")) return { inline: null, source: null }
+	const src = attributes["src"]
+	if (src === undefined) return { inline: match[2] ?? "", source: null }
+	return { inline: null, source: sameOriginPath(page.path, src) ?? null }
+}
+
+/** The inline text and same-origin sources each `<script>` names, leaving out data blocks. */
+function scriptsOf(page: BuiltFile): PageScriptElements {
+	const inline: string[] = []
+	const sources: string[] = []
+	for (const match of page.content.matchAll(SCRIPT)) {
+		const element = scriptOf(page, match)
+		if (element.inline !== null) inline.push(element.inline)
+		if (element.source !== null) sources.push(element.source)
+	}
+	return { inline, sources }
 }
 
 /** The href of a link that preloads a script or a module, or `undefined` for any other link. */
@@ -63,9 +76,9 @@ function importsOf(fromPath: string, script: string): readonly string[] {
 
 /** Every script file a page runs, each once, plus the same-origin ones the build did not produce. */
 export function pageScripts(files: readonly BuiltFile[], page: BuiltFile): PageScripts {
-	const inline = inlineOf(page)
+	const { inline, sources } = scriptsOf(page)
 	const queue = [
-		...sourceOf(page),
+		...sources,
 		...preloadsOf(page),
 		...inline.flatMap((text) => importsOf(page.path, text)),
 	]

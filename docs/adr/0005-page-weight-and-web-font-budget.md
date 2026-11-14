@@ -22,7 +22,7 @@ A same-origin stylesheet or script a page names that the build did not produce f
 
 The measurement reads the build output only. Bytes the router injects later are outside it. A missing build fails, and the existing Language-home and Not-found checks still require `/th/`, `/en/` and the Not-found documents in the build.
 
-These rules are a Pure Core in `src/lib/build/`, taking the built files and returning failures, with no clock, randomness, network or filesystem access. `scripts/verify-build.ts` reads `dist/` after the build and calls it, so `bun run check` is the gate and an empty build is not a pass. Every rule has its own Error Code, and one run reports every rule a page breaks.
+These rules are a Pure Core in `src/lib/build/`, taking the built files and returning failures, with no clock, randomness, network or filesystem access. `scripts/adapters/build-files.ts` reads `dist/` after the preview build, and `test/dist/site.test.ts` calls `checkBuild`, so `bun run check` is the gate and an empty build is not a pass. Every rule has its own Error Code, and one run reports every rule a page breaks.
 
 ## Considered Options
 
