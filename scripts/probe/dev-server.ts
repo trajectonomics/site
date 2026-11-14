@@ -6,7 +6,7 @@ export const ROOT = join(import.meta.dir, "..", "..")
 export const WRANGLER = join(ROOT, "node_modules", ".bin", "wrangler")
 export const START_TIMEOUT_MS = 45_000
 
-/** One local dev server for the assets-only Worker. */
+/** One local dev server for the Worker with Static Assets. */
 export type DevServer = Bun.Subprocess<"inherit", "pipe", "pipe">
 
 /** A free loopback port, taken and released before wrangler binds it. */

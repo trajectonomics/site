@@ -1,8 +1,12 @@
 import { describe, expect, it } from "bun:test"
-import type { ProbeResponse } from "./status"
+import type { ProbePath, ProbeResponse } from "./status"
 import { checkProbeResponses, PROBE_PATHS } from "./status"
 
-function response(path: string, status: number, extra: Partial<ProbeResponse> = {}): ProbeResponse {
+function response(
+	path: ProbePath,
+	status: number,
+	extra: Partial<ProbeResponse> = {},
+): ProbeResponse {
 	return { path, status, setCookie: null, contentSecurityPolicy: null, ...extra }
 }
 

@@ -1,9 +1,12 @@
 /** The paths a local Worker must answer, and what each one proves. */
 export const PROBE_PATHS = ["/", "/does-not-exist", "/__mf-preload.js"] as const
 
+/** One probed path: the three the probe asks for, and no other. */
+export type ProbePath = (typeof PROBE_PATHS)[number]
+
 /** What a local Worker answered for one probed path, reduced to the facts the probe judges. */
 export interface ProbeResponse {
-	readonly path: string
+	readonly path: ProbePath
 	readonly status: number
 	readonly setCookie: string | null
 	readonly contentSecurityPolicy: string | null
@@ -30,7 +33,7 @@ function probeFailure(code: ProbeFailureCode, path: string, message: string): Pr
 }
 
 const EXPECTED: Readonly<
-	Record<string, { readonly status: number; readonly code: ProbeFailureCode }>
+	Record<ProbePath, { readonly status: number; readonly code: ProbeFailureCode }>
 > = {
 	"/": { status: 200, code: "ROOT_NOT_OK" },
 	"/does-not-exist": { status: 404, code: "UNKNOWN_PATH_NOT_FOUND" },
@@ -42,7 +45,6 @@ export function checkProbeResponses(responses: readonly ProbeResponse[]): readon
 	const failures: ProbeFailure[] = []
 	for (const response of responses) {
 		const expected = EXPECTED[response.path]
-		if (expected === undefined) continue
 		if (response.status !== expected.status) {
 			failures.push(
 				probeFailure(
