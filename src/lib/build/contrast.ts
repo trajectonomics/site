@@ -4,13 +4,8 @@ import { type BuiltFile, builtPages } from "./built-files"
 import type { BuildFailure } from "./failures"
 import { buildFailure } from "./failures"
 import { type ScannedPage, scanHtml, type TextRun } from "./html"
-import { colourOf, paintedColours } from "./roles"
-
-/**
- * WCAG AA for normal-size text. Every run is held to this bar, because the shell's role pairs clear
- * it: the large-text exception (3:1) could not let an unreadable pair through here.
- */
-const MINIMUM_CONTRAST = 4.5
+import { colourOf, type PaintedColours, paintedColours } from "./roles"
+import { minimumContrast, type TypeScale, typeScaleOf } from "./type-scale"
 
 /** The text of a run, as a failure line shows it: whitespace collapsed, a long run cut short. */
 function excerpt(text: string): string {
@@ -18,23 +13,32 @@ function excerpt(text: string): string {
 	return collapsed.length <= 40 ? collapsed : `${collapsed.slice(0, 37)}...`
 }
 
+/** A run whose background or text role no published Theme resolves to a colour. */
+function unresolved(
+	path: string,
+	run: TextRun,
+	theme: Theme,
+	painted: PaintedColours,
+): BuildFailure {
+	return buildFailure(
+		"TEXT_COLOUR_UNRESOLVED",
+		path,
+		`"${excerpt(run.text)}" paints background ${painted.background ?? "none"} and text ${painted.foreground ?? "none"} in the ${theme.name} Theme, which the published Theme does not resolve to a colour.`,
+	)
+}
+
 function contrastFailures(
 	path: string,
 	run: TextRun,
 	theme: Theme,
 	tokens: DesignTokens,
+	scale: TypeScale,
 ): readonly BuildFailure[] {
 	const painted = paintedColours(run.ancestors, tokens.colourUtilities)
 	const background = colourOf(theme, painted.background)
 	const foreground = colourOf(theme, painted.foreground)
 	if (background === undefined || foreground === undefined) {
-		return [
-			buildFailure(
-				"TEXT_COLOUR_UNRESOLVED",
-				path,
-				`"${excerpt(run.text)}" paints background ${painted.background ?? "none"} and text ${painted.foreground ?? "none"} in the ${theme.name} Theme, which the published Theme does not resolve to a colour.`,
-			),
-		]
+		return [unresolved(path, run, theme, painted)]
 	}
 	const a = parseRgb(background)
 	const b = parseRgb(foreground)
@@ -47,13 +51,14 @@ function contrastFailures(
 			),
 		]
 	}
+	const required = minimumContrast(run.ancestors, scale)
 	const ratio = contrastRatio(b, a)
-	if (ratio >= MINIMUM_CONTRAST) return []
+	if (ratio >= required) return []
 	return [
 		buildFailure(
 			"TEXT_CONTRAST_TOO_LOW",
 			path,
-			`"${excerpt(run.text)}" reads at ${ratio.toFixed(2)}:1 in the ${theme.name} Theme, under the ${MINIMUM_CONTRAST}:1 WCAG AA requires for text.`,
+			`"${excerpt(run.text)}" reads at ${ratio.toFixed(2)}:1 in the ${theme.name} Theme, under the ${required}:1 WCAG AA requires for it.`,
 		),
 	]
 }
@@ -63,10 +68,11 @@ export function checkTextContrast(
 	files: readonly BuiltFile[],
 	tokens: DesignTokens,
 ): readonly BuildFailure[] {
+	const scale = typeScaleOf(files)
 	return builtPages(files).flatMap((file) => {
 		const page: ScannedPage = scanHtml(file.content)
 		return tokens.themes.flatMap((theme) =>
-			page.text.flatMap((run) => contrastFailures(file.path, run, theme, tokens)),
+			page.text.flatMap((run) => contrastFailures(file.path, run, theme, tokens, scale)),
 		)
 	})
 }

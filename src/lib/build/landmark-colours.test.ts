@@ -30,12 +30,9 @@ describe("the colours the landmarks paint", () => {
 		)
 	})
 
-	it("fails a page with no base roles, so a landmark paints nothing at all", () => {
-		expect(codes(page(""))).toContain("LANDMARK_COLOUR_NOT_WIRED")
-	})
-
-	it("names the landmark and the Theme in the failure line", () => {
+	it("fails a page with no base roles, naming the landmark and the Theme it should paint", () => {
 		const failures = checkLandmarkColours(testFiles({ index: page("") }), TEST_TOKENS)
+		expect(failures.map((failure) => failure.code)).toContain("LANDMARK_COLOUR_NOT_WIRED")
 		expect(failures[0]?.message).toContain("<header>")
 		expect(failures[0]?.message).toContain("light")
 	})
