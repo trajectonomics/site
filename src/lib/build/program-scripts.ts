@@ -1,6 +1,6 @@
+import { type AssetGraph, walkAssets } from "./asset-graph"
 import { sameOriginPath } from "./asset-url"
 import type { BuiltFile } from "./built-files"
-import { fileAt } from "./built-files"
 import { scanHtml } from "./html"
 import { parseAttributes } from "./html-tag"
 import { staticImportPaths } from "./module-graph"
@@ -9,10 +9,8 @@ const SCRIPT = /<script\b([^>]*)>([\s\S]*?)<\/script>/gi
 const JSON_LD = /\bapplication\/ld\+json\b/i
 
 /** The text a page runs itself, the script files it loads, and the scripts the build did not produce. */
-export interface PageScripts {
+export interface PageScripts extends AssetGraph {
 	readonly inline: readonly string[]
-	readonly files: readonly BuiltFile[]
-	readonly missing: readonly string[]
 }
 
 /** The inline text each `<script>` runs, leaving out data blocks and scripts that name a source. */
@@ -71,24 +69,6 @@ export function pageScripts(files: readonly BuiltFile[], page: BuiltFile): PageS
 		...preloadsOf(page),
 		...inline.flatMap((text) => importsOf(page.path, text)),
 	]
-	const found: BuiltFile[] = []
-	const missing: string[] = []
-	const seen = new Set<string>()
-	while (queue.length > 0) {
-		const path = queue.shift() ?? ""
-		if (path === "" || seen.has(path)) continue
-		seen.add(path)
-		const file = fileAt(files, path)
-		if (file === undefined) {
-			missing.push(path)
-			continue
-		}
-		found.push(file)
-		queue.push(...importsOf(file.path, file.content))
-	}
-	return Object.freeze({
-		inline: Object.freeze(inline),
-		files: Object.freeze(found),
-		missing: Object.freeze(missing),
-	})
+	const graph = walkAssets(files, queue, (file) => importsOf(file.path, file.content))
+	return Object.freeze({ inline: Object.freeze(inline), ...graph })
 }

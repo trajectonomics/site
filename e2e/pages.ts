@@ -26,6 +26,15 @@ export const THEMES = Object.freeze(["light", "dark"] as const)
 /** One of the two Themes a page can ship. */
 export type Theme = (typeof THEMES)[number]
 
+/** The Language home of one Language, which every browser check judges. */
+export function homeOf(language: Language): PageUnderTest {
+	const home = PAGES.find(
+		(underTest) => underTest.language === language && underTest.status === 200,
+	)
+	if (home === undefined) throw new Error(`the Site has no ${language} home`)
+	return home
+}
+
 /** Open a page, assert its real status and the Language its document declares. */
 export async function openPage(page: Page, underTest: PageUnderTest): Promise<void> {
 	const response = await page.goto(underTest.path)

@@ -1,5 +1,5 @@
 import { expect, type Page, test } from "@playwright/test"
-import { expectTheme, openPage, PAGES, THEMES } from "./pages"
+import { expectTheme, homeOf, openPage, PAGES, THEMES } from "./pages"
 
 /** Thai text whose nearest declared Language, `html` included, is not Thai. */
 function unmarkedThai(page: Page): Promise<readonly string[]> {
@@ -42,7 +42,7 @@ for (const theme of THEMES) {
 		}
 
 		test("the Thai label on the English home is marked Thai", async ({ page }) => {
-			await openPage(page, PAGES[1]!)
+			await openPage(page, homeOf("en"))
 			const label = page.locator('[lang="th"]', { hasText: "ไทย" }).first()
 			await expect(label).toBeVisible()
 		})
