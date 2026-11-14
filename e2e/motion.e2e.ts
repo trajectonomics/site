@@ -14,7 +14,8 @@ test.describe("the hero headline, with motion allowed", () => {
 		await openPage(page, HOME)
 		const stack = page.locator("[data-hero-stack]")
 		await expect(stack).toHaveAttribute("data-hero-stepping", "")
-		await expect(page.locator("[data-hero-stack] > span:visible")).toHaveText(
+		// While stepping every suffix is visibility:visible, so the shown one is the precise target.
+		await expect(page.locator("[data-hero-stack] > span[data-hero-shown]")).toHaveText(
 			dictionaryFor(HOME.language).heroHeadingCycle.at(-1) ?? "",
 			{ timeout: 10_000 },
 		)

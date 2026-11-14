@@ -21,6 +21,8 @@
 		"test": "bun test ./src ./scripts",
 		"test:browser": "bun run build && playwright test",
 		"test:performance": "bun run build && bun scripts/performance.ts",
+		"test:visual": "bun run build && playwright test e2e/visual.e2e.ts",
+		"test:visual:update": "bun run build && playwright test e2e/visual.e2e.ts --update-snapshots",
 		"typecheck": "tsc -p tsconfig.json && astro check",
 		"lint": "biome ci --error-on-warnings .",
 		"format": "biome check --write .",
