@@ -15,8 +15,8 @@ const SINGLE_ELEMENTS = [
 	{ tag: "main", code: "MAIN_NOT_SINGLE" },
 ] as const satisfies readonly { tag: string; code: BuildFailureCode }[]
 
-/** Opening tags only: a closing tag never adds an element. */
-export function countElements(html: string, tag: string): number {
+/** The number of opening `<tag>` elements in `html`; a closing tag never adds one. */
+function countElements(html: string, tag: string): number {
 	return html.match(new RegExp(`<${tag}\\b`, "gi"))?.length ?? 0
 }
 
