@@ -31,7 +31,7 @@ bun run dev
 
 `dist/th/index.html` and `dist/en/index.html` are the two Language homes, and there is no document at `/`: the Worker's only script answers `/` with a 302 to the chosen Locale URL ([ADR 0003](./docs/adr/0003-thai-and-english-from-visitor-signals.md)). `dist/404.html` is the English Not-found page, `dist/th/404.html` the Thai one and `dist/en/404.html` the English one under its own Locale URL, so the assets handler's nearest-`404.html` rule answers a miss in the Language of the Locale URL the visitor tried. The built files are the source of truth for the structure rules, not HTML fetched through the router.
 
-The page shows the three confirmed regions only: the header, the hero with the install command, and the footer ([site#3](https://github.com/trajectonomics/site/issues/3)). The Thai headline, the Thai sub-line and each footer disclaimer stay `[OWNER TO WRITE]` until the owner writes them; the English hero copy is confirmed. Screenshots of the built page are in [`docs/screenshots/`](./docs/screenshots/). Deployment is a later change.
+The page shows the three confirmed regions only: the header, the hero with the install command, and the footer ([site#3](https://github.com/trajectonomics/site/issues/3)). The Thai headline, the Thai sub-line and each footer disclaimer stay `[OWNER TO WRITE]` until the owner writes them; the English hero text is confirmed. Screenshots of the built page are in [`docs/screenshots/`](./docs/screenshots/). Deployment is a later change.
 
 ## License
 

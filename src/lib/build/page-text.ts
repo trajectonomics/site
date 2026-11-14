@@ -10,7 +10,38 @@ function nextAfter(page: ScannedPage, from: HtmlElement, tag: string): HtmlEleme
 	return page.elements.slice(page.elements.indexOf(from) + 1).find((element) => element.tag === tag)
 }
 
-/** The hero's headline and sub-line, and the footer's disclaimer, are the text the Dictionary names. */
+/** The footer carries the owner's disclaimer and tax sentence, in that order. */
+function footerFailures(
+	file: BuiltFile,
+	page: ScannedPage,
+	dictionary: Dictionary,
+): readonly BuildFailure[] {
+	const footer = elementsByTag(page, "footer")[0]
+	const disclaimer = footer === undefined ? undefined : nextAfter(page, footer, "p")
+	const tax = disclaimer === undefined ? undefined : nextAfter(page, disclaimer, "p")
+	const failures: BuildFailure[] = []
+	if (disclaimer === undefined || textOf(page, disclaimer) !== dictionary.footerDisclaimer) {
+		failures.push(
+			buildFailure(
+				"DISCLAIMER_NOT_RENDERED",
+				file.path,
+				`the footer's first paragraph does not show "${dictionary.footerDisclaimer}".`,
+			),
+		)
+	}
+	if (tax === undefined || textOf(page, tax) !== dictionary.taxSentence) {
+		failures.push(
+			buildFailure(
+				"TAX_SENTENCE_NOT_RENDERED",
+				file.path,
+				`the footer's second paragraph does not show "${dictionary.taxSentence}".`,
+			),
+		)
+	}
+	return failures
+}
+
+/** The hero's headline and sub-line, and the footer's owner text, are the Dictionary's. */
 function textFailures(
 	file: BuiltFile,
 	page: ScannedPage,
@@ -39,21 +70,10 @@ function textFailures(
 			),
 		)
 	}
-	const footer = elementsByTag(page, "footer")[0]
-	const disclaimer = footer === undefined ? undefined : nextAfter(page, footer, "p")
-	if (disclaimer === undefined || textOf(page, disclaimer) !== dictionary.footerDisclaimer) {
-		failures.push(
-			buildFailure(
-				"DISCLAIMER_NOT_RENDERED",
-				file.path,
-				`the footer's first paragraph does not show "${dictionary.footerDisclaimer}".`,
-			),
-		)
-	}
-	return failures
+	return [...failures, ...footerFailures(file, page, dictionary)]
 }
 
-/** Every Language home renders its headline, its sub-line and its disclaimer. */
+/** Every Language home renders its headline, its sub-line and its footer's owner text. */
 export function checkPageText(files: readonly BuiltFile[]): readonly BuildFailure[] {
 	return builtHomes(files).flatMap(({ entry, file }) =>
 		textFailures(file, scanHtml(file.content), entry.dictionary),

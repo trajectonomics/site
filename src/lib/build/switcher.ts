@@ -3,17 +3,8 @@ import { dictionaryFor, localeUrl, otherLanguages } from "../language/languages"
 import type { BuiltFile } from "./built-files"
 import type { BuildFailure } from "./failures"
 import { buildFailure } from "./failures"
-import { elementsByTag, type HtmlElement, type ScannedPage, scanHtml } from "./html"
+import { elementsByTag, scanHtml, textOf } from "./html"
 import { builtHomes } from "./language-home"
-
-/** The text inside one element, with the whitespace a template adds around it taken out. */
-function textOf(page: ScannedPage, element: HtmlElement): string {
-	return page.text
-		.filter((run) => run.ancestors.includes(element))
-		.map((run) => run.text.trim())
-		.filter((text) => text.length > 0)
-		.join(" ")
-}
 
 /** The switcher on one home: one ordinary link per other Language, named in that Language. */
 function checkSwitcherFor(file: BuiltFile, language: Language): readonly BuildFailure[] {
@@ -48,18 +39,31 @@ function checkSwitcherFor(file: BuiltFile, language: Language): readonly BuildFa
 			),
 		]
 	})
-	const current = anchors.some(
+	const entry = dictionaryFor(language)
+	const current = anchors.find(
 		(anchor) =>
 			anchor.attributes["href"] === localeUrl(language) &&
 			anchor.attributes["aria-current"] === "page",
 	)
-	if (current) return failures
+	if (current === undefined) {
+		return [
+			...failures,
+			buildFailure(
+				"SWITCHER_CURRENT_MISSING",
+				file.path,
+				`no link marks ${localeUrl(language)} as the current Language.`,
+			),
+		]
+	}
+	const named = current.attributes["aria-label"] === entry.languageName
+	const labelled = textOf(page, current) === entry.languageSwitchLabel
+	if (named && labelled) return failures
 	return [
 		...failures,
 		buildFailure(
-			"SWITCHER_CURRENT_MISSING",
+			"SWITCHER_CURRENT_LABEL_WRONG",
 			file.path,
-			`no link marks ${localeUrl(language)} as the current Language.`,
+			`the current link should show "${entry.languageSwitchLabel}" and be named "${entry.languageName}".`,
 		),
 	]
 }

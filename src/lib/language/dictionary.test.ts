@@ -44,7 +44,7 @@ describe("the Dictionary of every Language", () => {
 		}
 	})
 
-	it("keeps the English hero copy the owner confirmed", () => {
+	it("keeps the English hero text the owner confirmed", () => {
 		const english = dictionaryFor("en")
 		expect(english.heroHeading).toBe("A money tool your AI agent operates.")
 		expect(english.heroSubline).toBe(

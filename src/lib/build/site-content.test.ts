@@ -12,9 +12,7 @@ describe("the install command on a Language home", () => {
 	})
 
 	it("passes the Thai home, whose button and messages are Thai", () => {
-		const page = heroHome("th")
-		expect(page.content).toContain(dictionaryFor("th").copy)
-		expect(heroCodes(checkSiteContent, page)).toEqual([])
+		expect(heroCodes(checkSiteContent, heroHome("th"))).toEqual([])
 	})
 
 	it("fails a home with no code element showing the fixture", () => {
@@ -55,7 +53,6 @@ describe("the Copy control", () => {
 	it("fails a home whose button carries neither copy message", () => {
 		const button = `<button type="button">${dictionaryFor("en").copy}</button>`
 		expect(heroCodes(checkSiteContent, heroHome("en", { command, button }))).toEqual([
-			"COPY_MESSAGES_MISSING",
 			"COPY_MESSAGES_MISSING",
 		])
 	})

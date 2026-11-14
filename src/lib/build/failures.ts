@@ -40,6 +40,7 @@ export type BuildFailureCode =
 	| "FONT_FACE_PRESENT"
 	| "EXTRA_HEADING"
 	| "SWITCHER_CURRENT_MISSING"
+	| "SWITCHER_CURRENT_LABEL_WRONG"
 	| "INSTALL_COMMAND_MISSING"
 	| "INSTALL_COMMAND_SCRIPT_ONLY"
 	| "UNSCOPED_PACKAGE_SHOWN"
@@ -54,6 +55,7 @@ export type BuildFailureCode =
 	| "HEADLINE_NOT_RENDERED"
 	| "SUBLINE_NOT_RENDERED"
 	| "DISCLAIMER_NOT_RENDERED"
+	| "TAX_SENTENCE_NOT_RENDERED"
 
 /** One failed build check: the rule's code, the file it concerns and a line a maintainer can act on. */
 export interface BuildFailure {

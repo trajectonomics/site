@@ -13,17 +13,10 @@ function messageFailures(
 		{ attribute: "data-copied", value: dictionary.copied },
 		{ attribute: "data-copy-failed", value: dictionary.copyFailed },
 	]
-	return wanted.flatMap((message) =>
-		button.attributes[message.attribute] === message.value
-			? []
-			: [
-					buildFailure(
-						"COPY_MESSAGES_MISSING",
-						path,
-						`the Copy button carries no ${message.attribute}="${message.value}".`,
-					),
-				],
-	)
+	const missing = wanted.filter((message) => button.attributes[message.attribute] !== message.value)
+	if (missing.length === 0) return []
+	const names = missing.map((message) => `${message.attribute}="${message.value}"`).join(" and ")
+	return [buildFailure("COPY_MESSAGES_MISSING", path, `the Copy button carries no ${names}.`)]
 }
 
 /** The Copy button sits beside the command, shows its label, and carries both messages. */

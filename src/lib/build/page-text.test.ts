@@ -19,6 +19,12 @@ describe("the text a Language home renders", () => {
 		])
 	})
 
+	it("fails a home whose footer lost the owner's tax sentence", () => {
+		expect(heroCodes(checkPageText, heroHome("en", { tax: "" }))).toEqual([
+			"TAX_SENTENCE_NOT_RENDERED",
+		])
+	})
+
 	it("fails a home whose footer lost its disclaimer", () => {
 		expect(heroCodes(checkPageText, heroHome("en", { disclaimer: "" }))).toEqual([
 			"DISCLAIMER_NOT_RENDERED",

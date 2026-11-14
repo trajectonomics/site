@@ -9,8 +9,10 @@ const CODE_WORD = /(\btraj\b)/
 
 /** A sub-line split around the command name, so the page can mark that word as code. */
 export function sublineParts(subline: string): readonly SublinePart[] {
-	return subline
-		.split(CODE_WORD)
-		.map((text, index) => ({ text, code: index % 2 === 1 }))
-		.filter((part) => part.text !== "")
+	return Object.freeze(
+		subline
+			.split(CODE_WORD)
+			.map((text, index) => Object.freeze({ text, code: index % 2 === 1 }))
+			.filter((part) => part.text !== ""),
+	)
 }

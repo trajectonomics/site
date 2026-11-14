@@ -24,6 +24,15 @@ describe("the switcher in the header", () => {
 		expect(codes(checkSwitcher, page)).toEqual(["SWITCHER_MISSING", "SWITCHER_CURRENT_MISSING"])
 	})
 
+	it("fails a current link that does not name the reading Language", () => {
+		const page = home(entryAt(0).language)
+		const entry = entryAt(0)
+		const content = page.content.replace(`aria-label="${entry.dictionary.languageName}"`, "")
+		expect(codes(checkSwitcher, { path: page.path, content })).toEqual([
+			"SWITCHER_CURRENT_LABEL_WRONG",
+		])
+	})
+
 	it("fails a home that does not mark the reading Language as current", () => {
 		const page = home(entryAt(0).language)
 		const content = page.content.replace(' aria-current="page"', "")

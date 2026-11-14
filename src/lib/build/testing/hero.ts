@@ -17,6 +17,7 @@ export interface HeroParts {
 	readonly headline?: string
 	readonly subline?: string
 	readonly disclaimer?: string
+	readonly tax?: string
 	readonly command?: string
 	readonly button?: string
 	readonly extra?: string
@@ -47,7 +48,7 @@ export function heroHome(language: Language, parts: HeroParts = {}): BuiltFile {
 		"<footer><ul>",
 		`<li><a href="${CLI_LICENCE_URL}">${dictionary.licence}</a></li>`,
 		`<li><a href="${GITHUB_ORG_URL}">${dictionary.org}</a></li>`,
-		`</ul><p>${parts.disclaimer ?? dictionary.footerDisclaimer}</p><p>${dictionary.taxSentence}</p></footer>`,
+		`</ul><p>${parts.disclaimer ?? dictionary.footerDisclaimer}</p><p>${parts.tax ?? dictionary.taxSentence}</p></footer>`,
 		parts.extra ?? "",
 		"</body></html>",
 	].join("\n")

@@ -25,7 +25,7 @@ function expectedLinks(dictionary: Dictionary): readonly ExpectedLink[] {
 }
 
 /** The link whose visible text is exactly `text`, or `undefined` when the page shows none. */
-export function linkShowing(
+function linkShowing(
 	links: readonly HtmlElement[],
 	page: ScannedPage,
 	text: string,
