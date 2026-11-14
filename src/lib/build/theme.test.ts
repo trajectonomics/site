@@ -42,7 +42,7 @@ describe("the Theme the markup asks for", () => {
 		]
 		const failures = checkTheme(files, TEST_TOKENS)
 		expect(failures.filter((failure) => failure.path === "index.html")).toEqual([])
-		expect(failures.map((failure) => failure.code)).toContain("THEME_SCRIPT_NOT_FIRST")
+		expect(failures.map((failure) => failure.code)).toContain("THEME_SCRIPT_MISSING")
 	})
 })
 
@@ -56,15 +56,15 @@ describe("the Theme script before the first paint", () => {
 		expect(codes(page('data-theme="light"', head))).toContain("THEME_SCRIPT_NOT_FIRST")
 	})
 
-	it("fails a page with a script that loads a file, which runs too late to paint the first frame", () => {
+	it("fails a page whose only script loads a file, which runs too late to paint the first frame", () => {
 		const head =
 			'<script src="/_astro/theme.js"></script><link rel="stylesheet" href="/_astro/site.css">'
-		expect(codes(page('data-theme="light"', head))).toContain("THEME_SCRIPT_NOT_FIRST")
+		expect(codes(page('data-theme="light"', head))).toContain("THEME_SCRIPT_MISSING")
 	})
 
 	it("fails a page with no stylesheet at all, because nothing paints it", () => {
 		expect(codes(page('data-theme="light"', "<script>setTheme()</script>"))).toContain(
-			"THEME_SCRIPT_NOT_FIRST",
+			"THEME_STYLESHEET_MISSING",
 		)
 	})
 })

@@ -20,6 +20,16 @@ export interface ScannedPage {
 
 export { scanHtml } from "./html-scan"
 
+/** Whether an element is a script the document carries itself, so it runs before any file loads. */
+export function isInlineScript(element: HtmlElement): boolean {
+	return element.tag === "script" && element.attributes["src"] === undefined
+}
+
+/** Whether an element is a stylesheet link, the only link that can paint the page. */
+export function isStylesheetLink(element: HtmlElement): boolean {
+	return element.tag === "link" && /\bstylesheet\b/i.test(element.attributes["rel"] ?? "")
+}
+
 /** Every element of one tag, in document order. */
 export function elementsByTag(page: ScannedPage, tag: string): readonly HtmlElement[] {
 	return page.elements.filter((element) => element.tag === tag)

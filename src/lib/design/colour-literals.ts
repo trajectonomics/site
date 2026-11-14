@@ -1,3 +1,4 @@
+import { type ColourLiteral, colourLiteral } from "./colour-literal"
 import { classLiterals } from "./colour-utilities"
 import { literalIn, valueLiterals } from "./colour-values"
 
@@ -7,15 +8,7 @@ export interface SiteSource {
 	readonly content: string
 }
 
-/** Stable codes for every way a Site source writes a colour instead of naming a Semantic Token Role. */
-export type ColourLiteralCode = "COLOUR_LITERAL" | "DEFAULT_PALETTE_UTILITY" | "DARK_VARIANT"
-
-/** One raw colour a Site source writes: the rule that caught it, the file, and the text as written. */
-export interface ColourLiteral {
-	readonly code: ColourLiteralCode
-	readonly path: string
-	readonly value: string
-}
+export type { ColourLiteral, ColourLiteralCode } from "./colour-literal"
 
 /** The extensions that carry the Site's styling: a stylesheet, a template, or an inline SVG. */
 const STYLING_SOURCES = new Set(["astro", "css", "html", "svg"])
@@ -40,7 +33,7 @@ function templateLiterals(
 	}
 	for (const match of content.matchAll(PAINT_ATTRIBUTE)) {
 		const literal = literalIn(match[1] ?? "")
-		if (literal !== undefined) literals.push({ code: "COLOUR_LITERAL", path, value: literal })
+		if (literal !== undefined) literals.push(colourLiteral("COLOUR_LITERAL", path, literal))
 	}
 	for (const match of content.matchAll(CLASS_ATTRIBUTE)) {
 		literals.push(...classLiterals(path, match[1] ?? "", colourUtilities))
@@ -48,10 +41,7 @@ function templateLiterals(
 	return literals
 }
 
-/**
- * Every colour the Site's own styling sources write, instead of naming a Semantic Token Role. A file
- * that is not a styling source is not judged, so a TypeScript palette and a copied Brand Asset pass.
- */
+/** Every colour the Site's own styling sources write, instead of naming a Semantic Token Role. */
 export function findColourLiterals(
 	sources: readonly SiteSource[],
 	colourUtilities: readonly string[],

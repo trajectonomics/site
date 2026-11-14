@@ -1,20 +1,12 @@
-/** An element of a built page, as far as a check needs it: a tag and the attributes the build wrote. */
-export interface HtmlElement {
-	readonly tag: string
-	readonly attributes: Readonly<Record<string, string>>
-}
+/** The elements that never have children, so a following tag is a sibling and not a descendant. */
+const VOID_ELEMENTS = new Set(
+	"area base br col embed hr img input link meta source track wbr".split(" "),
+)
 
-/** A run of text in a built page with every element it sits inside, outermost first. */
-export interface TextRun {
-	readonly text: string
-	readonly ancestors: readonly HtmlElement[]
-}
+/** The elements whose content is code or metadata, never page text, so a `<nav>` inside one is not a tag. */
+const CODE_ELEMENTS = new Set(["script", "style", "title", "textarea"])
 
-/** The elements of a built page in document order, and its text runs with their ancestors. */
-export interface ScannedPage {
-	readonly elements: readonly HtmlElement[]
-	readonly text: readonly TextRun[]
-}
+const TAG_NAME = /^[a-zA-Z][\w:-]*/
 
 /** The attributes of a tag, with `name="value"`, `name='value'`, `name=value` and bare `name` alike. */
 export function parseAttributes(text: string): Readonly<Record<string, string>> {
@@ -38,17 +30,9 @@ export function tagEnd(html: string, start: number): number {
 	return html.length
 }
 
-/** The elements that never have children, so a following tag is a sibling and not a descendant. */
-const VOID_ELEMENTS = new Set(
-	"area base br col embed hr img input link meta source track wbr".split(" "),
-)
-
-/** The elements whose content is code or metadata, never page text, so a `<nav>` inside one is not a tag. */
-const CODE_ELEMENTS = new Set(["script", "style", "title", "textarea"])
-
 /** The lowercase tag name an opening tag starts with, or `undefined` when it names none. */
 export function tagName(inner: string): string | undefined {
-	return /^[a-zA-Z][\w:-]*/.exec(inner)?.[0]?.toLowerCase()
+	return TAG_NAME.exec(inner)?.[0]?.toLowerCase()
 }
 
 /** Whether an open tag closes itself, so nothing after it is its child. */

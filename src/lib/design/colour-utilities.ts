@@ -1,5 +1,5 @@
 import { COLOUR_UTILITY_PREFIXES, DEFAULT_PALETTE_FAMILIES } from "./colour-keywords"
-import type { ColourLiteral, ColourLiteralCode } from "./colour-literals"
+import { type ColourLiteral, type ColourLiteralCode, colourLiteral } from "./colour-literal"
 import { literalIn } from "./colour-values"
 
 /** The prefixes that carry a colour, longest first, so `ring-offset-black` reads as a ring offset. */
@@ -39,6 +39,6 @@ export function classLiterals(
 	return classNames.split(/\s+/).flatMap((className) => {
 		if (className === "") return []
 		const found = utilityLiteral(className, colourUtilities)
-		return found === undefined ? [] : [{ ...found, path }]
+		return found === undefined ? [] : [colourLiteral(found.code, path, found.value)]
 	})
 }

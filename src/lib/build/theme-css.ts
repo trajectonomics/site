@@ -3,20 +3,16 @@ import { type DesignTokens, parseDesignTokens, type Theme } from "../design/toke
 import { type BuiltFile, builtPages, fileAt } from "./built-files"
 import type { BuildFailure } from "./failures"
 import { buildFailure } from "./failures"
-import { type ScannedPage, scanHtml } from "./html"
-
-const STYLESHEET = /\bstylesheet\b/i
+import { isStylesheetLink, type ScannedPage, scanHtml } from "./html"
 
 /** The built files the page's stylesheet links load: the CSS that can paint it. */
 function linkedStylesheets(page: ScannedPage, files: readonly BuiltFile[]): readonly BuiltFile[] {
-	return page.elements
-		.filter((element) => element.tag === "link" && STYLESHEET.test(element.attributes["rel"] ?? ""))
-		.flatMap((element) => {
-			const href = element.attributes["href"]
-			if (href === undefined) return []
-			const file = fileAt(files, href.replace(/^\.?\//, ""))
-			return file === undefined ? [] : [file]
-		})
+	return page.elements.filter(isStylesheetLink).flatMap((element) => {
+		const href = element.attributes["href"]
+		if (href === undefined) return []
+		const file = fileAt(files, href.replace(/^\.?\//, ""))
+		return file === undefined ? [] : [file]
+	})
 }
 
 /** The roles a Theme defines, in the CSS the page loads, at a value the published CSS does not. */

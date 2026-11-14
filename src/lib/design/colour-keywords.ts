@@ -16,11 +16,7 @@ export const NAMED_COLOURS: readonly string[] = `aliceblue antiquewhite aqua aqu
 	seagreen seashell sienna silver skyblue slateblue slategray slategrey snow springgreen steelblue tan
 	teal thistle tomato turquoise violet wheat white whitesmoke yellow yellowgreen`.split(/\s+/)
 
-/**
- * The colour families of Tailwind's default palette, which a role utility must never fall back to.
- * This is Tailwind's own list, not the Site's: the Site's allowed names come from the published
- * Tailwind Theme Stylesheet.
- */
+/** The colour families of Tailwind's default palette, which a role utility must never fall back to. */
 export const DEFAULT_PALETTE_FAMILIES: readonly string[] = `inherit current transparent white black
 	slate gray zinc neutral stone red orange amber yellow lime green emerald teal cyan sky blue indigo
 	violet purple fuchsia pink rose`.split(/\s+/)

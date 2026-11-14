@@ -15,11 +15,14 @@ export type BuildFailureCode =
 	| "THEME_ATTRIBUTE_MISSING"
 	| "THEME_ATTRIBUTE_NOT_PUBLISHED"
 	| "THEME_FALLBACK_NOT_LIGHT"
+	| "THEME_SCRIPT_MISSING"
+	| "THEME_STYLESHEET_MISSING"
 	| "THEME_SCRIPT_NOT_FIRST"
 	| "THEME_CSS_NOT_BUILT"
 	| "LANDMARK_COLOUR_NOT_WIRED"
 	| "TEXT_CONTRAST_TOO_LOW"
 	| "TEXT_COLOUR_UNRESOLVED"
+	| "TEXT_COLOUR_UNREADABLE"
 
 /** One failed build check: the rule's code, the file it concerns and a line a maintainer can act on. */
 export interface BuildFailure {

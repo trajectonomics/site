@@ -14,10 +14,7 @@ async function readPublished(subpath: string): Promise<string> {
 	return Bun.file(file).text()
 }
 
-/**
- * The Web Consumer Contract as the pinned package publishes it: the reference the built Site and the
- * Site's own sources are judged against, never a copy of what the build emitted.
- */
+/** The Web Consumer Contract as the pinned package publishes it, the reference the Site is judged against. */
 export async function readDesignTokens(): Promise<DesignTokens> {
 	const themes = await Promise.all(THEME_SHEETS.map((sheet) => readPublished(sheet)))
 	return parseDesignTokens({ themes, tailwind: await readPublished(TAILWIND_SHEET) })

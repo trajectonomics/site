@@ -1,5 +1,5 @@
 import { ALLOWED_VALUES, NAMED_COLOURS } from "./colour-keywords"
-import type { ColourLiteral } from "./colour-literals"
+import { type ColourLiteral, colourLiteral } from "./colour-literal"
 
 /** A hexadecimal colour, a colour function, or a value that only names a role. */
 const HEXADECIMAL = /#[0-9a-f]{3,8}\b/i
@@ -41,6 +41,6 @@ export function valueLiterals(path: string, css: string): readonly ColourLiteral
 	const values = css.includes("{") ? declarationValues(css) : valuesAfterColons(css.split(";"))
 	return values.flatMap((value) => {
 		const literal = literalIn(value)
-		return literal === undefined ? [] : [{ code: "COLOUR_LITERAL" as const, path, value: literal }]
+		return literal === undefined ? [] : [colourLiteral("COLOUR_LITERAL", path, literal)]
 	})
 }

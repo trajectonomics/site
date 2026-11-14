@@ -74,7 +74,8 @@ describe("a colour written as a utility class", () => {
 		expect(codes(ASTRO, '<p class="text-sm font-black border-2"></p>')).toEqual([])
 	})
 
-	it("fails an arbitrary colour utility", () => {
+	it("fails an arbitrary colour utility, naming the colour rather than the class", () => {
+		expect(codes(ASTRO, '<p class="bg-[#ffffff]"></p>')).toEqual(["COLOUR_LITERAL"])
 		expect(values(ASTRO, '<p class="bg-[#ffffff]"></p>')).toEqual(["#ffffff"])
 	})
 

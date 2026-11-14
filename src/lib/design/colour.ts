@@ -16,11 +16,11 @@ export function parseRgb(value: string): Rgb | undefined {
 	const channels = short ? [...digits.slice(0, 3)].map((digit) => digit.repeat(2)) : []
 	const pairs = short ? channels : [digits.slice(0, 2), digits.slice(2, 4), digits.slice(4, 6)]
 	const [red = "", green = "", blue = ""] = pairs
-	return {
+	return Object.freeze({
 		red: Number.parseInt(red, 16),
 		green: Number.parseInt(green, 16),
 		blue: Number.parseInt(blue, 16),
-	}
+	})
 }
 
 /** WCAG relative luminance: 0 for black, 1 for white. */

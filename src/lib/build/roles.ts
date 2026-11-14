@@ -21,11 +21,7 @@ function splitUtility(
 	return { prefix: className.slice(0, separator), name: className.slice(separator + 1) }
 }
 
-/**
- * The background and text Semantic Token Roles a chain of elements paints, outermost first, with the
- * nearest element that paints winning. A utility with a variant, such as `hover:bg-card`, is a state
- * and not the resting colour, so it is not read.
- */
+/** The background and text Semantic Token Roles a chain of elements paints, nearest element first. */
 export function paintedColours(
 	chain: readonly HtmlElement[],
 	colourUtilities: readonly string[],

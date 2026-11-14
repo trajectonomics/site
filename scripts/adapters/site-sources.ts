@@ -6,11 +6,7 @@ const REPOSITORY = join(import.meta.dir, "..", "..")
 /** The Site's own styling: the templates, the stylesheets and any inline SVG, under `src/`. */
 const STYLING_SOURCES = "**/*.{astro,css,html,svg}"
 
-/**
- * Every styling source the Site authors, under `src/` and nowhere else. A copied Brand Asset and the
- * published Prebuilt Theme CSS live in the build output and in `node_modules`, so the colours the
- * design system shipped are never read as a Site violation.
- */
+/** Every styling source the Site authors, under `src/` and nowhere else: never `node_modules` or a copy. */
 export async function readSiteSources(): Promise<readonly SiteSource[]> {
 	const root = join(REPOSITORY, "src")
 	const paths: string[] = []

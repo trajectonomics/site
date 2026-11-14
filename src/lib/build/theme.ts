@@ -3,21 +3,11 @@ import type { BuiltFile } from "./built-files"
 import { builtPages } from "./built-files"
 import type { BuildFailure } from "./failures"
 import { buildFailure } from "./failures"
-import { elementsByTag, type HtmlElement, type ScannedPage, scanHtml } from "./html"
+import { elementsByTag, isInlineScript, isStylesheetLink, type ScannedPage, scanHtml } from "./html"
 import { checkThemeCss } from "./theme-css"
 
 /** The Theme the markup falls back to when JavaScript never runs. */
 const FALLBACK_THEME = "light"
-
-const STYLESHEET = /\bstylesheet\b/i
-
-function isInlineScript(element: HtmlElement): boolean {
-	return element.tag === "script" && element.attributes["src"] === undefined
-}
-
-function isStylesheet(element: HtmlElement): boolean {
-	return element.tag === "link" && STYLESHEET.test(element.attributes["rel"] ?? "")
-}
 
 /** The page asks for a published Theme, and that Theme is the one it falls back to. */
 function checkAttribute(
@@ -59,22 +49,37 @@ function checkAttribute(
 	return failures
 }
 
-/** The inline script that reads the device scheme runs before the first stylesheet. */
-function checkScriptOrder(path: string, page: ScannedPage): readonly BuildFailure[] {
+/** The page links the stylesheet that paints it. */
+function checkStylesheet(path: string, page: ScannedPage): readonly BuildFailure[] {
+	if (page.elements.some(isStylesheetLink)) return []
+	return [
+		buildFailure(
+			"THEME_STYLESHEET_MISSING",
+			path,
+			"the page links no stylesheet, so the Semantic Token Roles resolve to nothing.",
+		),
+	]
+}
+
+/** The inline script that reads the device scheme is there, and runs before the first stylesheet. */
+function checkScript(path: string, page: ScannedPage): readonly BuildFailure[] {
 	const script = page.elements.findIndex(isInlineScript)
-	const stylesheet = page.elements.findIndex(isStylesheet)
-	if (script !== -1 && stylesheet !== -1 && script < stylesheet) return []
-	const found =
-		script === -1
-			? "there is no inline script"
-			: stylesheet === -1
-				? "there is no stylesheet link"
-				: "the inline script comes after the first stylesheet"
+	if (script === -1) {
+		return [
+			buildFailure(
+				"THEME_SCRIPT_MISSING",
+				path,
+				"the page has no inline script, so a device set to dark still gets the light Theme.",
+			),
+		]
+	}
+	const stylesheet = page.elements.findIndex(isStylesheetLink)
+	if (stylesheet === -1 || script < stylesheet) return []
 	return [
 		buildFailure(
 			"THEME_SCRIPT_NOT_FIRST",
 			path,
-			`${found}; the Theme must be on <html> before the first paint, so the inline script comes first.`,
+			"the inline script comes after the first stylesheet, so the Theme paints one frame late.",
 		),
 	]
 }
@@ -87,7 +92,11 @@ export function checkTheme(
 	return [
 		...builtPages(files).flatMap((file) => {
 			const page = scanHtml(file.content)
-			return [...checkAttribute(file.path, page, tokens), ...checkScriptOrder(file.path, page)]
+			return [
+				...checkAttribute(file.path, page, tokens),
+				...checkStylesheet(file.path, page),
+				...checkScript(file.path, page),
+			]
 		}),
 		...checkThemeCss(files, tokens),
 	]

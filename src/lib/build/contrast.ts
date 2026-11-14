@@ -41,9 +41,9 @@ function contrastFailures(
 	if (a === undefined || b === undefined) {
 		return [
 			buildFailure(
-				"TEXT_COLOUR_UNRESOLVED",
+				"TEXT_COLOUR_UNREADABLE",
 				path,
-				`"${excerpt(run.text)}" paints ${foreground} on ${background} in the ${theme.name} Theme, which is not a colour this check reads.`,
+				`"${excerpt(run.text)}" paints ${foreground} on ${background} in the ${theme.name} Theme, a value this check cannot turn into a contrast ratio.`,
 			),
 		]
 	}

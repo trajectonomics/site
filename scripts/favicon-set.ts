@@ -27,10 +27,7 @@ function faviconSource(): string {
 	return dirname(resolve(`${ASSETS_PACKAGE}/favicon/favicon.svg`))
 }
 
-/**
- * Copies the Favicon Set out of the pinned assets package into the Site's static directory at build
- * time, so the icons keep the URLs the layout declares and the package stays their only copy in git.
- */
+/** Copies the Favicon Set from the pinned assets package into the Site's static directory at build time. */
 export function faviconSet(): AstroIntegration {
 	return {
 		name: "trajectonomics:favicon-set",
