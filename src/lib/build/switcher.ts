@@ -19,7 +19,7 @@ function textOf(page: ScannedPage, element: HtmlElement): string {
 function checkSwitcherFor(file: BuiltFile, language: Language): readonly BuildFailure[] {
 	const page = scanHtml(file.content)
 	const anchors = elementsByTag(page, "a")
-	return otherLanguages(language).flatMap((other) => {
+	const failures = otherLanguages(language).flatMap((other) => {
 		const href = localeUrl(other.language)
 		const code = other.language
 		const link = anchors.find(
@@ -48,6 +48,20 @@ function checkSwitcherFor(file: BuiltFile, language: Language): readonly BuildFa
 			),
 		]
 	})
+	const current = anchors.some(
+		(anchor) =>
+			anchor.attributes["href"] === localeUrl(language) &&
+			anchor.attributes["aria-current"] === "page",
+	)
+	if (current) return failures
+	return [
+		...failures,
+		buildFailure(
+			"SWITCHER_CURRENT_MISSING",
+			file.path,
+			`no link marks ${localeUrl(language)} as the current Language.`,
+		),
+	]
 }
 
 /** A home switches to every other Language with a plain link, with JavaScript off ([ADR 0003]). */
