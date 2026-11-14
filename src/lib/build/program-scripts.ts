@@ -86,5 +86,9 @@ export function pageScripts(files: readonly BuiltFile[], page: BuiltFile): PageS
 		found.push(file)
 		queue.push(...importsOf(file.path, file.content))
 	}
-	return { inline, files: found, missing }
+	return Object.freeze({
+		inline: Object.freeze(inline),
+		files: Object.freeze(found),
+		missing: Object.freeze(missing),
+	})
 }

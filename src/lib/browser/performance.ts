@@ -14,6 +14,11 @@ export interface PerformanceFailure {
 	readonly message: string
 }
 
+/** A frozen failure, so a caller cannot edit the verdict. */
+function failure(code: PerformanceFailureCode, path: string, message: string): PerformanceFailure {
+	return Object.freeze({ code, path, message })
+}
+
 /** The middle score of the runs, or `undefined` when a run has no score at all. */
 export function medianScore(scores: readonly (number | undefined)[]): number | undefined {
 	if (scores.length !== PERFORMANCE_RUNS) return undefined
@@ -30,22 +35,21 @@ export function checkPerformance(
 ): readonly PerformanceFailure[] {
 	const median = medianScore(scores)
 	if (median === undefined) {
-		return [
-			{
-				code: "LIGHTHOUSE_SCORE_MISSING",
-				path,
-				message: `Lighthouse returned ${scores.length} run(s) without a full performance score.`,
-			},
-		]
+		const missing = scores.filter((score) => score === undefined).length
+		const message =
+			scores.length === PERFORMANCE_RUNS
+				? `Lighthouse returned no performance score in ${missing} of ${PERFORMANCE_RUNS} runs.`
+				: `Lighthouse made ${scores.length} run(s); ${PERFORMANCE_RUNS} are required.`
+		return Object.freeze([failure("LIGHTHOUSE_SCORE_MISSING", path, message)])
 	}
 	if (median < PERFORMANCE_MIN_SCORE) {
-		return [
-			{
-				code: "LIGHTHOUSE_SCORE_TOO_LOW",
+		return Object.freeze([
+			failure(
+				"LIGHTHOUSE_SCORE_TOO_LOW",
 				path,
-				message: `median mobile performance is ${median}, below ${PERFORMANCE_MIN_SCORE}.`,
-			},
-		]
+				`median mobile performance is ${median}, below ${PERFORMANCE_MIN_SCORE}.`,
+			),
+		])
 	}
-	return []
+	return Object.freeze([])
 }

@@ -23,6 +23,7 @@ const FOCUSABLE = "a[href], button:not([disabled]):not([hidden])"
 
 /** The two Themes the harness sets before navigation. */
 export const THEMES = Object.freeze(["light", "dark"] as const)
+/** One of the two Themes a page can ship. */
 export type Theme = (typeof THEMES)[number]
 
 /** Open a page, assert its real status and the Language its document declares. */

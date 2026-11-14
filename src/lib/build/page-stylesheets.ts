@@ -56,5 +56,5 @@ export function pageStylesheets(files: readonly BuiltFile[], page: BuiltFile): P
 		found.push(file)
 		queue.push(...importsOf(file))
 	}
-	return { files: found, missing }
+	return Object.freeze({ files: Object.freeze(found), missing: Object.freeze(missing) })
 }

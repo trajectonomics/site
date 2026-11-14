@@ -21,8 +21,3 @@ export function page(path: string, head = "", body = "", language = "en"): Built
 export function asset(path: string, content: string): BuiltFile {
 	return { path, content }
 }
-
-/** A build of one page and the assets it links. */
-export function site(files: readonly BuiltFile[]): readonly BuiltFile[] {
-	return files
-}
