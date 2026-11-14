@@ -54,7 +54,7 @@ const dictionary = dictionaryFor(language)
 		<link rel="apple-touch-icon" href="/favicon/apple-touch-icon.png" />
 	</head>
 	<body class="flex min-h-dvh flex-col bg-background text-foreground">
-		<Header language={language} dictionary={dictionary} />
+		<Header language={language} dictionary={dictionary} markCurrent={indexed} />
 		<main class="flex flex-1 flex-col"><slot /></main>
 		<Footer dictionary={dictionary} />
 	</body>

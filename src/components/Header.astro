@@ -10,9 +10,11 @@ import { DOCS_PATH, GITHUB_CLI_URL, SITE_NAME } from "../lib/site"
 interface Props {
 	readonly language: Language
 	readonly dictionary: Dictionary
+	/** A Language home is the page the reading Language points at; a miss is not. */
+	readonly markCurrent: boolean
 }
 
-const { language, dictionary } = Astro.props
+const { language, dictionary, markCurrent } = Astro.props
 // The link names itself, so the artwork is decoration: the accessible name is the Site's.
 const artwork = wordmark.replace("<svg ", '<svg aria-hidden="true" focusable="false" ')
 ---
@@ -43,7 +45,7 @@ const artwork = wordmark.replace("<svg ", '<svg aria-hidden="true" focusable="fa
 					lang={language}
 					hreflang={language}
 					aria-label={dictionary.languageName}
-					aria-current="page">{dictionary.languageSwitchLabel}</a
+					aria-current={markCurrent ? "page" : undefined}>{dictionary.languageSwitchLabel}</a
 				>
 				{
 					otherLanguages(language).map((entry) => (
