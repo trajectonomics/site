@@ -4,8 +4,9 @@ import { type BuiltFile, builtPages } from "./built-files"
 import type { BuildFailure } from "./failures"
 import { buildFailure } from "./failures"
 import { type ScannedPage, scanHtml, type TextRun } from "./html"
+import { minimumContrast } from "./minimum-contrast"
 import { colourOf, type PaintedColours, paintedColours } from "./roles"
-import { minimumContrast, type TypeScale, typeScaleOf } from "./type-scale"
+import { type TypeScale, typeScaleOf } from "./type-scale"
 
 /** The text of a run, as a failure line shows it: whitespace collapsed, a long run cut short. */
 function excerpt(text: string): string {

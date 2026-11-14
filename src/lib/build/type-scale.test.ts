@@ -15,7 +15,7 @@ function scale(css = CSS, path = "_astro/site.css") {
 
 describe("the type scale the built CSS defines", () => {
 	it("reads a text utility's size, with a rem counted as 16 pixels", () => {
-		expect(scale().sizes).toEqual({ "4xl": 36, lg: 18, sm: 14 })
+		expect(scale().sizesPx).toEqual({ "4xl": 36, lg: 18, sm: 14 })
 	})
 
 	it("reads a font utility's weight", () => {
@@ -23,24 +23,24 @@ describe("the type scale the built CSS defines", () => {
 	})
 
 	it("does not read a line-height as a size, even though it shares the name", () => {
-		expect(scale().sizes["4xl--line-height"]).toBeUndefined()
-		expect(scale().sizes["4xl"]).toBe(36)
+		expect(scale().sizesPx["4xl--line-height"]).toBeUndefined()
+		expect(scale().sizesPx["4xl"]).toBe(36)
 	})
 
 	it("reads a size a stylesheet writes in pixels", () => {
 		const css = ":root{--text-hero:40px}.text-hero{font-size:var(--text-hero)}"
-		expect(scale(css).sizes).toEqual({ hero: 40 })
+		expect(scale(css).sizesPx).toEqual({ hero: 40 })
 	})
 
 	it("has no size for a text utility whose custom property no stylesheet defines", () => {
-		expect(scale(".text-huge{font-size:var(--text-huge)}").sizes).toEqual({})
+		expect(scale(".text-huge{font-size:var(--text-huge)}").sizesPx).toEqual({})
 	})
 
 	it("has no size for a text utility that sets only a colour", () => {
-		expect(scale(".text-foreground{color:var(--ds-color-foreground)}").sizes).toEqual({})
+		expect(scale(".text-foreground{color:var(--ds-color-foreground)}").sizesPx).toEqual({})
 	})
 
 	it("reads only the stylesheets, never the pages that link them", () => {
-		expect(scale(".text-4xl{font-size:2rem}", "index.html").sizes).toEqual({})
+		expect(scale(CSS, "index.html").sizesPx).toEqual({})
 	})
 })

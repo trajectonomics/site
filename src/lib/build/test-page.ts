@@ -1,4 +1,8 @@
 import { type DesignTokens, parseDesignTokens } from "../design/tokens"
+/**
+ * Test support: the built pages, stylesheet and Web Consumer Contract the built-file checks are
+ * tested against. Nothing in the Site imports this module.
+ */
 import type { BuiltFile } from "./built-files"
 
 /** The published Themes, as the Prebuilt Theme CSS writes them. */
