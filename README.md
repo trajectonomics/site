@@ -18,7 +18,7 @@ bun run dev
 | `bun run dev` | Astro dev server on a local port |
 | `bun run build` | Build the Site into `dist/` as a production build |
 | `bun run build:preview` | Build into `dist/` with Astro mode `preview`, which `bun run check` uses so the owner's placeholder may remain |
-| `bun run verify:build` | Scan `dist/` with `bun test`: a home per Language and a Not-found page per Locale URL, one `h1`, `main`, `nav` and `head` each, the Docs and cli links, the `hreflang` pair, the three regions, the install command, no document at `/`, no absolute asset, the switcher, `noindex` on misses, no downloaded font, no Reserved preload path, no content security policy, no `npx traj`, and in production mode no `[OWNER TO WRITE]` |
+| `bun run verify:build` | Scan `dist/` with `bun test`: a home per Language and a Not-found page per Locale URL, one `h1`, `main`, `nav` and `head` each, the Docs and cli links, the `hreflang` pair, the three regions, the install command, no document at `/`, no absolute asset, the switcher, `noindex` on misses, the page weight and script budgets, no web font, no Reserved preload path, no content security policy, no `npx traj`, and in production mode no `[OWNER TO WRITE]` |
 | `bun run probe:status` | Start `wrangler dev` with no Cloudflare credential and check `/` redirects by Visitor signal, both Locale URLs are 200, a miss under a Locale URL is 404 in that Language, and `/__mf-preload.js` is 404 |
 | `bun run test` | `bun test` over `src` and `scripts` |
 | `bun run typecheck` | `tsc` plus `astro check` |
