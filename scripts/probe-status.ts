@@ -1,5 +1,6 @@
 import { checkProbeResponses, PROBE_PATHS, type ProbeResponse } from "../src/lib/probe/status"
 import { freePort, signalGroup, startDevServer, stop, waitUntilServing } from "./probe/dev-server"
+import { reportFailures } from "./report-failures"
 
 const REQUEST_TIMEOUT_MS = 10_000
 const HARD_TIMEOUT_MS = 90_000
@@ -38,16 +39,7 @@ export async function main(): Promise<number> {
 			console.error(await new Response(proc.stderr).text())
 			return 1
 		}
-		const failures = checkProbeResponses(await readResponses(baseUrl))
-		for (const failure of failures) {
-			console.error(`${failure.code} ${failure.path}: ${failure.message}`)
-		}
-		if (failures.length > 0) {
-			console.error(`probe:status: ${failures.length} failed check(s)`)
-			return 1
-		}
-		console.log("probe:status: ok")
-		return 0
+		return reportFailures("probe:status", checkProbeResponses(await readResponses(baseUrl)))
 	} finally {
 		clearTimeout(hardStop)
 		await stop(proc)

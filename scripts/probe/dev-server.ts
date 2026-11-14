@@ -1,11 +1,12 @@
-/** The path wrangler binary in this repository's own install. */
 import { join } from "node:path"
 
 /** The repository root, where wrangler finds `wrangler.jsonc` and its assets directory. */
 export const ROOT = join(import.meta.dir, "..", "..")
+/** The `wrangler` binary of this repository's own install. */
 export const WRANGLER = join(ROOT, "node_modules", ".bin", "wrangler")
 export const START_TIMEOUT_MS = 45_000
 
+/** One local dev server for the assets-only Worker. */
 export type DevServer = Bun.Subprocess<"inherit", "pipe", "pipe">
 
 /** A free loopback port, taken and released before wrangler binds it. */
@@ -27,6 +28,7 @@ function probeEnv(): Record<string, string> {
 	return { ...env, WRANGLER_SEND_METRICS: "false", BROWSER: "none" }
 }
 
+/** Start `wrangler dev` for the Site on the two given ports. */
 export function startDevServer(port: number, inspectorPort: number): DevServer {
 	return Bun.spawn({
 		cmd: [
@@ -48,6 +50,7 @@ export function startDevServer(port: number, inspectorPort: number): DevServer {
 	})
 }
 
+/** Signal the dev server's whole process group, so workerd dies with wrangler. */
 export function signalGroup(proc: DevServer, signal: NodeJS.Signals): void {
 	try {
 		process.kill(-proc.pid, signal)

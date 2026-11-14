@@ -15,6 +15,7 @@ interface WranglerConfig {
 	readonly compatibility_date?: string
 	readonly workers_dev?: boolean
 	readonly main?: string
+	readonly route?: readonly unknown[]
 	readonly routes?: readonly unknown[]
 	readonly env?: Readonly<Record<string, unknown>>
 	readonly assets?: {
@@ -58,6 +59,7 @@ describe("the Worker config", () => {
 	})
 
 	it("attaches no route or custom domain", () => {
+		expect(config.route).toBeUndefined()
 		expect(config.routes).toBeUndefined()
 	})
 

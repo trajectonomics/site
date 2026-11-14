@@ -5,6 +5,7 @@ interface Props {
 	readonly title: string
 }
 
+// biome-ignore lint/correctness/noUnusedVariables: Biome does not read an Astro template, so it cannot see {title}.
 const { title } = Astro.props
 ---
 

@@ -24,6 +24,11 @@ export interface ProbeFailure {
 	readonly message: string
 }
 
+/** A frozen probe failure, so a caller cannot edit a check's verdict. */
+function probeFailure(code: ProbeFailureCode, path: string, message: string): ProbeFailure {
+	return Object.freeze({ code, path, message })
+}
+
 const EXPECTED: Readonly<
 	Record<string, { readonly status: number; readonly code: ProbeFailureCode }>
 > = {
@@ -32,36 +37,38 @@ const EXPECTED: Readonly<
 	"/__mf-preload.js": { status: 404, code: "RESERVED_PRELOAD_PATH_NOT_FOUND" },
 }
 
-/**
- * Every rule the local Worker fails: `/` is 200, an unknown path and the Reserved preload path
- * are 404, and no response sets a cookie or a content security policy. The body is not judged.
- */
+/** Every rule the local Worker fails; the response body is not judged. */
 export function checkProbeResponses(responses: readonly ProbeResponse[]): readonly ProbeFailure[] {
 	const failures: ProbeFailure[] = []
 	for (const response of responses) {
 		const expected = EXPECTED[response.path]
 		if (expected === undefined) continue
 		if (response.status !== expected.status) {
-			failures.push({
-				code: expected.code,
-				path: response.path,
-				message: `expected status ${expected.status}, got ${response.status}.`,
-			})
+			failures.push(
+				probeFailure(
+					expected.code,
+					response.path,
+					`expected status ${expected.status}, got ${response.status}.`,
+				),
+			)
 		}
 		if (response.setCookie !== null) {
-			failures.push({
-				code: "SET_COOKIE_PRESENT",
-				path: response.path,
-				message: `sets Set-Cookie: ${response.setCookie}. The Site stores nothing for the visitor.`,
-			})
+			failures.push(
+				probeFailure(
+					"SET_COOKIE_PRESENT",
+					response.path,
+					`sets Set-Cookie: ${response.setCookie}. The Site stores nothing for the visitor.`,
+				),
+			)
 		}
 		if (response.contentSecurityPolicy !== null) {
-			failures.push({
-				code: "CONTENT_SECURITY_POLICY_PRESENT",
-				path: response.path,
-				message:
+			failures.push(
+				probeFailure(
+					"CONTENT_SECURITY_POLICY_PRESENT",
+					response.path,
 					"sets Content-Security-Policy. The router injects an inline style and script that it would block.",
-			})
+				),
+			)
 		}
 	}
 	return failures
