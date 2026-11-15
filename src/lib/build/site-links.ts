@@ -16,7 +16,7 @@ interface ExpectedLink {
 /** The named links the hero and footer show; the Docs and GitHub links are pinned by `checkPageLinks`. */
 function expectedLinks(dictionary: Dictionary): readonly ExpectedLink[] {
 	return [
-		{ text: dictionary.starOnGitHub, href: GITHUB_SKILLS_URL },
+		{ text: dictionary.starOnboarding, href: GITHUB_SKILLS_URL },
 		{ text: dictionary.licence, href: SKILLS_LICENCE_URL },
 		{ text: dictionary.org, href: GITHUB_ORG_URL },
 	]

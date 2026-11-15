@@ -4,8 +4,8 @@
 import wordmark from "@trajectonomics/design-system-assets/logo/wordmark.svg?raw"
 import { currentLanguageName, type Dictionary } from "../lib/language/dictionary"
 import type { Language } from "../lib/language/language"
-import { localeUrl, otherLanguages } from "../lib/language/languages"
-import { DOCS_PATH, GITHUB_SKILLS_URL, SITE_NAME } from "../lib/site"
+import { languageEntry, localeUrl, otherLanguages } from "../lib/language/languages"
+import { DOCS_PATH, SITE_NAME, STAR_REPOS } from "../lib/site"
 
 interface Props {
 	readonly language: Language
@@ -17,9 +17,11 @@ interface Props {
 const { language, dictionary, markCurrent } = Astro.props
 // The link names itself, so the artwork is decoration: the accessible name is the Site's.
 const artwork = wordmark.replace("<svg ", '<svg aria-hidden="true" focusable="false" ')
+const own = languageEntry(language)
+const languages = [own, ...otherLanguages(language)]
 ---
 
-<header class="site-header sticky top-0 z-50 border-b border-border bg-background">
+<header class="site-header fixed inset-x-0 top-0 z-50 border-b border-border bg-background">
 	<nav
 		class="mx-auto flex h-16 max-w-6xl items-center justify-between gap-3 px-5 sm:gap-6 sm:px-6"
 	>
@@ -30,35 +32,170 @@ const artwork = wordmark.replace("<svg ", '<svg aria-hidden="true" focusable="fa
 		>
 		<div class="flex items-center gap-3 sm:gap-6">
 			<a
-				class="text-sm text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ring"
+				class="text-sm text-foreground underline-offset-4 transition-colors hover:underline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ring"
 				href={DOCS_PATH}>{dictionary.docsLink}</a
 			>
-			<a
-				class="text-sm text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ring"
-				href={GITHUB_SKILLS_URL}>{dictionary.githubLink}</a
-			>
-			<span class="hidden h-4 w-px bg-border sm:block" aria-hidden="true"></span>
-			<div class="flex items-center gap-3">
-				<a
-					class="text-sm font-semibold text-foreground underline decoration-1 underline-offset-4 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ring"
-					href={localeUrl(language)}
-					lang={language}
-					hreflang={language}
-					aria-label={currentLanguageName(dictionary)}
-					aria-current={markCurrent ? "page" : undefined}>{dictionary.languageSwitchLabel}</a
+			<details class="header-menu" data-header-menu>
+				<summary
+					class="header-menu-summary text-sm text-foreground underline-offset-4 transition-colors hover:underline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ring"
 				>
-				{
-					otherLanguages(language).map((entry) => (
-						<a
-							class="text-sm text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ring"
-							href={localeUrl(entry.language)}
-							lang={entry.language}
-							hreflang={entry.language}>
-							{entry.dictionary.languageName}
-						</a>
-					))
-				}
-			</div>
+					<svg
+						aria-hidden="true"
+						focusable="false"
+						viewBox="0 0 16 16"
+						width="16"
+						height="16"
+						class="header-menu-mark"><path
+							fill="currentColor"
+							d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"
+						></path></svg
+					>
+					<span>{dictionary.starMenuLabel}</span>
+					<svg
+						class="header-menu-chevron"
+						aria-hidden="true"
+						focusable="false"
+						viewBox="0 0 16 16"
+						width="12"
+						height="12"><path
+							fill="none"
+							stroke="currentColor"
+							stroke-width="1.75"
+							stroke-linecap="round"
+							d="M4 6.5 8 10.5 12 6.5"></path></svg
+					>
+				</summary>
+				<div class="header-menu-panel">
+					{
+						STAR_REPOS.map((repo) => (
+							<a class="header-menu-link" href={repo.url}>
+								<svg
+									aria-hidden="true"
+									focusable="false"
+									viewBox="0 0 16 16"
+									width="16"
+									height="16"
+									class="header-menu-mark"
+								>
+									<path
+										fill="currentColor"
+										d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"
+									/>
+								</svg>
+								<span>{repo.name}</span>
+							</a>
+						))
+					}
+				</div>
+			</details>
+			<span class="hidden h-4 w-px bg-border sm:block" aria-hidden="true"></span>
+			<details class="header-menu" data-header-menu>
+				<summary
+					class="header-menu-summary text-sm text-foreground underline-offset-4 transition-colors hover:underline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ring"
+				>
+					<svg
+						aria-hidden="true"
+						focusable="false"
+						viewBox="0 0 16 16"
+						width="16"
+						height="16"
+						class="header-menu-mark"><g
+							fill="none"
+							stroke="currentColor"
+							stroke-width="1.25"
+							stroke-linecap="round"
+							><circle cx="8" cy="8" r="6"></circle><path d="M2 8h12"></path><ellipse
+								cx="8"
+								cy="8"
+								rx="2.75"
+								ry="6"></ellipse
+							></g
+						></svg
+					>
+					<span>{dictionary.languageSwitchLabel}</span>
+					<svg
+						class="header-menu-chevron"
+						aria-hidden="true"
+						focusable="false"
+						viewBox="0 0 16 16"
+						width="12"
+						height="12"><path
+							fill="none"
+							stroke="currentColor"
+							stroke-width="1.75"
+							stroke-linecap="round"
+							d="M4 6.5 8 10.5 12 6.5"></path></svg
+					>
+				</summary>
+				<div class="header-menu-panel">
+					{
+						languages.map((entry) => (
+							<a
+								class="header-menu-link"
+								href={localeUrl(entry.language)}
+								lang={entry.language}
+								hreflang={entry.language}
+								aria-label={
+									entry.language === language ? currentLanguageName(entry.dictionary) : undefined
+								}
+								aria-current={
+									entry.language === language && markCurrent ? "page" : undefined
+								}
+							>
+								{entry.dictionary.languageName}
+							</a>
+						))
+					}
+				</div>
+			</details>
 		</div>
 	</nav>
 </header>
+
+<script is:inline>
+	;(() => {
+		const menus = [...document.querySelectorAll("details[data-header-menu]")]
+		if (menus.length === 0) return
+
+		// Only one header menu is open at a time: opening one closes the other.
+		const closeOthers = (open) => {
+			for (const menu of menus) if (menu !== open) menu.open = false
+		}
+
+		const fine = window.matchMedia("(pointer: fine)").matches
+		for (const menu of menus) {
+			if (!(menu instanceof HTMLDetailsElement)) continue
+			const summary = menu.querySelector("summary")
+			let hoverOpened = false
+			menu.addEventListener("toggle", () => {
+				if (menu.open) closeOthers(menu)
+			})
+			// Hover is an enhancement on a fine pointer; click and keyboard are the native <details>.
+			if (fine) {
+				menu.addEventListener("pointerenter", () => {
+					if (menu.open) return
+					hoverOpened = true
+					closeOthers(menu)
+					menu.open = true
+				})
+				menu.addEventListener("pointerleave", () => {
+					menu.open = false
+					hoverOpened = false
+				})
+				// A click right after hover would otherwise toggle the menu the hover just opened shut.
+				menu.addEventListener("click", (event) => {
+					if (!(event.target instanceof Element) || !event.target.closest("summary")) return
+					if (!hoverOpened || !menu.open) return
+					event.preventDefault()
+					hoverOpened = false
+				})
+			}
+			menu.addEventListener("keydown", (event) => {
+				if (event.key !== "Escape" || !menu.open) return
+				menu.open = false
+				hoverOpened = false
+				if (summary instanceof HTMLElement) summary.focus()
+			})
+		}
+	})()
+</script>

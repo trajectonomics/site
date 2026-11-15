@@ -14,8 +14,8 @@ describe("the links of the three regions", () => {
 	it("fails a star link that goes to the organisation instead of the skills repository", () => {
 		const page = heroHome("en")
 		const content = page.content.replace(
-			`<a href="${GITHUB_SKILLS_URL}">${DICTIONARY.starOnGitHub}</a>`,
-			`<a href="${GITHUB_ORG_URL}">${DICTIONARY.starOnGitHub}</a>`,
+			`<a href="${GITHUB_SKILLS_URL}">${DICTIONARY.starOnboarding}</a>`,
+			`<a href="${GITHUB_ORG_URL}">${DICTIONARY.starOnboarding}</a>`,
 		)
 		expect(heroCodes(checkSiteLinks, { path: page.path, content })).toEqual(["LINK_HREF_MISMATCH"])
 	})
