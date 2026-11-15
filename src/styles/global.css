@@ -16,12 +16,13 @@
 /* The inlined brand mark carries a viewBox and no intrinsic size, so the header gives it one. */
 .brand > svg {
 	height: 1.5rem;
-	width: auto;
+	width: 1.5rem;
 }
 
 @media (min-width: 40rem) {
 	.brand > svg {
 		height: 1.75rem;
+		width: 1.75rem;
 	}
 }
 

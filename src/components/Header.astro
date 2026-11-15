@@ -17,11 +17,13 @@ interface Props {
 }
 
 const { language, dictionary, markCurrent } = Astro.props
-// The link names itself, so the artwork is decoration: the accessible name is the Site's, and the
-// mark's own role and title are removed with it.
+// The link names itself, so the artwork is decoration: the mark's own role and title go with it, and
+// its viewBox and xmlns stay, because that is what draws it.
 const artwork = mark
-	.replace(/<svg [^>]*>/, '<svg aria-hidden="true" focusable="false">')
+	.replace(' role="img"', "")
+	.replace(/ aria-label="[^"]*"/, "")
 	.replace(/<title>[\s\S]*?<\/title>/, "")
+	.replace("<svg ", '<svg aria-hidden="true" focusable="false" ')
 ---
 
 <header class="site-header fixed inset-x-0 top-0 z-50 border-b border-border bg-background">
