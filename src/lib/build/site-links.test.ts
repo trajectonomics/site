@@ -6,7 +6,7 @@ import { heroCodes, heroHome } from "./testing/hero"
 
 const DICTIONARY = dictionaryFor("en")
 
-describe("the links of the three regions", () => {
+describe("the links of the two-part section and the footer", () => {
 	it("passes every Language home, whose named links go where they say", () => {
 		expect(heroCodes(checkSiteLinks)).toEqual([])
 	})
