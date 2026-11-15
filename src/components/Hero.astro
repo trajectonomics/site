@@ -114,9 +114,12 @@ const subline = sublineParts(dictionary.heroSubline)
 	/*
 		The suffixes share one grid cell, so the hero is as tall as its longest suffix and the page
 		never shifts; only the shown one is visible, and with no script that is the shipped suffix.
+		The slot is its own line, so a suffix shorter than the longest one leaves no gap after the
+		prefix, whatever the Language and width.
 	*/
 	[data-hero-stack] {
-		display: inline-grid;
+		display: grid;
+		justify-items: center;
 	}
 
 	[data-hero-stack] > span {
