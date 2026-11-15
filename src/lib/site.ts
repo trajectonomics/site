@@ -1,7 +1,7 @@
 /** The origin the Site is served from, so canonical and `hreflang` links can be absolute. */
 export const SITE_ORIGIN = "https://trajectonomics.com"
 
-/** The Site's name: the document title of every Language home, and the wordmark's accessible name. */
+/** The Site's name: the document title of every Language home, and the brand lockup's accessible name. */
 export const SITE_NAME = "trajectonomics"
 
 /**

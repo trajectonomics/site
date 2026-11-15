@@ -13,14 +13,14 @@
 @import "./header.css";
 @import "./motion.css";
 
-/* The inlined wordmark carries a viewBox and no intrinsic size, so the header gives it one. */
-.wordmark > svg {
+/* The inlined brand mark carries a viewBox and no intrinsic size, so the header gives it one. */
+.brand > svg {
 	height: 1.5rem;
 	width: auto;
 }
 
 @media (min-width: 40rem) {
-	.wordmark > svg {
+	.brand > svg {
 		height: 1.75rem;
 	}
 }

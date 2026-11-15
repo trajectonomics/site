@@ -71,17 +71,3 @@
 	border-radius: 1px;
 	background: var(--ds-color-destructive);
 }
-
-/*
- * Thai reads larger at the same px size, and its line height is 1.6, so the Thai hero headline steps
- * down one utility (30/48px) while every other Language keeps the type scale.
- */
-html[lang="th"] .hero-headline {
-	font-size: 1.875rem;
-}
-
-@media (min-width: 40rem) {
-	html[lang="th"] .hero-headline {
-		font-size: 3rem;
-	}
-}

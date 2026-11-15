@@ -94,18 +94,18 @@ describe("the Header component in every Language, current or not", () => {
 				expect(headings(page)).toEqual([])
 			})
 
-			it(`names the wordmark link after the Site and hides the artwork (${variant})`, async () => {
+			it(`names the brand link after the Site and hides the artwork (${variant})`, async () => {
 				const page = await renderHeader(language, dictionary, markCurrent)
-				const wordmark = elementsByTag(page, "a").find(
+				const brand = elementsByTag(page, "a").find(
 					(element) =>
 						element.attributes["aria-label"] === SITE_NAME &&
 						element.attributes["href"] === localeUrl(language),
 				)
-				if (wordmark === undefined) throw new Error("no wordmark link rendered")
+				if (brand === undefined) throw new Error("no brand link rendered")
 				const artwork = page.elements.find(
 					(element) =>
 						element.tag === "svg" &&
-						element.ancestors.includes(wordmark) &&
+						element.ancestors.includes(brand) &&
 						element.attributes["aria-hidden"] === "true",
 				)
 				expect(artwork).toBeDefined()

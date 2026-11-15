@@ -29,7 +29,7 @@ describe("the links of the two-part section and the footer", () => {
 		expect(heroCodes(checkSiteLinks, { path: page.path, content })).toEqual(["LINK_HREF_MISMATCH"])
 	})
 
-	it("fails a wordmark that links the other Language's home", () => {
+	it("fails a brand lockup that links the other Language's home", () => {
 		const page = heroHome("en")
 		const content = page.content.replace(
 			'href="/en/" aria-label="trajectonomics"',
@@ -40,7 +40,7 @@ describe("the links of the two-part section and the footer", () => {
 		])
 	})
 
-	it("fails a page with no wordmark link at all", () => {
+	it("fails a page with no brand link at all", () => {
 		const page = heroHome("en")
 		const content = page.content.replace(' aria-label="trajectonomics"', "")
 		expect(heroCodes(checkSiteLinks, { path: page.path, content })).toEqual(["WORDMARK_MISSING"])

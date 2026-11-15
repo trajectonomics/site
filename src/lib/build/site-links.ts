@@ -54,40 +54,40 @@ function namedLinkFailures(
 	})
 }
 
-/** The wordmark is the accessible name trajectonomics, and it links the Language's home. */
-function wordmarkFailures(
+/** The brand lockup is the accessible name trajectonomics, and it links the Language's home. */
+function brandFailures(
 	path: string,
 	links: readonly HtmlElement[],
 	language: Language,
 ): readonly BuildFailure[] {
-	const wordmark = links.find((link) => link.attributes["aria-label"] === SITE_NAME)
-	if (wordmark === undefined) {
+	const brand = links.find((link) => link.attributes["aria-label"] === SITE_NAME)
+	if (brand === undefined) {
 		return [
 			buildFailure(
 				"WORDMARK_MISSING",
 				path,
-				`no link carries the wordmark's accessible name ${SITE_NAME}.`,
+				`no link carries the brand lockup's accessible name ${SITE_NAME}.`,
 			),
 		]
 	}
-	if (wordmark.attributes["href"] === localeUrl(language)) return []
+	if (brand.attributes["href"] === localeUrl(language)) return []
 	return [
 		buildFailure(
 			"WORDMARK_HREF_MISMATCH",
 			path,
-			`the wordmark goes to ${wordmark.attributes["href"] ?? "nowhere"}, not ${localeUrl(language)}.`,
+			`the brand lockup goes to ${brand.attributes["href"] ?? "nowhere"}, not ${localeUrl(language)}.`,
 		),
 	]
 }
 
-/** Every named link and the wordmark of every Language home goes where it says. */
+/** Every named link and the brand lockup of every Language home goes where it says. */
 export function checkSiteLinks(files: readonly BuiltFile[]): readonly BuildFailure[] {
 	return builtHomes(files).flatMap(({ entry, file }) => {
 		const scanned = scanHtml(file.content)
 		const links = elementsByTag(scanned, "a")
 		return [
 			...namedLinkFailures(file.path, scanned, links, entry.dictionary),
-			...wordmarkFailures(file.path, links, entry.language),
+			...brandFailures(file.path, links, entry.language),
 		]
 	})
 }

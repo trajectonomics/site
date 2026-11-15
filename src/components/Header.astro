@@ -1,7 +1,7 @@
 ---
-// biome-ignore-all lint/correctness/noUnusedImports: Biome does not read an Astro template, so it cannot see the menus and the wordmark it renders.
+// biome-ignore-all lint/correctness/noUnusedImports: Biome does not read an Astro template, so it cannot see the menus and the brand mark it renders.
 // biome-ignore-all lint/correctness/noUnusedVariables: Biome does not read an Astro template, so it cannot see these.
-import wordmark from "@trajectonomics/design-system-assets/logo/wordmark.svg?raw"
+import mark from "@trajectonomics/design-system-assets/logo/mark.svg?raw"
 import type { Dictionary } from "../lib/language/dictionary"
 import type { Language } from "../lib/language/language"
 import { localeUrl } from "../lib/language/languages"
@@ -17,8 +17,11 @@ interface Props {
 }
 
 const { language, dictionary, markCurrent } = Astro.props
-// The link names itself, so the artwork is decoration: the accessible name is the Site's.
-const artwork = wordmark.replace("<svg ", '<svg aria-hidden="true" focusable="false" ')
+// The link names itself, so the artwork is decoration: the accessible name is the Site's, and the
+// mark's own role and title are removed with it.
+const artwork = mark
+	.replace(/<svg [^>]*>/, '<svg aria-hidden="true" focusable="false">')
+	.replace(/<title>[\s\S]*?<\/title>/, "")
 ---
 
 <header class="site-header fixed inset-x-0 top-0 z-50 border-b border-border bg-background">
@@ -26,7 +29,7 @@ const artwork = wordmark.replace("<svg ", '<svg aria-hidden="true" focusable="fa
 		class="mx-auto flex h-16 max-w-6xl items-center justify-between gap-3 px-5 sm:gap-6 sm:px-6"
 	>
 		<a
-			class="wordmark shrink-0 text-foreground focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ring"
+			class="brand shrink-0 text-foreground focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ring"
 			href={localeUrl(language)}
 			aria-label={SITE_NAME}><Fragment set:html={artwork} /></a
 		>
