@@ -1,11 +1,13 @@
 ---
-// biome-ignore-all lint/correctness/noUnusedImports: Biome does not read an Astro template, so it cannot see the components and links it renders.
+// biome-ignore-all lint/correctness/noUnusedImports: Biome does not read an Astro template, so it cannot see the menus and the wordmark it renders.
 // biome-ignore-all lint/correctness/noUnusedVariables: Biome does not read an Astro template, so it cannot see these.
 import wordmark from "@trajectonomics/design-system-assets/logo/wordmark.svg?raw"
-import { currentLanguageName, type Dictionary } from "../lib/language/dictionary"
+import type { Dictionary } from "../lib/language/dictionary"
 import type { Language } from "../lib/language/language"
-import { languageEntry, localeUrl, otherLanguages } from "../lib/language/languages"
-import { DOCS_PATH, SITE_NAME, STAR_REPOS } from "../lib/site"
+import { localeUrl } from "../lib/language/languages"
+import { DOCS_PATH, SITE_NAME } from "../lib/site"
+import LanguageMenu from "./LanguageMenu.astro"
+import StarMenu from "./StarMenu.astro"
 
 interface Props {
 	readonly language: Language
@@ -17,8 +19,6 @@ interface Props {
 const { language, dictionary, markCurrent } = Astro.props
 // The link names itself, so the artwork is decoration: the accessible name is the Site's.
 const artwork = wordmark.replace("<svg ", '<svg aria-hidden="true" focusable="false" ')
-const own = languageEntry(language)
-const languages = [own, ...otherLanguages(language)]
 ---
 
 <header class="site-header fixed inset-x-0 top-0 z-50 border-b border-border bg-background">
@@ -35,119 +35,9 @@ const languages = [own, ...otherLanguages(language)]
 				class="text-sm text-foreground underline-offset-4 transition-colors hover:underline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ring"
 				href={DOCS_PATH}>{dictionary.docsLink}</a
 			>
-			<details class="header-menu" data-header-menu>
-				<summary
-					class="header-menu-summary text-sm text-foreground underline-offset-4 transition-colors hover:underline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ring"
-				>
-					<svg
-						aria-hidden="true"
-						focusable="false"
-						viewBox="0 0 16 16"
-						width="16"
-						height="16"
-						class="header-menu-mark"><path
-							fill="currentColor"
-							d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"
-						></path></svg
-					>
-					<span>{dictionary.starMenuLabel}</span>
-					<svg
-						class="header-menu-chevron"
-						aria-hidden="true"
-						focusable="false"
-						viewBox="0 0 16 16"
-						width="12"
-						height="12"><path
-							fill="none"
-							stroke="currentColor"
-							stroke-width="1.75"
-							stroke-linecap="round"
-							d="M4 6.5 8 10.5 12 6.5"></path></svg
-					>
-				</summary>
-				<div class="header-menu-panel">
-					{
-						STAR_REPOS.map((repo) => (
-							<a class="header-menu-link" href={repo.url}>
-								<svg
-									aria-hidden="true"
-									focusable="false"
-									viewBox="0 0 16 16"
-									width="16"
-									height="16"
-									class="header-menu-mark"
-								>
-									<path
-										fill="currentColor"
-										d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"
-									/>
-								</svg>
-								<span>{repo.name}</span>
-							</a>
-						))
-					}
-				</div>
-			</details>
+			<StarMenu dictionary={dictionary} />
 			<span class="hidden h-4 w-px bg-border sm:block" aria-hidden="true"></span>
-			<details class="header-menu" data-header-menu>
-				<summary
-					class="header-menu-summary text-sm text-foreground underline-offset-4 transition-colors hover:underline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ring"
-				>
-					<svg
-						aria-hidden="true"
-						focusable="false"
-						viewBox="0 0 16 16"
-						width="16"
-						height="16"
-						class="header-menu-mark"><g
-							fill="none"
-							stroke="currentColor"
-							stroke-width="1.25"
-							stroke-linecap="round"
-							><circle cx="8" cy="8" r="6"></circle><path d="M2 8h12"></path><ellipse
-								cx="8"
-								cy="8"
-								rx="2.75"
-								ry="6"></ellipse
-							></g
-						></svg
-					>
-					<span>{dictionary.languageSwitchLabel}</span>
-					<svg
-						class="header-menu-chevron"
-						aria-hidden="true"
-						focusable="false"
-						viewBox="0 0 16 16"
-						width="12"
-						height="12"><path
-							fill="none"
-							stroke="currentColor"
-							stroke-width="1.75"
-							stroke-linecap="round"
-							d="M4 6.5 8 10.5 12 6.5"></path></svg
-					>
-				</summary>
-				<div class="header-menu-panel">
-					{
-						languages.map((entry) => (
-							<a
-								class="header-menu-link"
-								href={localeUrl(entry.language)}
-								lang={entry.language}
-								hreflang={entry.language}
-								aria-label={
-									entry.language === language ? currentLanguageName(entry.dictionary) : undefined
-								}
-								aria-current={
-									entry.language === language && markCurrent ? "page" : undefined
-								}
-							>
-								{entry.dictionary.languageName}
-							</a>
-						))
-					}
-				</div>
-			</details>
+			<LanguageMenu language={language} dictionary={dictionary} markCurrent={markCurrent} />
 		</div>
 	</nav>
 </header>
