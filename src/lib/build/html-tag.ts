@@ -30,6 +30,25 @@ export function tagEnd(html: string, start: number): number {
 	return html.length
 }
 
+/** The text a character reference stands for, as an HTML writer escapes it. */
+const ENTITIES: Readonly<Record<string, string>> = Object.freeze({
+	amp: "&",
+	lt: "<",
+	gt: ">",
+	quot: '"',
+	"#39": "'",
+})
+
+/**
+ * The text an HTML writer's escaping stands for, so a value the build escaped compares to the text
+ * it shows. Only the five characters a writer escapes are undone; anything else stays as written.
+ */
+export function unescapeText(text: string): string {
+	return text.replace(/&(#39|amp|lt|gt|quot);/g, (reference, name: string) =>
+		Object.hasOwn(ENTITIES, name) ? (ENTITIES[name] ?? reference) : reference,
+	)
+}
+
 /** The lowercase tag name an opening tag starts with, or `undefined` when it names none. */
 export function tagName(inner: string): string | undefined {
 	return TAG_NAME.exec(inner)?.[0]?.toLowerCase()

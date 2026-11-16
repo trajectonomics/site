@@ -1,17 +1,23 @@
 import type { BuiltFile } from "./built-files"
 import type { BuildFailure } from "./failures"
 import { buildFailure } from "./failures"
+import { isDataBlockType } from "./html"
+import { parseAttributes } from "./html-tag"
 import { builtHomes } from "./language-home"
 
-/** An inline script: the only kind a Locale page could run to choose a Language for the visitor. */
-const INLINE_SCRIPT = /<script\b(?![^>]*\bsrc=)[^>]*>([\s\S]*?)<\/script>/gi
+/** A script element, however it is marked: a data block and a loaded file are dropped below. */
+const INLINE_SCRIPT = /<script\b([^>]*)>([\s\S]*?)<\/script>/gi
 
 /** What a script would read to choose a Language: the browser's own, a cookie, or storage. */
 const DETECTION = /\b(?:navigator\.languages?|localStorage|sessionStorage|document\.cookie)\b/
 
-/** The body of every inline script in a page. */
+/** The body of every inline script in a page, leaving out a data block and a loaded file. */
 function inlineScripts(html: string): readonly string[] {
-	return [...html.matchAll(INLINE_SCRIPT)].map((match) => match[1] ?? "")
+	return [...html.matchAll(INLINE_SCRIPT)].flatMap((match) => {
+		const attributes = parseAttributes(match[1] ?? "")
+		if (attributes["src"] !== undefined || isDataBlockType(attributes["type"])) return []
+		return [match[2] ?? ""]
+	})
 }
 
 /** A Locale URL is its Language already, so nothing on it reads a Visitor signal ([ADR 0003]). */

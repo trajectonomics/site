@@ -25,9 +25,21 @@ export function relTokens(element: HtmlElement): readonly string[] {
 	return (element.attributes["rel"] ?? "").toLowerCase().split(/\s+/).filter(Boolean)
 }
 
+/** The type a data block declares, the one kind of script a page carries and runs none of. */
+const DATA_BLOCK = /\bapplication\/ld\+json\b/i
+
+/** Whether a `script` `type` names a data block, which is data and not the page's program. */
+export function isDataBlockType(type: string | undefined): boolean {
+	return DATA_BLOCK.test(type ?? "")
+}
+
 /** Whether an element is a script the document carries itself, so it runs before any file loads. */
 export function isInlineScript(element: HtmlElement): boolean {
-	return element.tag === "script" && element.attributes["src"] === undefined
+	return (
+		element.tag === "script" &&
+		element.attributes["src"] === undefined &&
+		!isDataBlockType(element.attributes["type"])
+	)
 }
 
 /** Whether an element is a stylesheet link, the only link that can paint the page. */
