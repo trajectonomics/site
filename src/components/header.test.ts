@@ -11,6 +11,9 @@ import Header from "./Header.astro"
 import { renderComponent } from "./testing/render"
 import { headings, scanComponent, withAttribute, withClass } from "./testing/scan"
 
+/** The star the trigger draws, by the first commands of its path: the GitHub mark opened `M8 0C3.58`. */
+const STAR_PATH_START = "M8 1.8L9.6"
+
 /** The attributes a header link carries, as the checks read them. */
 interface LinkShape {
 	readonly text: string
@@ -147,24 +150,33 @@ describe("the Header component in every Language, current or not", () => {
 				])
 			})
 
-			it(`checks the repository the trigger names, and only that one (${variant})`, async () => {
+			it(`draws a star on the Star menu's trigger, never the GitHub mark (${variant})`, async () => {
 				const page = await renderHeader(language, dictionary, markCurrent)
 				const menu = menuWith(page, STARRED_REPOS[0]?.url ?? GITHUB_ORG_URL)
-				const rows = page.elements.filter(
+				const summary = summaryOf(page, menu)
+				const mark = page.elements.find(
+					(element) => element.tag === "svg" && element.ancestors.includes(summary),
+				)
+				if (mark === undefined) throw new Error("the Star menu's trigger draws no mark")
+				const classes = (mark.attributes["class"] ?? "").split(/\s+/)
+				expect(classes).toContain("header-menu-mark")
+				expect(classes).toContain("header-menu-star")
+				const drawn = page.elements.find(
+					(element) => element.tag === "path" && element.ancestors.includes(mark),
+				)
+				// The star's own path, so the mark cannot silently return to the GitHub logo.
+				expect(drawn?.attributes["d"]?.startsWith(STAR_PATH_START)).toBe(true)
+			})
+
+			it(`marks no current repository in the Star menu's panel (${variant})`, async () => {
+				const page = await renderHeader(language, dictionary, markCurrent)
+				const menu = menuWith(page, STARRED_REPOS[0]?.url ?? GITHUB_ORG_URL)
+				const checked = page.elements.filter(
 					(element) =>
-						element.tag === "a" &&
 						element.ancestors.includes(menu) &&
-						(element.attributes["class"] ?? "").includes("header-menu-row"),
+						(element.attributes["class"] ?? "").split(/\s+/).includes("header-menu-check"),
 				)
-				const checked = rows.map((row) =>
-					page.elements.some(
-						(element) =>
-							element.tag === "svg" &&
-							element.ancestors.includes(row) &&
-							(element.attributes["class"] ?? "").includes("header-menu-check"),
-					),
-				)
-				expect(checked).toEqual(rows.map((_, index) => index === 0))
+				expect(checked).toEqual([])
 			})
 
 			it(`marks the current Language only when the page is its home (${variant})`, async () => {
