@@ -32,7 +32,10 @@ function cardOf(language: Language): readonly CardProperty[] {
 	]
 }
 
-/** The values a page gives one property, in document order, with the writer's escaping undone. */
+/**
+ * The values a page gives one property, in document order, its escaping undone. The key is matched
+ * exactly: Open Graph and X read `og:` and `twitter:` as written, so `OG:Title` is not `og:title`.
+ */
 function valuesOf(page: ScannedPage, property: CardProperty): readonly string[] {
 	return elementsByTag(page, "meta")
 		.filter((meta) => meta.attributes[property.attribute] === property.key)
@@ -61,7 +64,7 @@ function checkProperty(
 			buildFailure(
 				"SOCIAL_CARD_DUPLICATE",
 				path,
-				`carries ${values.length} ${property.attribute}es "${property.key}", not one.`,
+				`carries ${values.length} metas for "${property.key}", not one.`,
 			),
 		]
 	}

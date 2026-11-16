@@ -58,10 +58,7 @@ export function structuredData(language: Language): StructuredData {
 	})
 }
 
-/**
- * The block as a `<script>` body: its JSON, with every `<` escaped, so no text the page carries can
- * end the element early. A JSON parser reads `\u003c` back as `<`.
- */
+/** The block as a `<script>` body, with every `<` escaped so no text can close the element. */
 export function serializeStructuredData(block: StructuredData): string {
 	return JSON.stringify(block).replace(/</g, "\\u003c")
 }

@@ -30,7 +30,7 @@ export function tagEnd(html: string, start: number): number {
 	return html.length
 }
 
-/** The text a character reference stands for, as an HTML writer escapes it. */
+/** The five character references an HTML writer escapes, and the text each one stands for. */
 const ENTITIES: Readonly<Record<string, string>> = Object.freeze({
 	amp: "&",
 	lt: "<",
@@ -39,10 +39,7 @@ const ENTITIES: Readonly<Record<string, string>> = Object.freeze({
 	"#39": "'",
 })
 
-/**
- * The text an HTML writer's escaping stands for, so a value the build escaped compares to the text
- * it shows. Only the five characters a writer escapes are undone; anything else stays as written.
- */
+/** The text an HTML writer's escaping stands for, so a built value compares to the text it shows. */
 export function unescapeText(text: string): string {
 	return text.replace(/&(#39|amp|lt|gt|quot);/g, (reference, name: string) =>
 		Object.hasOwn(ENTITIES, name) ? (ENTITIES[name] ?? reference) : reference,

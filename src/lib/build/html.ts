@@ -1,3 +1,5 @@
+import { parseAttributes } from "./html-tag"
+
 /** An element of a built page, as far as a check needs it: a tag and the attributes the build wrote. */
 export interface HtmlElement {
 	readonly tag: string
@@ -19,6 +21,21 @@ export interface ScannedPage {
 }
 
 export { scanHtml } from "./html-scan"
+
+const SCRIPT = /<script\b([^>]*)>([\s\S]*?)<\/script>/gi
+
+/** One `<script>` element of a built page: the attributes it carries, and its body as written. */
+export interface ScriptElement {
+	readonly attributes: Readonly<Record<string, string>>
+	readonly body: string
+}
+
+/** Every `<script>` element of a built page, in document order, its body read as written. */
+export function scriptElements(html: string): readonly ScriptElement[] {
+	return [...html.matchAll(SCRIPT)].map((match) =>
+		Object.freeze({ attributes: parseAttributes(match[1] ?? ""), body: match[2] ?? "" }),
+	)
+}
 
 /** The `rel` tokens of an element, lowercased, because `rel` is a space-separated token list. */
 export function relTokens(element: HtmlElement): readonly string[] {

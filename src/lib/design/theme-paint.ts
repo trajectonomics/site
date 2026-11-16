@@ -16,16 +16,14 @@ export interface ThemePaint {
 	readonly colour: string
 }
 
-/**
- * One paint per published Theme a device scheme names, at the `background` colour the pinned Theme
- * CSS publishes. A Theme the device has no scheme for, or one that publishes no `background`, has no
- * paint: the browser bar follows the Theme the page paints its header with, and nothing else.
- */
+/** One paint per published Theme a device scheme names, at that Theme's `background` colour. */
 export function themePaints(tokens: DesignTokens): readonly ThemePaint[] {
-	return SCHEMES.flatMap((scheme) => {
-		const theme = tokens.themes.find((published) => published.name === scheme)
-		const colour = theme?.colours[BAR_ROLE]
-		if (colour === undefined) return []
-		return [Object.freeze({ theme: scheme, media: `(prefers-color-scheme: ${scheme})`, colour })]
-	})
+	return Object.freeze(
+		SCHEMES.flatMap((scheme) => {
+			const theme = tokens.themes.find((published) => published.name === scheme)
+			const colour = theme?.colours[BAR_ROLE]
+			if (colour === undefined) return []
+			return [Object.freeze({ theme: scheme, media: `(prefers-color-scheme: ${scheme})`, colour })]
+		}),
+	)
 }
