@@ -1,4 +1,4 @@
-import { FALLBACK_LANGUAGE } from "../language/language"
+import { FALLBACK_LANGUAGE, type Language } from "../language/language"
 import { absoluteLocaleUrl, LANGUAGES } from "../language/languages"
 import { SITE_ORIGIN } from "../site"
 
@@ -14,7 +14,7 @@ function alternate(hreflang: string, href: string): string {
 }
 
 /** One `<url>`: a Language's home, and every Language's alternate plus `x-default`. */
-function entry(language: string): string {
+function entry(language: Language): string {
 	const alternates = [
 		...LANGUAGES.map((other) => alternate(other.language, absoluteLocaleUrl(other.language))),
 		alternate("x-default", absoluteLocaleUrl(FALLBACK_LANGUAGE)),

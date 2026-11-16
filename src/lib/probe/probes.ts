@@ -42,6 +42,9 @@ export interface ProbeFailure {
 	readonly message: string
 }
 
+/** The media types of an answer that carries no body, so no media type is judged on one. */
+const NO_BODY: readonly string[] = Object.freeze([])
+
 /** The media type every page answers with. */
 const HTML: readonly string[] = Object.freeze(["text/html"])
 
@@ -65,7 +68,7 @@ function redirectTo(
 		status: 302,
 		location,
 		language: null,
-		mediaTypes: [],
+		mediaTypes: NO_BODY,
 	}
 }
 

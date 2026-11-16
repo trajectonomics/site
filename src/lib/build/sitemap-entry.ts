@@ -11,21 +11,22 @@ export interface SitemapEntry {
 	readonly alternates: readonly HtmlElement[]
 }
 
-/**
- * Every `<url>` of a Sitemap in document order, read with the hand-rolled reader so no XML parser
- * joins the tree ([ADR 0004](../../../docs/adr/0004-build-output-checks.md)).
- */
+/** Every `<url>` of a Sitemap in document order, each with its `<loc>` and the alternates it holds. */
 export function sitemapEntries(content: string): readonly SitemapEntry[] {
+	// The hand-rolled reader already skips `<?xml ?>`, reads `xhtml:link` as a tag and takes `/>` as
+	// standalone, so no XML parser joins the tree for the same reason ADR 0004 hand-rolled the HTML one.
 	const page = scanHtml(content)
 	const locs = elementsByTag(page, "loc")
 	const alternates = elementsByTag(page, "xhtml:link")
-	return elementsByTag(page, "url").map((url) => {
-		const loc = locs.find((element) => element.ancestors.includes(url))
-		const text = loc === undefined ? "" : textOf(page, loc)
-		return {
-			path: hreflangTarget(text)?.path,
-			loc: text,
-			alternates: alternates.filter((link) => link.ancestors.includes(url)),
-		}
-	})
+	return Object.freeze(
+		elementsByTag(page, "url").map((url) => {
+			const loc = locs.find((element) => element.ancestors.includes(url))
+			const text = loc === undefined ? "" : textOf(page, loc)
+			return Object.freeze({
+				path: hreflangTarget(text)?.path,
+				loc: text,
+				alternates: Object.freeze(alternates.filter((link) => link.ancestors.includes(url))),
+			})
+		}),
+	)
 }

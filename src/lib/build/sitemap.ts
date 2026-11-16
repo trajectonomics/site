@@ -1,4 +1,5 @@
 import { SITEMAP_FILE } from "../crawl/sitemap"
+import type { Language } from "../language/language"
 import { absoluteLocaleUrl, LANGUAGES, localeUrl } from "../language/languages"
 import type { BuiltFile } from "./built-files"
 import { fileAt } from "./built-files"
@@ -24,17 +25,22 @@ function unknownFailures(
 }
 
 /** One Language's home is listed once, at that home's absolute Locale URL. */
-function homeFailures(entries: readonly SitemapEntry[], language: string): readonly BuildFailure[] {
+function homeFailures(
+	entries: readonly SitemapEntry[],
+	language: Language,
+): readonly BuildFailure[] {
 	const path = localeUrl(language)
 	const matching = entries.filter((entry) => entry.path === path)
 	if (matching.length === 0) {
-		return [buildFailure("SITEMAP_URL_MISSING", path, `the Sitemap lists no <url> for ${path}.`)]
+		return [
+			buildFailure("SITEMAP_URL_MISSING", SITEMAP_FILE, `the Sitemap lists no <url> for ${path}.`),
+		]
 	}
 	if (matching.length > 1) {
 		return [
 			buildFailure(
 				"SITEMAP_URL_DUPLICATE",
-				path,
+				SITEMAP_FILE,
 				`the Sitemap lists ${matching.length} <url> entries for ${path}, not one.`,
 			),
 		]
@@ -44,7 +50,7 @@ function homeFailures(entries: readonly SitemapEntry[], language: string): reado
 	return [
 		buildFailure(
 			"SITEMAP_LOC_TARGET",
-			path,
+			SITEMAP_FILE,
 			`the entry at ${path} names ${matching[0]?.loc || "no <loc>"}, not ${href}.`,
 		),
 	]
