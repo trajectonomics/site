@@ -11,9 +11,6 @@ import Header from "./Header.astro"
 import { renderComponent } from "./testing/render"
 import { headings, scanComponent, withAttribute, withClass } from "./testing/scan"
 
-/** The star the trigger draws, by the first commands of its path: the GitHub mark opened `M8 0C3.58`. */
-const STAR_PATH_START = "M8 1.8L9.6"
-
 /** The attributes a header link carries, as the checks read them. */
 interface LinkShape {
 	readonly text: string
@@ -152,8 +149,7 @@ describe("the Header component in every Language, current or not", () => {
 
 			it(`draws a star on the Star menu's trigger, never the GitHub mark (${variant})`, async () => {
 				const page = await renderHeader(language, dictionary, markCurrent)
-				const menu = menuWith(page, STARRED_REPOS[0]?.url ?? GITHUB_ORG_URL)
-				const summary = summaryOf(page, menu)
+				const summary = summaryOf(page, menuWith(page, STARRED_REPOS[0]?.url ?? GITHUB_ORG_URL))
 				const mark = page.elements.find(
 					(element) => element.tag === "svg" && element.ancestors.includes(summary),
 				)
@@ -164,19 +160,28 @@ describe("the Header component in every Language, current or not", () => {
 				const drawn = page.elements.find(
 					(element) => element.tag === "path" && element.ancestors.includes(mark),
 				)
-				// The star's own path, so the mark cannot silently return to the GitHub logo.
-				expect(drawn?.attributes["d"]?.startsWith(STAR_PATH_START)).toBe(true)
+				// The star's own path, so the mark cannot silently return to the GitHub mark's `M8 0C3.58`.
+				expect(drawn?.attributes["d"]?.startsWith("M8 1.8L9.6")).toBe(true)
 			})
 
 			it(`marks no current repository in the Star menu's panel (${variant})`, async () => {
 				const page = await renderHeader(language, dictionary, markCurrent)
-				const menu = menuWith(page, STARRED_REPOS[0]?.url ?? GITHUB_ORG_URL)
+				const panel = withClass(page, "header-menu-panel")[0]
+				if (panel === undefined) throw new Error("the Star menu renders no panel")
 				const checked = page.elements.filter(
 					(element) =>
-						element.ancestors.includes(menu) &&
+						element.ancestors.includes(panel) &&
 						(element.attributes["class"] ?? "").split(/\s+/).includes("header-menu-check"),
 				)
 				expect(checked).toEqual([])
+				// The footer's arrow is the panel's only glyph, so a check has nowhere to hide.
+				const marks = page.elements.filter(
+					(element) => element.tag === "svg" && element.ancestors.includes(panel),
+				)
+				expect(marks).toHaveLength(1)
+				expect(
+					marks[0]?.ancestors.some((element) => element.attributes["href"] === GITHUB_ORG_URL),
+				).toBe(true)
 			})
 
 			it(`marks the current Language only when the page is its home (${variant})`, async () => {
