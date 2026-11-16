@@ -1,5 +1,6 @@
 import { describe, expect, it } from "bun:test"
 import { SITEMAP } from "../crawl/sitemap"
+import type { Language } from "../language/language"
 import { absoluteLocaleUrl, localeUrl } from "../language/languages"
 import { SITE_ORIGIN } from "../site"
 import { checkSitemap } from "./sitemap"
@@ -10,7 +11,7 @@ const HOME = entryAt(0).language
 const OTHER = entryAt(1).language
 
 /** The `<loc>` a healthy Sitemap carries for one Language's home. */
-function loc(language: string): RegExp {
+function loc(language: Language): RegExp {
 	return new RegExp(`<loc>${absoluteLocaleUrl(language)}</loc>`)
 }
 
