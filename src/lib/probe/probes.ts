@@ -1,3 +1,5 @@
+import { ROBOTS_FILE } from "../crawl/robots"
+import { SITEMAP_FILE } from "../crawl/sitemap"
 import type { Language } from "../language/language"
 
 /** One probe: the request the local Worker is asked, and the answer it must give. */
@@ -104,6 +106,6 @@ export const PROBES: readonly Probe[] = Object.freeze([
 	answered("/th/no-such-page", 404, "th", HTML),
 	answered("/no-such-page", 404, "en", HTML),
 	answered("/__mf-preload.js", 404, null, HTML),
-	answered("/sitemap.xml", 200, null, XML),
-	answered("/robots.txt", 200, null, PLAIN_TEXT),
+	answered(`/${SITEMAP_FILE}`, 200, null, XML),
+	answered(`/${ROBOTS_FILE}`, 200, null, PLAIN_TEXT),
 ])
