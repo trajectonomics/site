@@ -35,8 +35,8 @@ async function pinFonts(page: Page): Promise<void> {
  * Regenerate the baselines with `bun run test:visual:update` after an intended visual change, in an
  * environment whose fallback sans is the GitHub runner's DejaVu Sans: the pin above covers Thai
  * only, so every sans glyph comes from the host, and a host with another one changes them all.
- * `mcr.microsoft.com/playwright:v1.65.0-noble` with `fonts-dejavu-core` added renders them byte for
- * byte the way the browser check does (site#42).
+ * `mcr.microsoft.com/playwright:v1.65.0-noble` (the tag for the version above) with
+ * `fonts-dejavu-core` added renders them byte for byte the way the browser check does (site#42).
  */
 test.describe("the built pages as screenshots", () => {
 	test.use({ reducedMotion: "reduce" })
