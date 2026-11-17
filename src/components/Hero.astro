@@ -70,7 +70,7 @@ const subline = sublineParts(dictionary.heroSubline)
 		if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return
 
 		hero.addEventListener("click", (event) => {
-			// A control keeps its click: the command, the pill and the links make no ripple.
+			// A control keeps its click: the prompt, the pill and the links make no ripple.
 			if (event.target instanceof Element && event.target.closest("a, button, summary, code")) return
 			const box = ripple.getBoundingClientRect()
 			ripple.style.setProperty("--ripple-x", `${event.clientX - box.left}px`)

@@ -1,6 +1,7 @@
 import {
-	type CopiedPrompt,
+	type CopiedSignal,
 	capturePayload,
+	copiedPrompt,
 	PAGEVIEW_EVENT,
 	POSTHOG_CAPTURE_URL,
 	PROMPT_COPIED_EVENT,
@@ -96,8 +97,8 @@ export function startAnalytics(win: Window = window, doc: Document = document): 
 	)
 
 	doc.addEventListener(PROMPT_COPIED_SIGNAL, (event) => {
-		const detail = (event as CustomEvent<CopiedPrompt>).detail
-		const copied: CopiedPrompt = { prompt: detail.prompt, language }
+		const detail = (event as CustomEvent<CopiedSignal>).detail
+		const copied = copiedPrompt(detail, language)
 		post(body(capturePayload(PROMPT_COPIED_EVENT, createId(), promptCopiedProperties(copied))))
 	})
 }

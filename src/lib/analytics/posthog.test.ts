@@ -2,6 +2,7 @@ import { describe, expect, it } from "bun:test"
 import { PROMPT_COPIED_SIGNAL } from "./client"
 import {
 	capturePayload,
+	copiedPrompt,
 	MEASURED_HOSTNAME,
 	PAGEVIEW_EVENT,
 	POSTHOG_KEY,
@@ -78,6 +79,13 @@ describe("promptCopiedProperties", () => {
 	it("keeps the wire values the copy series was measured with, whatever the page calls the thing", () => {
 		expect(PROMPT_COPIED_EVENT).toBe("site_command_copied")
 		expect(PROMPT_COPIED_SIGNAL).toBe("traj:site-command-copied")
+	})
+
+	it("reads the detail key the button dispatches, which stays command", () => {
+		expect(copiedPrompt({ command: "install" }, "th")).toEqual({
+			prompt: "install",
+			language: "th",
+		})
 	})
 })
 

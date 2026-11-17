@@ -55,6 +55,19 @@ export interface CopiedPrompt {
 	readonly language: string
 }
 
+/** The detail the Copy button dispatches on its signal: a wire value, so its key stays `command`. */
+export interface CopiedSignal {
+	readonly command: string
+}
+
+/**
+ * The prompt one signal reports, read from the detail the button dispatches. The detail's key stays
+ * `command` because the measured series already carries it; only the code around it says prompt.
+ */
+export function copiedPrompt(signal: CopiedSignal, language: string): CopiedPrompt {
+	return { prompt: signal.command, language }
+}
+
 /** The body one event posts: the endpoint reads `api_key` and `event` beside the properties. */
 export interface CapturePayload {
 	readonly api_key: string
