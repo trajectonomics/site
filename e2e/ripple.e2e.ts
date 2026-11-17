@@ -17,7 +17,7 @@ test.describe("the hero's ripple, with motion allowed", () => {
 		await expect(ripple).not.toHaveAttribute("data-rippling", "", { timeout: 4_000 })
 	})
 
-	test("a click on the install command or a link makes no ripple", async ({ page }) => {
+	test("a click on the install prompt or a link makes no ripple", async ({ page }) => {
 		await openPage(page, HOME)
 		await page.locator("[data-install-prompt]").click()
 		await expect(page.locator("[data-ripple]")).not.toHaveAttribute("data-rippling", "")
