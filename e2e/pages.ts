@@ -1,7 +1,7 @@
 import { expect, type Page } from "@playwright/test"
 import type { Language } from "../src/lib/language/language"
 import { dictionaryFor } from "../src/lib/language/languages"
-import { INSTALL_COMMAND } from "../src/lib/site"
+import { INSTALL_PROMPT } from "../src/lib/site"
 
 /** One page the browser checks judge, and the status its real response must have. */
 export interface PageUnderTest {
@@ -90,7 +90,7 @@ export async function tabToCopyButton(page: Page): Promise<boolean> {
 	for (let press = 0; press < count; press++) {
 		await page.keyboard.press("Tab")
 		const onCopy = await page.evaluate(
-			() => document.activeElement?.hasAttribute("data-copy-command") ?? false,
+			() => document.activeElement?.hasAttribute("data-copy-prompt") ?? false,
 		)
 		if (onCopy) return true
 	}
@@ -102,5 +102,23 @@ export function copiedMessage(language: Language): string {
 	return dictionaryFor(language).copied
 }
 
-/** The install command a copy puts on the clipboard. */
-export const COPY_TEXT = INSTALL_COMMAND
+/** The short word one Language puts on the Copy button while the notice lasts. */
+export function copiedLabel(language: Language): string {
+	return dictionaryFor(language).copiedLabel
+}
+
+/** The prompt a copy puts on the clipboard. */
+export const COPY_PROMPT_TEXT = INSTALL_PROMPT
+
+/** The colour one role paints, as the browser resolves it: a probe element turns the token into rgb. */
+export function paintedColour(page: Page, role: string): Promise<string> {
+	return page.evaluate((name) => {
+		const token = getComputedStyle(document.documentElement).getPropertyValue(name).trim()
+		const probe = document.createElement("span")
+		probe.style.color = token
+		document.body.append(probe)
+		const painted = getComputedStyle(probe).color
+		probe.remove()
+		return painted
+	}, role)
+}

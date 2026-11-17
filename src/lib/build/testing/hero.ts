@@ -6,7 +6,7 @@ import {
 	DOCS_PATH,
 	GITHUB_ORG_URL,
 	GITHUB_SKILLS_URL,
-	INSTALL_COMMAND,
+	INSTALL_PROMPT,
 	SITE_NAME,
 	SKILLS_LICENCE_URL,
 	STAR_REPOS,
@@ -22,8 +22,11 @@ export interface HeroParts {
 	readonly headline?: string
 	readonly subline?: string
 	readonly disclaimer?: string
-	readonly command?: string
+	/** The prompt's `code` element, so a test can show other text in the window, or none. */
+	readonly prompt?: string
 	readonly button?: string
+	/** Markup inside the install window, after the prompt and its button: a second code, a command. */
+	readonly window?: string
 	readonly extra?: string
 }
 
@@ -36,7 +39,7 @@ function headlines(language: Language): readonly string[] {
 /** The Star menu's panel, one link per repository in star order. */
 const starPanel = STAR_REPOS.map((repo) => `<a href="${repo.url}">${repo.name}</a>`).join("")
 
-/** One Language's home as the build must produce it, with every region and the copy command. */
+/** One Language's home as the build must produce it, with every region and the prompt window. */
 export function heroHome(language: Language, parts: HeroParts = {}): BuiltFile {
 	const dictionary = languageEntry(language).dictionary
 	const headline =
@@ -44,10 +47,10 @@ export function heroHome(language: Language, parts: HeroParts = {}): BuiltFile {
 		headlines(language)
 			.map((phrase) => `<span>${phrase}</span>`)
 			.join("")
-	const command = parts.command ?? `<code data-install-command>${INSTALL_COMMAND}</code>`
+	const prompt = parts.prompt ?? `<code data-install-prompt>${INSTALL_PROMPT}</code>`
 	const button =
 		parts.button ??
-		`<button type="button" data-copied="${dictionary.copied}" data-copy-failed="${dictionary.copyFailed}">${dictionary.copy}</button>`
+		`<button type="button" data-copied="${dictionary.copied}" data-copied-label="${dictionary.copiedLabel}" data-copy-failed="${dictionary.copyFailed}">${dictionary.copy}</button>`
 	const content = [
 		`<html lang="${language}"><head>${headOf(language)}</head>`,
 		"<body>",
@@ -59,9 +62,11 @@ export function heroHome(language: Language, parts: HeroParts = {}): BuiltFile {
 		'<main class="bg-muted text-foreground">',
 		`<h1>${headline}</h1>`,
 		`<p>${parts.subline ?? dictionary.heroSubline}</p>`,
-		`<div>${command}${button}</div>`,
-		`<ol><li>${dictionary.stepLabels.join("</li><li>")}</li></ol>`,
+		"<div data-install-window>",
+		`<div>${prompt}${button}</div>`,
+		parts.window ?? "",
 		`<a href="${DOCS_CLI_INSTALL_PATH}">${dictionary.cliInstallLink}</a>`,
+		"</div>",
 		'<p role="status"></p>',
 		"<section>",
 		`<h2>${dictionary.actionHeading}</h2>`,

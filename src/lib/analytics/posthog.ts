@@ -23,8 +23,12 @@ export const SURFACE = "site"
 /** The event a visitor's page load sends, and the one the name PostHog's Web Analytics reads. */
 export const PAGEVIEW_EVENT = "$pageview"
 
-/** The event the Copy button sends when one command reaches the clipboard. */
-export const COMMAND_COPIED_EVENT = "site_command_copied"
+/**
+ * The event the Copy button sends when the prompt reaches the clipboard. The name and the `install`
+ * value below are the series' wire values and never move with the page's words: a metric that renamed
+ * itself would split the series it exists to produce (ADR 0011, ADR 0015).
+ */
+export const PROMPT_COPIED_EVENT = "site_command_copied"
 
 /** The browser conditions that decide whether the page measures a visitor at all. */
 export interface VisitorConditions {
@@ -44,10 +48,10 @@ export interface PageviewSource {
 	readonly title: string
 }
 
-/** One command the Copy button put on the clipboard. */
-export interface CopiedCommand {
-	/** A stable name for the command, not its text: the text changes with every release. */
-	readonly command: string
+/** One prompt the Copy button put on the clipboard. */
+export interface CopiedPrompt {
+	/** A stable name for what was copied, not its text: the text changes with every release. */
+	readonly prompt: string
 	readonly language: string
 }
 
@@ -86,9 +90,12 @@ export function pageviewProperties(
 	}
 }
 
-/** The properties of one copied command: the command's name and the Language of the page it sat on. */
-export function commandCopiedProperties(copied: CopiedCommand): Readonly<Record<string, string>> {
-	return { command: copied.command, language: copied.language, surface: SURFACE }
+/**
+ * The properties of one copied prompt: what was copied and the Language of the page it sat on. The
+ * property stays `command`, because that is the name the measured series already carries.
+ */
+export function promptCopiedProperties(copied: CopiedPrompt): Readonly<Record<string, string>> {
+	return { command: copied.prompt, language: copied.language, surface: SURFACE }
 }
 
 /**

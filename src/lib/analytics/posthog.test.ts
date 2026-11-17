@@ -1,11 +1,13 @@
 import { describe, expect, it } from "bun:test"
+import { PROMPT_COPIED_SIGNAL } from "./client"
 import {
 	capturePayload,
-	commandCopiedProperties,
 	MEASURED_HOSTNAME,
 	PAGEVIEW_EVENT,
 	POSTHOG_KEY,
+	PROMPT_COPIED_EVENT,
 	pageviewProperties,
+	promptCopiedProperties,
 	SURFACE,
 	shouldSend,
 } from "./posthog"
@@ -64,13 +66,18 @@ describe("pageviewProperties", () => {
 	})
 })
 
-describe("commandCopiedProperties", () => {
-	it("names the command by a stable name, never by the command text a release changes", () => {
-		expect(commandCopiedProperties({ command: "install", language: "th" })).toEqual({
+describe("promptCopiedProperties", () => {
+	it("names what was copied by a stable name, never by the text a release changes", () => {
+		expect(promptCopiedProperties({ prompt: "install", language: "th" })).toEqual({
 			command: "install",
 			language: "th",
 			surface: SURFACE,
 		})
+	})
+
+	it("keeps the wire values the copy series was measured with, whatever the page calls the thing", () => {
+		expect(PROMPT_COPIED_EVENT).toBe("site_command_copied")
+		expect(PROMPT_COPIED_SIGNAL).toBe("traj:site-command-copied")
 	})
 })
 
