@@ -22,11 +22,12 @@ describe("the prompt in a Language home's install window", () => {
 		])
 	})
 
-	it("fails a home whose prompt exists only inside a script, which no reader sees", () => {
+	it("fails a home whose only prompt text sits in a script, which the scanner never reads as page text", () => {
 		const script = `<script>const prompt = "${INSTALL_PROMPT}"</script>`
-		expect(heroCodes(checkInstallWindow, heroHome("en", { prompt: "", window: script }))).toEqual([
-			"PAGE_PROMPT_MISSING",
-		])
+		const empty = "<code data-install-prompt></code>"
+		expect(
+			heroCodes(checkInstallWindow, heroHome("en", { prompt: empty, window: script })),
+		).toEqual(["PAGE_PROMPT_MISSING"])
 	})
 
 	it("fails a home that carries no install window, and so no prompt in one", () => {

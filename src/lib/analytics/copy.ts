@@ -24,7 +24,7 @@ export interface CopiedSignal {
  * `command` because the measured series already carries it; only the code around it says prompt.
  */
 export function copiedPrompt(signal: CopiedSignal, language: string): CopiedPrompt {
-	return { prompt: signal.command, language }
+	return Object.freeze({ prompt: signal.command, language })
 }
 
 /**
@@ -32,5 +32,5 @@ export function copiedPrompt(signal: CopiedSignal, language: string): CopiedProm
  * property stays `command`, because that is the name the measured series already carries.
  */
 export function promptCopiedProperties(copied: CopiedPrompt): Readonly<Record<string, string>> {
-	return { command: copied.prompt, language: copied.language, surface: SURFACE }
+	return Object.freeze({ command: copied.prompt, language: copied.language, surface: SURFACE })
 }

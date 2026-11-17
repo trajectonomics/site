@@ -6,7 +6,7 @@ export interface WindowParts {
 	/** The prompt's `code` element, so a test can show other text in the window, or none. */
 	readonly prompt?: string
 	readonly button?: string
-	/** Markup inside the window, after the prompt and its button: a second code, a command. */
+	/** Markup inside the window, after the prompt and its button: a second code, or anything else. */
 	readonly window?: string
 }
 

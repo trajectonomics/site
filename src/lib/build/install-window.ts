@@ -40,7 +40,7 @@ function textFailures(
 	]
 }
 
-/** The window carries one `code` and no second: a second one is another command in the window. */
+/** The window carries one `code` and no second: a second one is a second `code` in the window. */
 function secondCodeFailures(file: BuiltFile, count: number): readonly BuildFailure[] {
 	if (count <= 1) return []
 	return [
@@ -53,8 +53,8 @@ function secondCodeFailures(file: BuiltFile, count: number): readonly BuildFailu
 }
 
 /**
- * The install window shows the prompt, one `code` element with the fixture's text, and nothing else
- * set as a command.
+ * The install window shows the prompt: one `code` element carrying the fixture's text, and no second
+ * `code` beside it.
  *
  * The rule is window-scoped because the page prints product copy — `traj`, `$ traj plan` — outside the
  * window on purpose. It is a tripwire, not a proof: a different command added elsewhere on the page

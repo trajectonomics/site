@@ -3,7 +3,7 @@ import { PROMPT_COPIED_SIGNAL } from "./client"
 import { copiedPrompt, PROMPT_COPIED_EVENT, promptCopiedProperties } from "./copy"
 import { SURFACE } from "./posthog"
 
-describe("promptCopiedProperties", () => {
+describe("the properties one copied prompt carries", () => {
 	it("names what was copied by a stable name, never by the text a release changes", () => {
 		expect(promptCopiedProperties({ prompt: "install", language: "th" })).toEqual({
 			command: "install",

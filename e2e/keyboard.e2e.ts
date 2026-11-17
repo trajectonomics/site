@@ -1,5 +1,6 @@
 import { expect, test } from "@playwright/test"
 import { dictionaryFor } from "../src/lib/language/languages"
+import { paintedColour } from "./colour"
 import {
 	COPY_PROMPT_TEXT,
 	copiedLabel,
@@ -8,7 +9,6 @@ import {
 	focusableCount,
 	openPage,
 	PAGES,
-	paintedColour,
 	ringVisible,
 	THEMES,
 	tabToCopyButton,
