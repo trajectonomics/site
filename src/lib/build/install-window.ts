@@ -9,7 +9,7 @@ import { builtHomes } from "./language-home"
 /** The attribute that marks a Language home's install window, so these rules judge the window alone. */
 const WINDOW = "data-install-window"
 
-/** Every `code` element the window carries, in document order: the prompt, and anything set beside it. */
+/** Every `code` element the window carries, in document order: the prompt, and anything else set as code. */
 function codesInWindow(page: ScannedPage, window: HtmlElement): readonly HtmlElement[] {
 	return elementsByTag(page, "code").filter((code) => code.ancestors.includes(window))
 }

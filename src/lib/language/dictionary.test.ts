@@ -150,11 +150,8 @@ describe("the Dictionary of every Language", () => {
 	})
 
 	it("retires the three step labels, because the window has no steps any more", () => {
-		for (const entry of LANGUAGES) {
-			expect({ language: entry.language, steps: "stepLabels" in entry.dictionary }).toEqual({
-				language: entry.language,
-				steps: false,
-			})
+		for (const { language, dictionary } of LANGUAGES) {
+			expect({ language, steps: "stepLabels" in dictionary }).toEqual({ language, steps: false })
 		}
 	})
 
