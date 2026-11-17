@@ -8,7 +8,7 @@ describe("the unscoped npm package", () => {
 		expect(checkSiteContent(files).map((failure) => failure.code)).toEqual(["FORBIDDEN_NPX_TRAJ"])
 	})
 
-	it("passes a build that shows npx skills and never npx traj", () => {
+	it("passes a home that shows no npx traj", () => {
 		expect(heroCodes(checkSiteContent)).toEqual([])
 	})
 })
