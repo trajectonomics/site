@@ -1,12 +1,10 @@
 import type { Language } from "../../language/language"
 import { LANGUAGES, languageEntry, localeUrl } from "../../language/languages"
 import {
-	DOCS_CLI_INSTALL_PATH,
 	DOCS_CLI_PATH,
 	DOCS_PATH,
 	GITHUB_ORG_URL,
 	GITHUB_SKILLS_URL,
-	INSTALL_PROMPT,
 	SITE_NAME,
 	SKILLS_LICENCE_URL,
 	STAR_REPOS,
@@ -15,18 +13,14 @@ import type { BuiltFile } from "../built-files"
 import type { BuildFailure } from "../failures"
 import { headOf } from "./head"
 import { switcher } from "./homes"
+import { installWindow, type WindowParts } from "./window"
 
 /** The parts of a home a test replaces to break one rule at a time. */
-export interface HeroParts {
+export interface HeroParts extends WindowParts {
 	/** The whole inner markup of the hero's `<h1>`, so a test can drop a phrase the headline cycles. */
 	readonly headline?: string
 	readonly subline?: string
 	readonly disclaimer?: string
-	/** The prompt's `code` element, so a test can show other text in the window, or none. */
-	readonly prompt?: string
-	readonly button?: string
-	/** Markup inside the install window, after the prompt and its button: a second code, a command. */
-	readonly window?: string
 	readonly extra?: string
 }
 
@@ -47,10 +41,6 @@ export function heroHome(language: Language, parts: HeroParts = {}): BuiltFile {
 		headlines(language)
 			.map((phrase) => `<span>${phrase}</span>`)
 			.join("")
-	const prompt = parts.prompt ?? `<code data-install-prompt>${INSTALL_PROMPT}</code>`
-	const button =
-		parts.button ??
-		`<button type="button" data-copied="${dictionary.copied}" data-copied-label="${dictionary.copiedLabel}" data-copy-failed="${dictionary.copyFailed}">${dictionary.copy}</button>`
 	const content = [
 		`<html lang="${language}"><head>${headOf(language)}</head>`,
 		"<body>",
@@ -62,11 +52,7 @@ export function heroHome(language: Language, parts: HeroParts = {}): BuiltFile {
 		'<main class="bg-muted text-foreground">',
 		`<h1>${headline}</h1>`,
 		`<p>${parts.subline ?? dictionary.heroSubline}</p>`,
-		"<div data-install-window>",
-		`<div>${prompt}${button}</div>`,
-		parts.window ?? "",
-		`<a href="${DOCS_CLI_INSTALL_PATH}">${dictionary.cliInstallLink}</a>`,
-		"</div>",
+		installWindow(dictionary, parts),
 		'<p role="status"></p>',
 		"<section>",
 		`<h2>${dictionary.actionHeading}</h2>`,

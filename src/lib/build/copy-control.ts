@@ -19,7 +19,7 @@ function messageFailures(
 	return [buildFailure("COPY_MESSAGES_MISSING", path, `the Copy button carries no ${names}.`)]
 }
 
-/** The Copy button sits beside the prompt, shows its label, and carries both messages. */
+/** The Copy button sits under the prompt, shows its label, and carries both messages. */
 export function copyFailures(
 	path: string,
 	page: ScannedPage,

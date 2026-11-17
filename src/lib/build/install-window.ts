@@ -9,7 +9,7 @@ import { builtHomes } from "./language-home"
 /** The attribute that marks a Language home's install window, so these rules judge the window alone. */
 const WINDOW = "data-install-window"
 
-/** Every `code` element the window carries, in document order: what a reader sees set as a command. */
+/** Every `code` element the window carries, in document order: the prompt, and anything set beside it. */
 function codesInWindow(page: ScannedPage, window: HtmlElement): readonly HtmlElement[] {
 	return elementsByTag(page, "code").filter((code) => code.ancestors.includes(window))
 }
@@ -40,7 +40,7 @@ function textFailures(
 	]
 }
 
-/** The window carries one `code` and no second: a second one is another command beside the prompt. */
+/** The window carries one `code` and no second: a second one is another command in the window. */
 function secondCodeFailures(file: BuiltFile, count: number): readonly BuildFailure[] {
 	if (count <= 1) return []
 	return [

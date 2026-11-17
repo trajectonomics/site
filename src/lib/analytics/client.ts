@@ -1,12 +1,14 @@
 import {
 	type CopiedSignal,
-	capturePayload,
 	copiedPrompt,
+	PROMPT_COPIED_EVENT,
+	promptCopiedProperties,
+} from "./copy"
+import {
+	capturePayload,
 	PAGEVIEW_EVENT,
 	POSTHOG_CAPTURE_URL,
-	PROMPT_COPIED_EVENT,
 	pageviewProperties,
-	promptCopiedProperties,
 	shouldSend,
 } from "./posthog"
 
