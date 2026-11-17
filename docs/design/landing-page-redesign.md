@@ -150,12 +150,12 @@ sections from twenty.com. Reference: twenty.com, the same direction as ADR 0007.
 
 | Part | What it is now | Where it lives |
 |---|---|---|
-| Headline | Static `heroHeadingPrefix` plus the accent run `heroHeadingAccent` ("Financial Planning") on its own line in `accent`; the suffix cycle, its script and its CSS are gone. The load-in rise and the pointer light stay | `Hero.astro`, `landing.css` |
+| Headline | Static `heroHeadingPrefix` plus the accent run `heroHeadingAccent` ("Financial Planning") on its own line in `accent`, set bold; the suffix cycle, its script and its CSS are gone. The load-in rise stays; the pointer light is removed and the field ripples on a click instead ([ADR 0013](../adr/0013-the-hero-ripples-on-click-and-holds-still-on-hover.md)) | `Hero.astro`, `landing.css` |
 | See it in action | Two panels asked the same question: the agent alone (dashed, three different guesses) and the agent with the traj skill (solid, the real `traj fi --json` command, its abridged JSON, and the same answer three times) | `SeeItInAction.astro`, `compare.css`, `conversation.css`, `terminal.css` |
 | How it works | Four numbered steps beside two layers: the **Presentation layer** (dashed, light, "Owned by your agent": chat, tables, charts, narration), the **Skills** join, and the **Logic layer** (solid, dark, "Owned by traj": projections, tax, FI date, ledger) | `HowItWorks.astro`, `how.css`, `layers.css` |
 | Features | Six cells on one hairline grid, titles as plain text (no `h3`): deterministic, agent-operated, local-first, open source, tax on request, shows its working | `Features.astro`, `features.css` |
 | Footer | Stage surface; the name and a line beside three labelled link columns (Product, Open source, Help); the disclaimer under a hairline (still the footer's first paragraph); the release line; a wordmark drawn as generated content, cropped at the bottom edge | `Footer.astro`, `footer.css`, `footer-legal.css` |
-| Rhythm | Hero on `muted`, See it in action on `muted`, How it works on `background`, Features on `muted`, footer on `stage` | `sections.css` |
+| Rhythm | Hero and See it in action on `background` with no seam between them (ADR 0010), How it works on `muted` ruled above and below, Features on `background`, footer on `stage` | `sections.css` |
 
 Every fact in the demo is the CLI's own: the command is from `traj fi`'s examples, and the JSON uses its field names
 (`asOf`, `tax: not_applied`, `method: survival`, `fi.reachable`, `fi.fiDate` as `YYYY-MM-DD`). The output is labelled

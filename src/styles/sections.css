@@ -4,13 +4,19 @@
  * is a Semantic Token Role.
  */
 
-.section {
-	border-top: 1px solid var(--ds-color-border);
-}
-
-/* A section on the page surface, so the sections alternate with the muted ground they sit on. */
+/*
+ * A section on the page surface. The first one meets the hero's fade in the same flat colour and carries
+ * no border, so there is no seam (ADR 0010); the sections after it alternate with the muted ones.
+ */
 .section-surface {
 	background: var(--ds-color-background);
+	color: var(--ds-color-foreground);
+}
+
+/* A section on the muted surface, ruled above and below, between two on the page surface. */
+.section-muted {
+	border-block: 1px solid var(--ds-color-border);
+	background: var(--ds-color-muted);
 	color: var(--ds-color-foreground);
 }
 

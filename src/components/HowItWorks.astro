@@ -11,7 +11,7 @@ interface Props {
 const { dictionary } = Astro.props
 ---
 
-<section class="section section-surface">
+<section class="section-muted">
 	<div class="section-inner">
 		<div class="section-head">
 			<p class="eyebrow">{dictionary.howEyebrow}</p>
@@ -34,7 +34,7 @@ const { dictionary } = Astro.props
 			</ol>
 
 			<div class="layers">
-				<div class="layer layer-presentation bg-muted text-foreground">
+				<div class="layer layer-presentation bg-background text-foreground">
 					<div class="layer-head">
 						<span class="layer-name">{dictionary.howPresentationLabel}</span>
 						<span class="layer-owner">{dictionary.howPresentationOwner}</span>

@@ -61,11 +61,23 @@ describe("the Hero component in every Language", () => {
 			])
 		})
 
-		it(`carries its inline motion script (${language})`, async () => {
+		it(`answers a click with a ripple, and never follows the pointer (${language})`, async () => {
 			const html = await renderComponent(Hero, { dictionary })
 			const page = scanComponent(html)
 			expect(page.elements.some(isInlineScript)).toBe(true)
 			expect(withAttribute(page, "data-hero").length).toBe(1)
+			expect(withAttribute(page, "data-ripple").length).toBe(1)
+			expect(withAttribute(page, "data-pointer-glow")).toEqual([])
+			expect(html).toContain('addEventListener("click"')
+			expect(html).not.toContain("pointermove")
+			expect(html).not.toContain("pointerleave")
+		})
+
+		it(`sets the headline bold and the accent in the accent colour (${language})`, async () => {
+			const page = scanComponent(await renderComponent(Hero, { dictionary }))
+			const h1 = elementsByTag(page, "h1")[0]
+			expect(h1?.attributes["class"]).toContain("font-bold")
+			expect(h1?.attributes["class"]).not.toContain("font-light")
 		})
 	}
 })
