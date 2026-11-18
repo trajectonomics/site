@@ -18,8 +18,8 @@ export interface Dictionary {
 	readonly heroLicence: string
 	readonly heroSubline: string
 	/**
-	 * The three plain facts above the install window, one label per fact: the currency the CLI accepts,
-	 * the first run's download and the agent that can run it. A visitor reads the limits before the step.
+	 * The three plain facts in the footer, one label per fact: the currency the CLI accepts, the first
+	 * run's download and the agent that can run it. They sit with the footer's fine print.
 	 */
 	readonly factLabels: readonly string[]
 	/** One fact per label, in the same order: the plain sentence under its label. */

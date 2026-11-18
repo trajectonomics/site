@@ -1,0 +1,32 @@
+/*
+ * The three plain facts about setup (site#69): the limits a visitor meets after the step, kept with
+ * the footer's fine print. Three columns from 40 rem, stacked label over value below it.
+ */
+.footer-facts {
+	display: grid;
+	gap: 12px;
+}
+
+.footer-fact {
+	display: block;
+}
+
+.footer-facts dt {
+	font-family: var(--font-meta);
+	font-size: 11px;
+	letter-spacing: 0.08em;
+	text-transform: uppercase;
+	opacity: 0.72;
+}
+
+.footer-facts dd {
+	margin: 4px 0 0;
+	font-size: 13px;
+}
+
+@media (min-width: 40rem) {
+	.footer-facts {
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+		gap: 24px;
+	}
+}

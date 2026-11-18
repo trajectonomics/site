@@ -4,8 +4,8 @@ import { checkFacts } from "./facts"
 import { factsStrip } from "./testing/facts"
 import { heroCodes, heroHome } from "./testing/hero"
 
-describe("the three facts above the install window", () => {
-	it("passes a home that states every fact above the window", () => {
+describe("the three facts in the footer", () => {
+	it("passes a home that states every fact in its footer", () => {
 		expect(heroCodes(checkFacts)).toEqual([])
 	})
 
@@ -40,12 +40,12 @@ describe("the three facts above the install window", () => {
 		expect(failures[0]?.message).toContain(label)
 	})
 
-	it("fails a home that states the facts below the install window, where a visitor reads them too late", () => {
+	it("fails a home that keeps the facts in the hero instead of the footer", () => {
 		const dictionary = dictionaryFor("en")
 		const page = heroHome("en", { facts: "" })
 		const content = page.content.replace("</main>", `${factsStrip(dictionary)}</main>`)
 		expect(checkFacts([{ path: page.path, content }])).toEqual([
-			expect.objectContaining({ code: "PAGE_FACTS_BELOW_WINDOW" }),
+			expect.objectContaining({ code: "PAGE_FACTS_NOT_IN_FOOTER" }),
 		])
 	})
 })

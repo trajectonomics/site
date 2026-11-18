@@ -51,15 +51,9 @@ describe("the Hero component in every Language", () => {
 			expect(codes).toContain("traj")
 		})
 
-		it(`states the three facts above the install window (${language})`, async () => {
+		it(`carries no facts strip, which belongs to the footer (${language})`, async () => {
 			const page = scanComponent(await renderComponent(Hero, { dictionary }))
-			const facts = withAttribute(page, "data-facts")[0]
-			const window = withAttribute(page, "data-install-window")[0]
-			if (facts === undefined || window === undefined)
-				throw new Error("the hero is missing the facts or the install window")
-			expect(page.elements.indexOf(facts)).toBeLessThan(page.elements.indexOf(window))
-			const shown = textOf(page, facts)
-			for (const text of dictionary.factTexts) expect(shown).toContain(text)
+			expect(withAttribute(page, "data-facts")).toEqual([])
 		})
 
 		it(`renders the prompt and no step strip (${language})`, async () => {

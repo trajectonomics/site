@@ -9,13 +9,13 @@ interface Props {
 const { dictionary } = Astro.props
 ---
 
-{/* The three plain facts above the install window (site#69): the limits a visitor meets after the step, read before it. */}
-<dl data-facts class="hero-facts mt-10 w-full max-w-3xl border-t border-border pt-5 text-left">
+{/* The three plain facts about setup (site#69): the limits a visitor meets after the step, kept with the footer's fine print. */}
+<dl data-facts class="footer-facts w-full border-t border-border pt-5 text-left">
 	{
 		dictionary.factLabels.map((label, index) => (
-			<div class="hero-fact" data-fact>
-				<dt class="text-muted-foreground">{label}</dt>
-				<dd class="text-foreground">{dictionary.factTexts[index]}</dd>
+			<div class="footer-fact" data-fact>
+				<dt class="text-stage-foreground">{label}</dt>
+				<dd class="text-stage-foreground">{dictionary.factTexts[index]}</dd>
 			</div>
 		))
 	}

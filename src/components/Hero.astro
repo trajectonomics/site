@@ -4,7 +4,6 @@
 import type { Dictionary } from "../lib/language/dictionary"
 import { sublineParts } from "../lib/language/subline"
 import CopyPrompt from "./CopyPrompt.astro"
-import Facts from "./Facts.astro"
 import Badge from "./ui/Badge.astro"
 import Separator from "./ui/Separator.astro"
 
@@ -55,7 +54,6 @@ const subline = sublineParts(dictionary.heroSubline)
 				)
 			}
 		</p>
-		<Facts dictionary={dictionary} />
 		<div class="hero-command mt-10 w-full max-w-xl sm:mt-12">
 			<CopyPrompt dictionary={dictionary} />
 		</div>

@@ -5,7 +5,7 @@ import Facts from "./Facts.astro"
 import { renderComponent } from "./testing/render"
 import { headings, scanComponent, withAttribute } from "./testing/scan"
 
-describe("the three facts above the install window, in every Language", () => {
+describe("the three facts, in every Language", () => {
 	for (const { language } of LANGUAGES) {
 		const dictionary = languageEntry(language).dictionary
 
