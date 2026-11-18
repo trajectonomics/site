@@ -17,6 +17,8 @@ const subline = sublineParts(dictionary.heroSubline)
 ---
 
 <section data-hero class="hero-stage relative isolate flex flex-col overflow-clip bg-background">
+	<!-- The ground belongs to the copy alone: the comparison below it sits on the plain page surface. -->
+	<div class="hero-ground relative">
 	<div class="hero-blast" aria-hidden="true">
 		<div class="hero-blast-field">
 			<div class="hero-blast-drift">
@@ -58,6 +60,7 @@ const subline = sublineParts(dictionary.heroSubline)
 		<div class="hero-command mt-10 w-full max-w-xl sm:mt-12">
 			<CopyPrompt dictionary={dictionary} />
 		</div>
+	</div>
 	</div>
 	<!-- The demonstration is part of the landing view, not a section the visitor has to hunt for. -->
 	<div class="hero-compare relative mx-auto w-full max-w-6xl px-5 pb-16 sm:px-6 sm:pb-20">
