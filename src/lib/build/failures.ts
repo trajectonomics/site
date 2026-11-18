@@ -93,6 +93,10 @@ export type BuildFailureCode =
 	| "LLMS_HOME_MISSING"
 	| "INDEXNOW_KEY_FILE_MISSING"
 	| "INDEXNOW_KEY_FILE_WRONG"
+	| "SHARE_IMAGE_MISSING"
+	| "SHARE_IMAGE_NOT_PNG"
+	| "SHARE_IMAGE_SIZE_WRONG"
+	| "SHARE_IMAGE_TOO_HEAVY"
 
 /** One failed build check: the rule's code, the file it concerns and a line a maintainer can act on. */
 export interface BuildFailure {
