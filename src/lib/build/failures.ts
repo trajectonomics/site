@@ -1,6 +1,8 @@
+import type { CrawlerFailureCode } from "./crawler-failure-codes"
 import type { HeadFailureCode } from "./head-failure-codes"
+import type { ShareFailureCode } from "./share-failure-codes"
 
-export type { HeadFailureCode }
+export type { CrawlerFailureCode, HeadFailureCode, ShareFailureCode }
 
 /** Stable codes for every way the built Site can fail verification. One code per rule. */
 export type BuildFailureCode =
@@ -85,18 +87,8 @@ export type BuildFailureCode =
 	| "ROBOTS_DISALLOW_PRESENT"
 	| "ROBOTS_SITEMAP_MISSING"
 	| "ROBOTS_SITEMAP_TARGET"
-	| "ROBOTS_NAMED_AGENT_MISSING"
-	| "ROBOTS_NAMED_ALLOW_MISSING"
-	| "JSON_LD_CLAIM_PRESENT"
-	| "LLMS_FILE_MISSING"
-	| "LLMS_PLACEHOLDER_PRESENT"
-	| "LLMS_HOME_MISSING"
-	| "INDEXNOW_KEY_FILE_MISSING"
-	| "INDEXNOW_KEY_FILE_WRONG"
-	| "SHARE_IMAGE_MISSING"
-	| "SHARE_IMAGE_NOT_PNG"
-	| "SHARE_IMAGE_SIZE_WRONG"
-	| "SHARE_IMAGE_TOO_HEAVY"
+	| CrawlerFailureCode
+	| ShareFailureCode
 
 /** One failed build check: the rule's code, the file it concerns and a line a maintainer can act on. */
 export interface BuildFailure {
