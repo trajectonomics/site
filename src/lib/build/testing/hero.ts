@@ -1,4 +1,3 @@
-import type { Dictionary } from "../../language/dictionary"
 import type { Language } from "../../language/language"
 import { LANGUAGES, languageEntry, localeUrl } from "../../language/languages"
 import {
@@ -12,6 +11,7 @@ import {
 } from "../../site"
 import type { BuiltFile } from "../built-files"
 import type { BuildFailure } from "../failures"
+import { factsStrip } from "./facts"
 import { headOf } from "./head"
 import { switcher } from "./homes"
 import { installWindow, type WindowParts } from "./window"
@@ -24,17 +24,6 @@ export interface HeroParts extends WindowParts {
 	readonly facts?: string
 	readonly disclaimer?: string
 	readonly extra?: string
-}
-
-/** The three plain facts as the build must produce them: one definition list above the install window. */
-export function factsStrip(dictionary: Dictionary): string {
-	const facts = dictionary.factLabels
-		.map(
-			(label, index) =>
-				`<div data-fact><dt>${label}</dt><dd>${dictionary.factTexts[index] ?? ""}</dd></div>`,
-		)
-		.join("\n")
-	return `<dl data-facts>${facts}</dl>`
 }
 
 /** Every phrase the hero's `<h1>` carries: the plain run and the accent. */

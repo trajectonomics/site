@@ -37,8 +37,8 @@
 
 /*
  * The three plain facts above the install window: the limits a visitor meets after the step, set as a
- * spec strip so they read before it. One row on a phone, three columns from 40 rem, where the labels
- * sit over their sentences and the hairline above the strip rules all three.
+ * spec strip so they read before it. Three stacked rows on a phone, three columns from 40 rem, where
+ * the labels sit over their sentences and the hairline above the strip rules all three.
  */
 .hero-facts {
 	margin: 0;

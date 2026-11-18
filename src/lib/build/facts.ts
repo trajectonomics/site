@@ -21,31 +21,36 @@ function windowIn(page: ScannedPage): HtmlElement | undefined {
 	return page.elements.find((element) => WINDOW in element.attributes)
 }
 
-/** Every fact the strip leaves out, or the whole strip when the page has none. */
-function missingFacts(
+/** Every string the strip states: each fact's label and its text, in the Dictionary's order. */
+function stated(dictionary: Dictionary): readonly string[] {
+	return [...dictionary.factLabels, ...dictionary.factTexts]
+}
+
+/** A page that carries no strip of facts above its install window at all. */
+function missingStrip(file: BuiltFile, dictionary: Dictionary): BuildFailure {
+	return buildFailure(
+		"PAGE_FACTS_MISSING",
+		file.path,
+		`the page carries no facts above its install window: "${stated(dictionary).join('", "')}".`,
+	)
+}
+
+/** Every label or text the strip leaves out, so no fact reaches a visitor half-written. */
+function unstatedFacts(
 	file: BuiltFile,
 	page: ScannedPage,
-	strip: HtmlElement | undefined,
+	strip: HtmlElement,
 	dictionary: Dictionary,
 ): readonly BuildFailure[] {
-	if (strip === undefined) {
-		return [
-			buildFailure(
-				"PAGE_FACTS_MISSING",
-				file.path,
-				`the page carries no facts above its install window: "${dictionary.factTexts.join('", "')}".`,
-			),
-		]
-	}
-	const stated = textOf(page, strip)
-	return dictionary.factTexts.flatMap((text) =>
-		stated.includes(text)
+	const shown = textOf(page, strip)
+	return stated(dictionary).flatMap((fact) =>
+		shown.includes(fact)
 			? []
 			: [
 					buildFailure(
-						"PAGE_FACTS_MISSING",
+						"FACT_NOT_STATED",
 						file.path,
-						`the facts above the install window do not state "${text}".`,
+						`the facts above the install window do not state "${fact}".`,
 					),
 				],
 	)
@@ -73,17 +78,21 @@ function orderFailures(
  * Every Language home states its three plain facts above its install window: the currency, the first
  * run's download and the agent it needs (site#69).
  *
- * The rule judges the strip and every fact's text, so no edit can drop a limit a visitor meets only
- * after the step. A home that shows no window has nothing to order the facts against, and the
- * install-window rule already fails it.
+ * The rules judge the strip, every fact's label and text, and the strip's place before the window, so
+ * no edit can drop a limit a visitor meets only after the step. A home that shows no window has
+ * nothing to order the facts against, and the install-window rule already fails it.
  */
 export function checkFacts(files: readonly BuiltFile[]): readonly BuildFailure[] {
 	return builtHomes(files).flatMap(({ entry, file }) => {
 		const page = scanHtml(file.content)
 		const strip = stripIn(page)
+		const window = windowIn(page)
+		if (strip === undefined) {
+			return [missingStrip(file, entry.dictionary), ...orderFailures(file, page, strip, window)]
+		}
 		return [
-			...missingFacts(file, page, strip, entry.dictionary),
-			...orderFailures(file, page, strip, windowIn(page)),
+			...unstatedFacts(file, page, strip, entry.dictionary),
+			...orderFailures(file, page, strip, window),
 		]
 	})
 }

@@ -1,14 +1,15 @@
 import { describe, expect, it } from "bun:test"
+import { CLI_VERSION, ONBOARDING_VERSION } from "../site"
 import { dictionaryFor, LANGUAGES } from "./languages"
 
-describe("the copy the Dictionary states for its reader", () => {
+describe("the strings the Dictionary states for its reader", () => {
 	it("keeps the English sub-line and disclaimer the owner approved", () => {
 		const english = dictionaryFor("en")
 		expect(english.heroSubline).toBe(
 			"traj is a free, open-source financial simulation tool built for AI agents. Ship as a skill and CLI — local-first, no accounts, no dashboards, no subscriptions.",
 		)
 		expect(english.footerDisclaimer).toBe(
-			"traj v0.2.0 is the latest stable release; a bug is still possible. Tax is applied only when you ask for it, and every figure says whether it includes tax. Trust the figures traj returns. If you find a bug, open an issue on https://github.com/trajectonomics/cli and we will update it as soon as we can.",
+			`traj ${CLI_VERSION} is the latest stable release; a bug is still possible. Tax is applied only when you ask for it, and every figure says whether it includes tax. Trust the figures traj returns. If you find a bug, open an issue on https://github.com/trajectonomics/cli and we will update it as soon as we can.`,
 		)
 	})
 
@@ -18,7 +19,7 @@ describe("the copy the Dictionary states for its reader", () => {
 			"traj คือเครื่องมือจำลองการเงินโอเพนซอร์สฟรีสำหรับ AI agent ใช้ได้ทั้งเป็นสกิลและ CLI — ทำงานบนเครื่องคุณ ไม่ต้องสร้างบัญชี ไม่มีแดชบอร์ด ไม่ต้องสมัครสมาชิก",
 		)
 		expect(thai.footerDisclaimer).toBe(
-			"traj v0.2.0 เป็นรุ่นเสถียรล่าสุด ยังอาจมีบั๊ก ระบบจะคำนวณภาษีเมื่อคุณขอเท่านั้น และทุกตัวเลขบอกว่ารวมภาษีหรือไม่ เชื่อตัวเลขที่ traj ส่งกลับ หากพบบั๊ก ให้เปิด issue ที่ https://github.com/trajectonomics/cli แล้วเราจะอัปเดตโดยเร็ว",
+			`traj ${CLI_VERSION} เป็นรุ่นเสถียรล่าสุด ยังอาจมีบั๊ก ระบบจะคำนวณภาษีเมื่อคุณขอเท่านั้น และทุกตัวเลขบอกว่ารวมภาษีหรือไม่ เชื่อตัวเลขที่ traj ส่งกลับ หากพบบั๊ก ให้เปิด issue ที่ https://github.com/trajectonomics/cli แล้วเราจะอัปเดตโดยเร็ว`,
 		)
 	})
 
@@ -37,10 +38,10 @@ describe("the copy the Dictionary states for its reader", () => {
 		for (const entry of LANGUAGES) {
 			expect({ language: entry.language, release: entry.dictionary.releaseLine }).toEqual({
 				language: entry.language,
-				release: expect.stringContaining("v0.2.0"),
+				release: expect.stringContaining(CLI_VERSION),
 			})
 			expect(entry.dictionary.releaseLine).toContain("traj CLI")
-			expect(entry.dictionary.releaseLine).toContain("traj-onboarding v0.1.0")
+			expect(entry.dictionary.releaseLine).toContain(`traj-onboarding ${ONBOARDING_VERSION}`)
 		}
 		expect(dictionaryFor("en").releaseDate).toBe("17 Nov 2026")
 		expect(dictionaryFor("th").releaseDate).toBe("17 พ.ย. 2026")

@@ -14,8 +14,8 @@ const { dictionary } = Astro.props
 	{
 		dictionary.factLabels.map((label, index) => (
 			<div class="hero-fact" data-fact>
-				<dt class="hero-fact-label text-muted-foreground">{label}</dt>
-				<dd class="hero-fact-value text-foreground">{dictionary.factTexts[index]}</dd>
+				<dt class="text-muted-foreground">{label}</dt>
+				<dd class="text-foreground">{dictionary.factTexts[index]}</dd>
 			</div>
 		))
 	}

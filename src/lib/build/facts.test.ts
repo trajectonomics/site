@@ -1,7 +1,8 @@
 import { describe, expect, it } from "bun:test"
 import { dictionaryFor } from "../language/languages"
 import { checkFacts } from "./facts"
-import { factsStrip, heroCodes, heroHome } from "./testing/hero"
+import { factsStrip } from "./testing/facts"
+import { heroCodes, heroHome } from "./testing/hero"
 
 describe("the three facts above the install window", () => {
 	it("passes a home that states every fact above the window", () => {
@@ -12,24 +13,31 @@ describe("the three facts above the install window", () => {
 		expect(heroCodes(checkFacts, heroHome("th"))).toEqual([])
 	})
 
-	it("fails a home that states no facts at all", () => {
+	it("fails a home that carries no facts strip at all", () => {
 		expect(heroCodes(checkFacts, heroHome("en", { facts: "" }))).toEqual(["PAGE_FACTS_MISSING"])
 	})
 
-	it("names every fact the home leaves out", () => {
+	it("names every fact the missing strip would have stated", () => {
 		const dictionary = dictionaryFor("en")
 		const failure = checkFacts([heroHome("en", { facts: "" })])[0]
-		for (const text of dictionary.factTexts) {
-			expect(failure?.message).toContain(text)
+		for (const fact of [...dictionary.factLabels, ...dictionary.factTexts]) {
+			expect(failure?.message).toContain(fact)
 		}
 	})
 
-	it("fails a home that states some of the facts and not the rest", () => {
+	it("fails a strip that leaves one fact's text out", () => {
 		const dictionary = dictionaryFor("en")
 		const partial = factsStrip({ ...dictionary, factTexts: dictionary.factTexts.slice(0, 2) })
-		expect(heroCodes(checkFacts, heroHome("en", { facts: partial }))).toEqual([
-			"PAGE_FACTS_MISSING",
-		])
+		expect(heroCodes(checkFacts, heroHome("en", { facts: partial }))).toEqual(["FACT_NOT_STATED"])
+	})
+
+	it("fails a strip that states one fact's text under another label", () => {
+		const dictionary = dictionaryFor("en")
+		const label = dictionary.factLabels[2] ?? ""
+		const renamed = factsStrip(dictionary).replace(label, "Money things")
+		const failures = checkFacts([heroHome("en", { facts: renamed })])
+		expect(failures.map((failure) => failure.code)).toEqual(["FACT_NOT_STATED"])
+		expect(failures[0]?.message).toContain(label)
 	})
 
 	it("fails a home that states the facts below the install window, where a visitor reads them too late", () => {

@@ -1,3 +1,4 @@
+import { CLI_VERSION, ONBOARDING_VERSION } from "../site"
 import { ENGLISH_SECTIONS } from "./en-sections"
 import type { LanguageEntry } from "./language"
 
@@ -15,9 +16,9 @@ export const ENGLISH: LanguageEntry = Object.freeze({
 		languageSwitchLabel: "EN",
 		heroHeadingPrefix: "Deterministic layers for",
 		heroHeadingAccent: "Financial Planning",
-		heroVersion: "v0.2.0",
+		heroVersion: CLI_VERSION,
 		heroLicence: "MIT · open source",
-		releaseLine: "stable: traj CLI v0.2.0 · traj-onboarding v0.1.0",
+		releaseLine: `stable: traj CLI ${CLI_VERSION} · traj-onboarding ${ONBOARDING_VERSION}`,
 		releaseDate: "17 Nov 2026",
 		heroSubline:
 			"traj is a free, open-source financial simulation tool built for AI agents. Ship as a skill and CLI — local-first, no accounts, no dashboards, no subscriptions.",
@@ -40,8 +41,7 @@ export const ENGLISH: LanguageEntry = Object.freeze({
 		copyFailed: "Select the prompt and copy it.",
 		licence: "MIT",
 		org: "trajectonomics",
-		footerDisclaimer:
-			"traj v0.2.0 is the latest stable release; a bug is still possible. Tax is applied only when you ask for it, and every figure says whether it includes tax. Trust the figures traj returns. If you find a bug, open an issue on https://github.com/trajectonomics/cli and we will update it as soon as we can.",
+		footerDisclaimer: `traj ${CLI_VERSION} is the latest stable release; a bug is still possible. Tax is applied only when you ask for it, and every figure says whether it includes tax. Trust the figures traj returns. If you find a bug, open an issue on https://github.com/trajectonomics/cli and we will update it as soon as we can.`,
 		notFoundHeading: "Page not found",
 		notFoundBody: "This link may have moved, or it may be mistyped.",
 	}),
