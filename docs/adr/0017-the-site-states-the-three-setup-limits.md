@@ -2,7 +2,7 @@
 status: accepted
 ---
 
-# The landing page states traj's three limits above the install window
+# The Site states the three setup limits above the install window
 
 Eight personas read the live Site on 2026-11-18 (site#69). Three of them met the same wall: the page
 offered a setup prompt and nothing about what the setup needs or costs. A visitor learned that `traj`
