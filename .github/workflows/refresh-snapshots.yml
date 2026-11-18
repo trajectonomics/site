@@ -1,6 +1,8 @@
 name: Refresh visual snapshots
 
-on: workflow_dispatch
+on:
+  push:
+    branches: [feat/landing-compact-hero]
 
 permissions:
   contents: read
