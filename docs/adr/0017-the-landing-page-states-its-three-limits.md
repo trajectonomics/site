@@ -9,7 +9,7 @@ offered a setup prompt and nothing about what the setup needs or costs. A visito
 takes Thai baht only *after* the install, from `unsupported_currency: v1 supports THB only`. A first run
 downloads about 100 MB, and nothing on the page said so. The Thai home named no agent at all, so a
 visitor whose assistant is a chat window read "pipe this to your agent" and stopped. Two claims were
-stale besides: the Features copy said every result states "the assumptions it applied", which the CLI's
+stale besides: the Features text said every result states "the assumptions it applied", which the CLI's
 output has no field for, and the footer still named v0.1.0 as the stable release after the CLI shipped
 v0.2.0 on 2026-11-17.
 
@@ -26,10 +26,10 @@ v0.2.0 on 2026-11-17.
   agent falsifies nothing. The way out to the Docs Portal's installation page stays where it is, for the
   visitor with a terminal and no agent.
 - **A built-file rule holds the strip.** `checkFacts` requires every fact's text in the strip and the
-  strip before the install window, because dropping one fact is a copy edit and restoring the trap the
+  strip before the install window, because dropping one fact is a text edit and restoring the trap the
   personas hit would otherwise pass review ([site#69](https://github.com/trajectonomics/site/issues/69)).
   A page with no window is left to the install-window rule, which already fails it.
-- **The page claims only what the CLI's output carries.** The Features copy now says a result states its
+- **The page claims only what the CLI's output carries.** The Features text now says a result states its
   as-of date, engine version and scenario in its JSON, which is the echo block the CLI prints. It no
   longer says "the assumptions it applied", a field the CLI does not have.
 - **The release line names each part at its own version.** `traj CLI` v0.2.0 and `traj-onboarding`
@@ -57,4 +57,4 @@ v0.2.0 on 2026-11-17.
 - The screenshots in [`docs/screenshots/`](../screenshots/) are re-captured, because the hero block is
   taller and the release line changed.
 - The Docs Portal's installation page still says `v0.1.0` is the latest release; that repository owns
-  its own copy and its own fix.
+  its own page and its own fix.

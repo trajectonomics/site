@@ -74,14 +74,7 @@ function orderFailures(
 	]
 }
 
-/**
- * Every Language home states its three plain facts above its install window: the currency, the first
- * run's download and the agent it needs (site#69).
- *
- * The rules judge the strip, every fact's label and text, and the strip's place before the window, so
- * no edit can drop a limit a visitor meets only after the step. A home that shows no window has
- * nothing to order the facts against, and the install-window rule already fails it.
- */
+/** Every Language home states its three plain facts above its install window (site#69). */
 export function checkFacts(files: readonly BuiltFile[]): readonly BuildFailure[] {
 	return builtHomes(files).flatMap(({ entry, file }) => {
 		const page = scanHtml(file.content)

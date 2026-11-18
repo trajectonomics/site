@@ -49,7 +49,7 @@ describe("the strings the Dictionary states for its reader", () => {
 
 	it("makes no claim about a result that the CLI's output does not carry", () => {
 		for (const { language, dictionary } of LANGUAGES) {
-			const assumptions = dictionary.featureCopies.some((copy) => /assum|สมมติฐาน/.test(copy))
+			const assumptions = dictionary.featureCopies.some((text) => /assum|สมมติฐาน/.test(text))
 			expect({ language, assumptions }).toEqual({ language, assumptions: false })
 		}
 		expect(dictionaryFor("en").featureCopies[5]).toBe(
