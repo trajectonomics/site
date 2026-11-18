@@ -9,7 +9,7 @@
 	padding-top: 32px;
 }
 
-/* The band's one rule: the stage-foreground hairline at 20 %, as the legal text used to draw it. */
+/* The strip's one rule: the stage-foreground hairline at 20 %, as the legal text used to draw it. */
 .footer-facts::before {
 	content: "";
 	position: absolute;
