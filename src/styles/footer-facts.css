@@ -3,8 +3,22 @@
  * the footer's fine print. Three columns from 40 rem, stacked label over value below it.
  */
 .footer-facts {
+	position: relative;
 	display: grid;
 	gap: 12px;
+	padding-top: 32px;
+}
+
+/* The band's one rule: the stage-foreground hairline at 20 %, as the legal text used to draw it. */
+.footer-facts::before {
+	content: "";
+	position: absolute;
+	top: 0;
+	right: 0;
+	left: 0;
+	height: 1px;
+	background: var(--ds-color-stage-foreground);
+	opacity: 0.2;
 }
 
 .footer-fact {
