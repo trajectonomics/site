@@ -60,9 +60,8 @@ function unstatedFacts(
 function placementFailures(
 	file: BuiltFile,
 	page: ScannedPage,
-	strip: HtmlElement | undefined,
+	strip: HtmlElement,
 ): readonly BuildFailure[] {
-	if (strip === undefined) return []
 	const footer = footerIn(page)
 	if (footer === undefined || strip.ancestors.includes(footer)) return []
 	return [

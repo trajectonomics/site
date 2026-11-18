@@ -23,7 +23,7 @@ describe("the strings the Dictionary states for its reader", () => {
 		)
 	})
 
-	it("states the three plain facts above the install window, in every Language", () => {
+	it("states the three plain facts in the footer, in every Language", () => {
 		for (const { language, dictionary } of LANGUAGES) {
 			expect({ language, labels: dictionary.factLabels.length }).toEqual({ language, labels: 3 })
 			expect({ language, texts: dictionary.factTexts.length }).toEqual({ language, texts: 3 })

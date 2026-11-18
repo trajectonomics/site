@@ -1,6 +1,6 @@
 import type { Dictionary } from "../../language/dictionary"
 
-/** The three plain facts as the build must produce them: one definition list above the install window. */
+/** The three plain facts as the build must produce them: one definition list in the footer. */
 export function factsStrip(dictionary: Dictionary): string {
 	const facts = dictionary.factLabels
 		.map(
