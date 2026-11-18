@@ -64,8 +64,8 @@ export const DOCS_CLI_PATH = "/docs/cli/"
  */
 export const DOCS_CLI_INSTALL_PATH = "/docs/cli/installation/"
 
-/** The CLI's v0.1.0 release date, the machine-readable date the footer's release line names. */
-export const RELEASE_DATE = "2026-11-12"
+/** The CLI's v0.2.0 release date, the machine-readable date the footer's release line names. */
+export const RELEASE_DATE = "2026-11-17"
 
 /** The skills repository: the star menu, the How it works star link and the footer's licence name it. */
 export const GITHUB_SKILLS_URL = "https://github.com/trajectonomics/skills"

@@ -1,3 +1,4 @@
+import type { Dictionary } from "../../language/dictionary"
 import type { Language } from "../../language/language"
 import { LANGUAGES, languageEntry, localeUrl } from "../../language/languages"
 import {
@@ -20,8 +21,20 @@ export interface HeroParts extends WindowParts {
 	/** The whole inner markup of the hero's `<h1>`, so a test can drop a phrase the headline cycles. */
 	readonly headline?: string
 	readonly subline?: string
+	readonly facts?: string
 	readonly disclaimer?: string
 	readonly extra?: string
+}
+
+/** The three plain facts as the build must produce them: one definition list above the install window. */
+export function factsStrip(dictionary: Dictionary): string {
+	const facts = dictionary.factLabels
+		.map(
+			(label, index) =>
+				`<div data-fact><dt>${label}</dt><dd>${dictionary.factTexts[index] ?? ""}</dd></div>`,
+		)
+		.join("\n")
+	return `<dl data-facts>${facts}</dl>`
 }
 
 /** Every phrase the hero's `<h1>` carries: the plain run and the accent. */
@@ -52,6 +65,7 @@ export function heroHome(language: Language, parts: HeroParts = {}): BuiltFile {
 		'<main class="bg-muted text-foreground">',
 		`<h1>${headline}</h1>`,
 		`<p>${parts.subline ?? dictionary.heroSubline}</p>`,
+		parts.facts ?? factsStrip(dictionary),
 		installWindow(dictionary, parts),
 		'<p role="status"></p>',
 		"<section>",

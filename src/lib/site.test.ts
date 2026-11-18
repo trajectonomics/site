@@ -62,7 +62,7 @@ describe("the Site's own constants", () => {
 
 	it("names the CLI's docs page and the release date the footer announces", () => {
 		expect(DOCS_CLI_PATH).toBe("/docs/cli/")
-		expect(RELEASE_DATE).toBe("2026-11-12")
+		expect(RELEASE_DATE).toBe("2026-11-17")
 	})
 
 	it("pinpoints the CLI installation page, the way out under the prompt", () => {
