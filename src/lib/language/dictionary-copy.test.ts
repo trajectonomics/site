@@ -53,7 +53,10 @@ describe("the strings the Dictionary states for its reader", () => {
 			expect({ language, assumptions }).toEqual({ language, assumptions: false })
 		}
 		expect(dictionaryFor("en").featureCopies[5]).toBe(
-			"Every result states its as-of date, engine version and scenario in its JSON.",
+			"Every projection, comparison and FI result states its as-of date, engine version and scenario in its JSON.",
+		)
+		expect(dictionaryFor("th").featureCopies[5]).toBe(
+			"ผลลัพธ์ของการคาดการณ์ การเปรียบเทียบ และวัน FI ระบุวันที่ตั้งต้น เวอร์ชันเอนจิน และข้อมูลตั้งต้นไว้ใน JSON",
 		)
 	})
 })

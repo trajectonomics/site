@@ -37,34 +37,30 @@
 
 /*
  * The three plain facts above the install window: the limits a visitor meets after the step, set as a
- * spec strip so they read before it. Three stacked rows on a phone, three columns from 40 rem, where
- * the labels sit over their sentences and the hairline above the strip rules all three.
+ * spec strip so they read before it. Three stacked facts on a phone, three columns from 40 rem, where
+ * the hairline above the strip rules all three. The labels keep the Theme's own line height, so a Thai
+ * label that wraps never crowds its combining marks.
  */
 .hero-facts {
 	margin: 0;
 	display: grid;
-	gap: 10px;
+	gap: 12px;
 }
 
 .hero-fact {
-	display: flex;
-	flex-wrap: wrap;
-	align-items: baseline;
-	gap: 2px 10px;
+	display: block;
 }
 
 .hero-facts dt {
 	font-family: var(--font-meta);
 	font-size: 10px;
 	letter-spacing: 0.08em;
-	line-height: 1.5;
 	text-transform: uppercase;
 }
 
 .hero-facts dd {
-	margin: 0;
+	margin: 4px 0 0;
 	font-size: 13px;
-	line-height: 1.5;
 }
 
 @media (min-width: 40rem) {
@@ -73,12 +69,7 @@
 		gap: 24px;
 	}
 
-	.hero-fact {
-		display: block;
-	}
-
 	.hero-facts dd {
 		margin-top: 6px;
-		line-height: 1.6;
 	}
 }
