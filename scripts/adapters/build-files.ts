@@ -1,6 +1,6 @@
 import { existsSync } from "node:fs"
 import type { BuiltFile } from "../../src/lib/build/check-build"
-import { type ImagePixels, pngPixels } from "../../src/lib/build/image-pixels"
+import { type ImagePixels, PNG_HEADER_BYTES, pngPixels } from "../../src/lib/build/image-pixels"
 
 /** The files whose bytes are an image or a font, so no built-file check can read them as text. */
 const BINARY = /\.(?:ico|png|jpe?g|gif|webp|avif|woff2?|ttf|otf|wasm|mp4)$/i
@@ -8,12 +8,9 @@ const BINARY = /\.(?:ico|png|jpe?g|gif|webp|avif|woff2?|ttf|otf|wasm|mp4)$/i
 /** The images whose own header states a size, which a check judges without reading the picture. */
 const SIZED = /\.png$/i
 
-/** The bytes a PNG header is read from: its signature, the chunk length and the `IHDR` size. */
-const HEADER_BYTES = 24
-
 /** The pixel size one built PNG states, or `undefined` when it states none. */
 async function pixelsOf(path: string): Promise<ImagePixels | undefined> {
-	const header = new Uint8Array(await Bun.file(path).slice(0, HEADER_BYTES).arrayBuffer())
+	const header = new Uint8Array(await Bun.file(path).slice(0, PNG_HEADER_BYTES).arrayBuffer())
 	return pngPixels(header)
 }
 

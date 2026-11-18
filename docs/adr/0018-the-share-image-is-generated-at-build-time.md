@@ -31,25 +31,32 @@ That is the shape a share image takes too.
 - **The colours are the Theme's, read from the tokens.** `shareColours(tokens)` reads `background`,
   `foreground`, `muted-foreground` and `accent` from the one Theme a production build ships — the dark
   Theme ([ADR 0016](./0016-the-site-ships-the-dark-theme.md)) — and rejects a pinned CSS that publishes
-  no such Theme (`SHARE_THEME_MISSING`) or no such role (`SHARE_ROLE_MISSING`). No colour literal is
-  written in `src/lib/social/`, the way none is written in a template.
-- **The type is the Brand Typeface, with one face behind it.** The statement is set in `Aleo` and the meta
-  layer in `Azeret Mono` (latin subsets, copied from the assets package by `copy-fonts.ts`). Thai is not in
-  those ranges, so it draws from `e2e/fonts/NotoSansThai.ttf`, the Thai face this repository already
-  commits for its visual baselines and the family the Theme's own sans stack names. The rasterizer loads
-  those four files and no system font (`loadSystemFonts: false`), so a CI runner and a workstation render
-  the same bytes.
-- **`@resvg/resvg-js` is the one new dependency.** Text is shaped and rasterized by it — Thai mark
-  positioning included — because a browser is not installed where `bun run check` runs, and the fonts the
-  Site ships are `.woff2`, which the alternatives in the tree (`sharp` through libvips, Chromium through
-  Playwright) cannot read.
+  no such Theme (`SHARE_THEME_MISSING`) or no such role (`SHARE_ROLE_MISSING`). The composition writes no
+  colour literal: the four values arrive as data, and its unit test fails on any hex value in the SVG that
+  is not one of them.
+- **The type is the Brand Typeface, and a run of Thai is set in the face the Theme names.** The statement
+  is set in `Aleo` and the meta layer in `Azeret Mono`, the latin subsets the assets package ships. A run
+  that carries Thai script is set in `e2e/fonts/NotoSansThai.ttf` instead — the Thai face this repository
+  already commits for its visual baselines, and the family the Theme's own sans stack names — because the
+  brand cuts carry no Thai glyph and the rasterizer resolves one face per text node, so a Thai sentence
+  carrying a Latin word is set in the Thai face, which covers both (`src/lib/social/face.ts`). The
+  rasterizer loads those four files and no system font (`loadSystemFonts: false`), so a CI runner and a
+  workstation print the same bytes.
+- **`@resvg/resvg-js` shapes and rasterizes the picture.** Thai mark positioning included, because a
+  browser is not installed where `bun run check` runs. `wawoff2` decompresses the `.woff2` files into sfnt
+  first: the rasterizer's `fontdb` reads no `.woff2` and ignores one silently, so the picture would be
+  drawn entirely in the fallback face — which is what the first draft of this change shipped until a
+  review rendered the same image through the Thai face alone and got the same bytes.
+  `scripts/adapters/share-fonts.ts` converts each cut into a gitignored cache, and a test now requires the
+  image rendered through every face to differ from the one rendered through the Thai face alone. Both
+  dependencies are pinned exactly and neither adds a second lockfile.
 - **The head advertises it, and the build is judged on it.** An indexed page carries `og:image` (absolute,
   via the site origin), `og:image:width` (1200), `og:image:height` (630), `og:image:type` (`image/png`),
   `og:image:alt` (the wordmark and the value statement, in that Language's words), `twitter:card:
   summary_large_image` and `twitter:image`. `checkSocialCard` holds every one of them
   (`SOCIAL_CARD_MISSING`, `SOCIAL_CARD_DUPLICATE`, `SOCIAL_CARD_WRONG`), and `checkShareImage` holds the
   files: each Language's image is in the build (`SHARE_IMAGE_MISSING`), opens as a PNG
-  (`SHARE_IMAGE_NOT_PNG`), is 1200 × 630 (`SHARE_IMAGE_SIZE_WRONG`) and weighs under 100,000 bytes
+  (`SHARE_IMAGE_NOT_PNG`), is 1200 × 630 (`SHARE_IMAGE_SIZE_WRONG`) and weighs at most 100,000 bytes
   (`SHARE_IMAGE_TOO_HEAVY`). The size comes from the image's own header, which the adapter reads into
   `BuiltFile.pixels` so the rule stays data in, data out, and no scan reads a PNG as text.
 
@@ -64,12 +71,14 @@ That is the shape a share image takes too.
   correctly, but the shared check installs no browser; only `browser.yml` does. A prebuild step that needs
   one would fail `bun run check` and pass the browser workflow, which is the wrong way round.
 - **`sharp`, already in the tree through Astro.** Rejected. libvips draws text through fontconfig, so the
-  Brand Typeface would have to be installed on the machine rather than passed in, and a `.woff2` is not a
-  fontconfig file.
+  Brand Typeface would have to be installed on the machine rather than passed in, and fontconfig reads
+  neither `.woff2` nor a font file a caller hands it.
 - **A package that measures text for the wrapper.** Rejected for now: the statement breaks at a character
   budget (`STATEMENT_LINE_CHARS`) instead of a pixel width, because measuring needs the font's own metrics
   and the Pure Core does not read the font. The budget is set so both Languages' statements set in three
-  lines with room at the margin, and a third Language would be one look at the render, not new code.
+  lines with room at the margin, and a test renders both images and fails if any ink falls outside the
+  margins — so a third Language that overflows is a red build rather than a cropped picture, and one look
+  at the render sets its numbers.
 
 ## Consequences
 

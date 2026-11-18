@@ -3,15 +3,9 @@ import { dictionaryFor } from "../language/languages"
 import { SITE_NAME } from "../site"
 import { LOCKUP_HEIGHT, SHARE_IMAGE_HEIGHT, SHARE_IMAGE_WIDTH } from "./layout"
 import type { ShareLockup } from "./lockup"
+import { absoluteShareImageUrl, shareImageAlt, shareImagePath } from "./share-advert"
 import type { ShareColours } from "./share-colours"
-import {
-	absoluteShareImageUrl,
-	type ShareImage,
-	type ShareImageInput,
-	shareImage,
-	shareImageAlt,
-	shareImagePath,
-} from "./share-image"
+import { type ShareImage, type ShareImageInput, shareImage } from "./share-image"
 
 const COLOURS: ShareColours = Object.freeze({
 	background: "#0a0a0a",
@@ -60,10 +54,12 @@ describe("one Language's share image", () => {
 		expect(new Set(painted)).toEqual(new Set(Object.values(COLOURS)))
 	})
 
-	it("carries the Language's own value statement, one line per run of the SVG", () => {
-		const { svg } = imageOf("th")
-		expect(svg).toContain("ไม่มีแดชบอร์ด")
-		expect(svg).toContain('font-family="Aleo, Noto Sans Thai"')
+	it("carries the Language's own value statement, each line in the face its script asks for", () => {
+		const english = imageOf("en").svg
+		expect(english).toContain('font-family="Aleo"')
+		const thai = imageOf("th").svg
+		expect(thai).toContain("ไม่มีแดชบอร์ด")
+		expect(thai).toContain('font-family="Noto Sans Thai"')
 	})
 
 	it("draws the brand lockup, scaled to the height the image allows", () => {

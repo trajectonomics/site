@@ -25,11 +25,13 @@ export const STATEMENT_LINE_HEIGHT = 58
 /** The baseline the statement's last line sits on, so a longer statement grows upwards. */
 export const STATEMENT_LAST_BASELINE = 452
 
-/** The accent rule above the statement: its width, its height and its distance to the first baseline. */
+/** The width of the accent rule above the statement, in pixels. */
 export const RULE_WIDTH = 56
 
+/** The height of that rule, in pixels. */
 export const RULE_HEIGHT = 6
 
+/** The distance from that rule down to the statement's first baseline, in pixels. */
 export const RULE_GAP = 26
 
 /** The baseline of the origin line under the statement, in pixels. */

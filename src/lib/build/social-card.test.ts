@@ -1,6 +1,6 @@
 import { describe, expect, it } from "bun:test"
 import { absoluteLocaleUrl } from "../language/languages"
-import { absoluteShareImageUrl } from "../social/share-image"
+import { absoluteShareImageUrl } from "../social/share-advert"
 import { checkSocialCard } from "./social-card"
 import { codes, edited, entryAt } from "./testing/homes"
 
@@ -92,7 +92,7 @@ describe("the Social card of a Language home", () => {
 		).toEqual(["SOCIAL_CARD_WRONG"])
 	})
 
-	it("fails a card that declares the image at another width than the card is cut at", () => {
+	it("passes the card's own width and fails any other the image is not drawn at", () => {
 		expect(
 			codes(
 				checkSocialCard,

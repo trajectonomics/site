@@ -5,7 +5,7 @@ import { absoluteLocaleUrl, LANGUAGES, languageEntry } from "../../language/lang
 import { SITE_NAME } from "../../site"
 import { structuredDataJson } from "../../site/structured-data"
 import { SHARE_IMAGE_HEIGHT, SHARE_IMAGE_WIDTH } from "../../social/layout"
-import { absoluteShareImageUrl, shareImageAlt } from "../../social/share-image"
+import { absoluteShareImageUrl, shareImageAlt } from "../../social/share-advert"
 import { TEST_TOKENS } from "../test-page"
 
 /** The Social card every Language home must carry, as the build writes it. */

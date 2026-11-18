@@ -1,7 +1,8 @@
 import { describe, expect, it } from "bun:test"
 import { LANGUAGES } from "../language/languages"
 import { SHARE_IMAGE_HEIGHT, SHARE_IMAGE_WIDTH } from "../social/layout"
-import { SHARE_IMAGE_MAX_BYTES, shareImagePath } from "../social/share-image"
+import { shareImagePath } from "../social/share-advert"
+import { SHARE_IMAGE_MAX_BYTES } from "../social/share-image"
 import type { BuiltFile } from "./built-files"
 import { checkShareImage } from "./share-image"
 

@@ -6,20 +6,8 @@ import { LANGUAGES } from "../src/lib/language/languages"
 import { shareColours } from "../src/lib/social/share-colours"
 import { type ShareImage, shareImage } from "../src/lib/social/share-image"
 import { readDesignTokens } from "./adapters/design-tokens"
+import { shareImageFonts } from "./adapters/share-fonts"
 import { readShareLockup } from "./adapters/share-lockup"
-import { BRAND_FACES, brandFontsSource } from "./copy-fonts"
-
-/**
- * The Thai face the repository commits for its visual baselines, which are the one thing in the tree
- * that renders Thai: the Site ships no Thai file, so the Theme names this family and the visitor's own
- * face draws it ([ADR 0005](../docs/adr/0005-page-weight-and-web-font-budget.md)).
- */
-const THAI_FACE = fileURLToPath(new URL("../e2e/fonts/NotoSansThai.ttf", import.meta.url))
-
-/** The font files the rasterizer draws text through: the Brand Typeface, then the Thai face. */
-export function shareImageFonts(source: string = brandFontsSource()): readonly string[] {
-	return Object.freeze([...BRAND_FACES.map((face) => join(source, face)), THAI_FACE])
-}
 
 /** The PNG one composed share image rasterizes to, with its own fonts and no system font consulted. */
 export function renderShareImage(image: ShareImage, fonts: readonly string[]): Uint8Array {
@@ -27,6 +15,14 @@ export function renderShareImage(image: ShareImage, fonts: readonly string[]): U
 		font: { fontFiles: [...fonts], loadSystemFonts: false, defaultFontFamily: "Aleo" },
 	})
 	return resvg.render().asPng()
+}
+
+/** The same render as the rasterizer's own pixels, so a test can judge the ink it laid down. */
+export function renderShareImagePixels(image: ShareImage, fonts: readonly string[]) {
+	const resvg = new Resvg(image.svg, {
+		font: { fontFiles: [...fonts], loadSystemFonts: false, defaultFontFamily: "Aleo" },
+	})
+	return resvg.render()
 }
 
 /**
@@ -37,7 +33,7 @@ export function renderShareImage(image: ShareImage, fonts: readonly string[]): U
 export async function writeShareImages(destination: string): Promise<readonly string[]> {
 	const colours = shareColours(await readDesignTokens())
 	const lockup = await readShareLockup()
-	const fonts = shareImageFonts()
+	const fonts = await shareImageFonts()
 	await mkdir(destination, { recursive: true })
 	for (const entry of LANGUAGES) {
 		const image = shareImage({

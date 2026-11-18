@@ -7,15 +7,15 @@ export interface ImagePixels {
 /** The eight bytes every PNG opens with. */
 const PNG_SIGNATURE = Object.freeze([137, 80, 78, 71, 13, 10, 26, 10])
 
-/** Where a PNG's header keeps its width and its height: after the signature, the chunk length and `IHDR`. */
-const HEADER_BYTES = 24
+/** The bytes a PNG header occupies: the signature, the chunk length, `IHDR`, the width and the height. */
+export const PNG_HEADER_BYTES = 24
 const TYPE_OFFSET = 12
 const WIDTH_OFFSET = 16
 const HEIGHT_OFFSET = 20
 
 /** Whether `bytes` opens like a PNG: its signature, then the `IHDR` chunk every PNG writes first. */
 function isPngHeader(bytes: Uint8Array): boolean {
-	if (bytes.length < HEADER_BYTES) return false
+	if (bytes.length < PNG_HEADER_BYTES) return false
 	if (!PNG_SIGNATURE.every((byte, index) => bytes[index] === byte)) return false
 	return String.fromCharCode(...bytes.subarray(TYPE_OFFSET, TYPE_OFFSET + 4)) === "IHDR"
 }

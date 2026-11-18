@@ -3,7 +3,7 @@
  * and not measured in pixels, because measuring needs the font's own metrics, which a Pure Core does not
  * read: at this size the Site's two Languages run within a character of the same width on a line.
  */
-export const STATEMENT_LINE_CHARS = 56
+export const STATEMENT_LINE_CHARS = 54
 
 /** The five characters an XML document cannot read literally, and what replaces each one. */
 const ESCAPES: Readonly<Record<string, string>> = Object.freeze({
