@@ -67,6 +67,7 @@ export function snapshotFor(feed: ReleaseFeed, asOf: string): SnapshotWrite {
 			waiting: `npm's latest is ${feed.latest}, and v${feed.latest} has no published GitHub release yet, so the snapshot is unchanged.`,
 		})
 	}
+	calendarDay(feed.releasedOn, "releasedOn")
 	calendarDay(asOf, "asOf")
 	return Object.freeze({
 		written: Object.freeze({ version: feed.latest, releasedOn: feed.releasedOn, asOf }),

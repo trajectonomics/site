@@ -55,6 +55,11 @@ describe("what bun run release:update writes", () => {
 		})
 	})
 
+	it("rejects a release day the month does not have, before it can be written", () => {
+		const feed = { latest: "0.2.0", releasedOn: "2026-02-30" }
+		expect(codeOf(() => snapshotFor(feed, "2026-03-01"))).toBe("RELEASE_DATE_INVALID")
+	})
+
 	it("rejects a day it cannot record as the date it was read", () => {
 		const feed = { latest: "0.2.0", releasedOn: "2026-11-17" }
 		expect(codeOf(() => snapshotFor(feed, "17/11/2026"))).toBe("RELEASE_DATE_INVALID")

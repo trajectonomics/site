@@ -43,7 +43,13 @@ describe("the release strings a Language prints", () => {
 	})
 
 	it("rejects a day the month does not have, so no impossible date can reach a page", () => {
-		for (const releasedOn of ["2026-02-30", "2026-04-31", "2026-11-99"]) {
+		for (const releasedOn of [
+			"2026-02-30",
+			"2026-02-29",
+			"2100-02-29",
+			"2026-04-31",
+			"2026-11-99",
+		]) {
 			expect(codeOf(() => releaseFacts({ ...JANUARY, releasedOn }, SYNTHETIC))).toBe(
 				"RELEASE_DATE_INVALID",
 			)
