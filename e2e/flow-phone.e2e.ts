@@ -26,4 +26,17 @@ test.describe("the layer flow on a phone", () => {
 		expect(Math.abs(card.y + card.height - 844)).toBeLessThanOrEqual(2)
 		await expect(how.locator(".how-step:visible")).toHaveCount(1)
 	})
+
+	test("lands the pulse in the logic layer at a phone's width too", async ({ page }) => {
+		await openPage(page, HOME)
+		const how = page.locator(".how")
+		await how.scrollIntoViewIfNeeded()
+		await expect(how).toHaveAttribute("data-step", "3", { timeout: 12_000 })
+		const dot = await page.locator(".layers-pulse").boundingBox()
+		const logic = await how.locator(".layer-logic").boundingBox()
+		if (dot === null || logic === null) throw new Error("the pulse or the logic layer has no box")
+		const dotCentre = dot.y + dot.height - 3
+		expect(dotCentre).toBeGreaterThan(logic.y)
+		expect(dotCentre).toBeLessThan(logic.y + logic.height)
+	})
 })

@@ -69,7 +69,7 @@ describe("the three sequences the sections play", () => {
 
 	it("spaces the layer flow's steps, because a step that flies past cannot be read", () => {
 		expect(HOW_FLOW.beatMs).toBeGreaterThanOrEqual(1_500)
-		expect(HOW_FLOW.beatMs).toBeLessThanOrEqual(2_500)
+		expect(HOW_FLOW.beatMs).toBeLessThanOrEqual(3_000)
 	})
 
 	it("runs the two panels' chats no slower than the layer flow", () => {

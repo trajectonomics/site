@@ -18,7 +18,7 @@
 @media (prefers-reduced-motion: no-preference) {
 	/* The pulse leaves the presentation layer, crosses the skills and stops in the logic layer. */
 	.how[data-motion="play"] .layers-pulse {
-		animation: layers-pulse 6s ease-in-out both;
+		animation: layers-pulse 11s ease-in-out both;
 	}
 
 	/* The step that runs marks its stage on the border, and the light travels round it. */
@@ -75,20 +75,18 @@
 			opacity: 0;
 			transform: translateY(0);
 		}
-		8% {
+		10% {
 			opacity: 1;
 			transform: translateY(0);
 		}
-		30% {
-			transform: translateY(34px);
-		}
-		55% {
+		40% {
 			opacity: 1;
-			transform: translateY(112px);
+			transform: translateY(100%);
 		}
-		70% {
+		/* The thinking beat: it waits in the logic layer while the CLI computes. */
+		73% {
 			opacity: 1;
-			transform: translateY(112px);
+			transform: translateY(100%);
 		}
 		95% {
 			opacity: 1;

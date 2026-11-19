@@ -161,6 +161,7 @@ const guesses = dictionary.actionGuesses
 						<li class="chat-message" data-from="agent" style={at(guided, BEAT.terminal)}>
 							<span class="sr-only">{dictionary.actionAgent}</span>
 							<div class="chat-bubble chat-cli">
+								<Bot class="chat-mark" />
 								<p class="chat-text chat-note">{dictionary.actionSkillLine}</p>
 								<div class="terminal bg-stage text-stage-foreground">
 									<code class="terminal-command"><span class="terminal-prompt" aria-hidden="true">$ </span>{FI_DEMO_COMMAND}</code>

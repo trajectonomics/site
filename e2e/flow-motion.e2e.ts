@@ -35,7 +35,7 @@ test.describe("the layer flow with motion allowed", () => {
 		] as const
 		const heights: number[] = []
 		for (const { step, stage } of stages) {
-			await expect(how).toHaveAttribute("data-step", step, { timeout: 3_000 })
+			await expect(how).toHaveAttribute("data-step", step, { timeout: 5_000 })
 			heights.push(await heightOf(page))
 			expect(
 				await how.locator(stage).evaluate((element) => getComputedStyle(element).borderTopColor),
@@ -44,7 +44,7 @@ test.describe("the layer flow with motion allowed", () => {
 			// The agent doing that step is chipped onto the stage it is working in.
 			await expect(how.locator(`[data-step-chip="${step}"]`)).toHaveCSS("opacity", "1")
 		}
-		await expect(how).not.toHaveAttribute("data-motion", "play", { timeout: 3_000 })
+		await expect(how).not.toHaveAttribute("data-motion", "play", { timeout: 14_000 })
 		const settled = await heightOf(page)
 		// Monotonic: the section only ever gets taller while it runs, and ends at the static height.
 		for (let index = 1; index < heights.length; index++) {
@@ -64,13 +64,21 @@ test.describe("the layer flow with motion allowed", () => {
 		await how.scrollIntoViewIfNeeded()
 		const pulse = page.locator(".layers-pulse")
 		// While the request is out computing, the outputs wait empty and the pulse travels the stack.
-		await expect(how).toHaveAttribute("data-step", "3", { timeout: 8_000 })
+		await expect(how).toHaveAttribute("data-step", "3", { timeout: 12_000 })
 		await expect(how.locator(".how-output-answer > *").first()).toHaveCSS("opacity", "0")
 		expect(
 			Number(await pulse.evaluate((element) => getComputedStyle(element).opacity)),
 		).toBeGreaterThan(0)
+		// The dot waits in the logic layer, whatever the width: its travel is the layer's, not pixels.
+		const dot = await pulse.boundingBox()
+		const logic = await how.locator(".layer-logic").boundingBox()
+		if (dot === null || logic === null) throw new Error("the pulse or the logic layer has no box")
+		// The dot is painted at the foot of the pulse's column, and that foot is the dot's centre.
+		const dotCentre = dot.y + dot.height - 3
+		expect(dotCentre).toBeGreaterThan(logic.y)
+		expect(dotCentre).toBeLessThan(logic.y + logic.height)
 		// Come back: the three frames fill in turn, and the static page is the state it ends on.
-		await expect(how).not.toHaveAttribute("data-motion", "play", { timeout: 8_000 })
+		await expect(how).not.toHaveAttribute("data-motion", "play", { timeout: 14_000 })
 		for (const output of ["answer", "chart", "action"]) {
 			await expect(how.locator(`.how-output-${output} > *`).first()).toHaveCSS("opacity", "1")
 		}

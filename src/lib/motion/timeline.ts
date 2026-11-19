@@ -37,8 +37,8 @@ export const COMPARE_ALONE: Sequence = Object.freeze({ beats: 8, beatMs: 480, ga
 /** The agent with traj's exchange: seven messages and the six output lines that arrive one by one. */
 export const COMPARE_WITH: Sequence = Object.freeze({ beats: 13, beatMs: 300, gapMs: 120 })
 
-/** The layer flow's four steps, at two seconds each. */
-export const HOW_FLOW: Sequence = Object.freeze({ beats: 4, beatMs: 2_000, gapMs: 0 })
+/** The layer flow's four steps, at two and three-quarter seconds each. */
+export const HOW_FLOW: Sequence = Object.freeze({ beats: 4, beatMs: 2_750, gapMs: 0 })
 
 /** The timeline of one sequence: one beat per message it passes, and the moment it settles. */
 export function sequenceTimeline(sequence: Sequence): Timeline {
