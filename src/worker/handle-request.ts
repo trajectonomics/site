@@ -1,33 +1,108 @@
 import { chooseLanguage } from "../lib/language/choose"
-import { localeUrl } from "../lib/language/languages"
+import {
+	CLEAN_URL,
+	LANGUAGE_CHOICE_PARAM,
+	languageHomePath,
+	spokenLanguage,
+} from "../lib/language/languages"
+import { languageChoiceCookie, languageFromCookie } from "../lib/language/stored-choice"
 
-/** The one path the Worker answers itself; every other path is a static asset ([ADR 0003]). */
-const ROOT_PATH = "/"
+/** The one path the Worker answers itself; every other path is a static asset (ADR 0020). */
+const ROOT_PATH = CLEAN_URL
 
-/** The Visitor signals a shared cache must vary on, in the order the response names them. */
-const VARY = "Accept-Language, CF-IPCountry"
+/** The prefixes the Site answered at before it had one address; each now moves to it. */
+const OLD_PREFIXES: readonly string[] = Object.freeze(["/en", "/th"])
 
-/** The assets binding the Worker hands every path but `/` back to. */
+/** What the answer at `/` depends on, in the order the response names them. */
+const VARY = "Cookie, Accept-Language, CF-IPCountry"
+
+/** `/` is private, so no shared cache hands one visitor's Language to another, and revalidated. */
+const HOME_CACHE_CONTROL = "private, no-cache"
+
+/** The choice answer is a redirect that stores state, so no cache may keep it. */
+const CHOICE_CACHE_CONTROL = "no-store"
+
+/** The status an old prefix answers with: permanent, because the address will not move back. */
+const MOVED_STATUS = 301
+
+/** The status the choice link answers with: back to the address, with the choice stored. */
+const CHOICE_STATUS = 302
+
+/** The assets binding the Worker hands every path but `/` and the old prefixes back to. */
 export interface Assets {
 	fetch(request: Request): Promise<Response>
 }
 
-/** The redirect from `/`: a Locale URL with the query kept, which no cache may store. */
-export function redirectFromRoot(url: URL, headers: Headers): Response {
-	const language = chooseLanguage(headers.get("accept-language"), headers.get("cf-ipcountry"))
+/** Whether a path is one the Site answered at before it had one address, such as `/en/`. */
+export function isOldAddress(pathname: string): boolean {
+	return OLD_PREFIXES.some((prefix) => pathname === prefix || pathname.startsWith(`${prefix}/`))
+}
+
+/** Every old prefix answers 301 to the Site's one address, so an indexed URL never 404s. */
+export function movedToAddress(): Response {
 	return new Response(null, {
-		status: 302,
-		headers: {
-			Location: `${localeUrl(language)}${url.search}`,
-			Vary: VARY,
-			"Cache-Control": "no-store",
-		},
+		status: MOVED_STATUS,
+		headers: { Location: CLEAN_URL },
 	})
 }
 
-/** Answer `/` with the redirect, and hand every other path to the assets binding. */
+/**
+ * The choice link's answer: store the Language when the Site speaks it, then return to `/`. A code
+ * the Site does not speak writes no cookie, and the link still lands on the address.
+ */
+export function choiceResponse(choice: string | null): Response {
+	const language = spokenLanguage(choice)
+	const headers = new Headers({ Location: CLEAN_URL, "Cache-Control": CHOICE_CACHE_CONTROL })
+	if (language !== undefined) headers.set("Set-Cookie", languageChoiceCookie(language))
+	return new Response(null, { status: CHOICE_STATUS, headers })
+}
+
+/** The conditional headers a revalidation carries, so a 304 describes the bytes it stands for. */
+function conditionalHeaders(request: Request): Headers {
+	const headers = new Headers()
+	for (const name of ["If-None-Match", "If-Modified-Since"]) {
+		const value = request.headers.get(name)
+		if (value !== null) headers.set(name, value)
+	}
+	return headers
+}
+
+/** The body to send: none for a HEAD, a 304 or a 204, and the assets' own bytes otherwise. */
+function bodyOf(request: Request, response: Response): ReadableStream<Uint8Array> | null {
+	if (request.method === "HEAD" || response.status === 304 || response.status === 204) return null
+	return response.body
+}
+
+/**
+ * Answer `/` in the Language the visitor's choice or signals name: the stored choice first, then
+ * `Accept-Language`, then the country, then English. The bytes are that Language's own home, and
+ * the response says what it depends on, so a cache cannot hand one Language to another visitor.
+ */
+export async function homeResponse(request: Request, assets: Assets): Promise<Response> {
+	const url = new URL(request.url)
+	const language = chooseLanguage(
+		languageFromCookie(request.headers.get("cookie")),
+		request.headers.get("accept-language"),
+		request.headers.get("cf-ipcountry"),
+	)
+	const assetRequest = new Request(new URL(languageHomePath(language), url.origin), {
+		method: "GET",
+		headers: conditionalHeaders(request),
+	})
+	const assetResponse = await assets.fetch(assetRequest)
+	const headers = new Headers(assetResponse.headers)
+	headers.set("Vary", VARY)
+	headers.set("Cache-Control", HOME_CACHE_CONTROL)
+	return new Response(bodyOf(request, assetResponse), { status: assetResponse.status, headers })
+}
+
+/** Answer the address, the choice link and the old prefixes, and hand every other path to assets. */
 export function handleRequest(request: Request, assets: Assets): Promise<Response> {
 	const url = new URL(request.url)
+	if (isOldAddress(url.pathname)) return Promise.resolve(movedToAddress())
 	if (url.pathname !== ROOT_PATH) return assets.fetch(request)
-	return Promise.resolve(redirectFromRoot(url, request.headers))
+	if (url.searchParams.has(LANGUAGE_CHOICE_PARAM)) {
+		return Promise.resolve(choiceResponse(url.searchParams.get(LANGUAGE_CHOICE_PARAM)))
+	}
+	return homeResponse(request, assets)
 }

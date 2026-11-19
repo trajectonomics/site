@@ -33,20 +33,18 @@ function firstPage(): (typeof NOT_FOUND_PAGES)[number] {
 }
 
 describe("the Not-found pages", () => {
-	it("passes a page per Locale URL and the root page, all not indexed", () => {
+	it("passes one page at the assets root, not indexed", () => {
 		expect(codes(pages())).toEqual([])
 	})
 
-	it("fails a build with no root Not-found page", () => {
+	it("fails a build with no Not-found page", () => {
 		expect(codes(pages().filter((file) => file.path !== "404.html"))).toEqual([
 			"NOT_FOUND_PAGE_MISSING",
 		])
 	})
 
-	it("fails a build with no Not-found page under a Locale URL", () => {
-		expect(codes(pages().filter((file) => file.path !== "th/404.html"))).toEqual([
-			"NOT_FOUND_PAGE_MISSING",
-		])
+	it("asks for no Not-found page per Language, because a miss has no Language address", () => {
+		expect(NOT_FOUND_PAGES.map((page) => page.path)).toEqual(["404.html"])
 	})
 
 	it("fails a Not-found page that asks to be indexed", () => {

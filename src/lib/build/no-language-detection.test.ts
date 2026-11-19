@@ -2,7 +2,7 @@ import { describe, expect, it } from "bun:test"
 import { checkNoLanguageDetection } from "./no-language-detection"
 import { codes, edited, entryAt } from "./testing/homes"
 
-describe("the Language a Locale URL chooses", () => {
+describe("the Language a page script must not choose", () => {
 	it("passes a home that reads no browser signal at all", () => {
 		expect(codes(checkNoLanguageDetection)).toEqual([])
 	})

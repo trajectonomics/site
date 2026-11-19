@@ -36,7 +36,7 @@ export interface VisitorConditions {
 export interface PageviewSource {
 	readonly href: string
 	readonly referrer: string
-	/** The Language of the Locale URL the page is under. */
+	/** The Language the document declares, which is the Language the Worker answered in. */
 	readonly language: string
 	readonly title: string
 }

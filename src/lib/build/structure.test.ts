@@ -4,10 +4,11 @@ import { checkStructure } from "./structure"
 
 const complete = "<html><head></head><body><nav></nav><main><h1></h1></main></body></html>"
 
+/** The English home at the address, the Thai home on its build path, and one stylesheet. */
 function build(thai = complete, english = complete): readonly BuiltFile[] {
 	return [
+		{ path: "index.html", content: english },
 		{ path: "th/index.html", content: thai },
-		{ path: "en/index.html", content: english },
 		{ path: "_astro/site.css", content: "body{}" },
 	]
 }
@@ -22,13 +23,21 @@ describe("the structure of the built pages", () => {
 	})
 
 	it("passes a Not-found page too, because the router injects onto it as well", () => {
-		expect(codes([...build(), { path: "th/404.html", content: complete }])).toEqual([])
+		expect(codes([...build(), { path: "404.html", content: complete }])).toEqual([])
 	})
 
-	it("fails a build that put a document at /, which must redirect instead", () => {
-		expect(codes([...build(), { path: "index.html", content: complete }])).toEqual([
-			"ROOT_DOCUMENT_PRESENT",
+	it("fails a build that left no document at the Site's one address", () => {
+		expect(codes([{ path: "th/index.html", content: complete }])).toEqual(["ROOT_DOCUMENT_MISSING"])
+	})
+
+	it("fails a document built under a Language prefix, which is no address any more", () => {
+		expect(codes([...build(), { path: "en/index.html", content: complete }])).toEqual([
+			"PREFIXED_LANGUAGE_DIRECTORY",
 		])
+	})
+
+	it("allows a Language's own build path, which the Worker serves at the address", () => {
+		expect(codes(build())).not.toContain("PREFIXED_LANGUAGE_DIRECTORY")
 	})
 
 	it("does not count a landmark a comment names, so a commented-out nav is no nav", () => {
