@@ -36,15 +36,32 @@ interface CalendarDay {
 /** Twelve months of words: what a Language's date table holds, January first. */
 const MONTHS_PER_YEAR = 12
 
+/** The days each month has, January first; February's leap day is added by `daysInMonth`. */
+const DAYS_PER_MONTH = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
+
+/** How many days one month of one Gregorian year has, so a day that never existed is rejected. */
+function daysInMonth(year: number, month: number): number {
+	const days = DAYS_PER_MONTH[month - 1] ?? 0
+	const leapDay = year % 4 === 0 && (year % 100 !== 0 || year % 400 === 0)
+	return month === 2 && leapDay ? days + 1 : days
+}
+
 /** The bare `YYYY-MM-DD` shape the snapshot and every feed date take. */
 const CALENDAR_DATE = /^(\d{4})-(\d{2})-(\d{2})$/
 
 /** One release day's parts, or the rejection of a value that is not a calendar date. */
 export function calendarDay(date: string, field: string): CalendarDay {
 	const match = CALENDAR_DATE.exec(date)
+	const year = Number(match?.[1])
 	const month = Number(match?.[2])
 	const day = Number(match?.[3])
-	if (match === null || month < 1 || month > MONTHS_PER_YEAR || day < 1) {
+	if (
+		match === null ||
+		month < 1 ||
+		month > MONTHS_PER_YEAR ||
+		day < 1 ||
+		day > daysInMonth(year, month)
+	) {
 		throw releaseError("RELEASE_DATE_INVALID", field, `"${date}" is not a calendar date.`)
 	}
 	return Object.freeze({ year: match[1] ?? "", month, day })

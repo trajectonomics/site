@@ -23,8 +23,9 @@ export function driftBody(snapshot: ReleaseSnapshot, feed: ReleaseFeed): string 
 		`- The snapshot names \`v${version}\`, released ${releasedOn}, read ${asOf}.`,
 		`- npm's \`latest\` is \`${feed.latest}\`, released ${feed.releasedOn ?? "unknown"}.`,
 		"",
-		"Run `bun run release:update`, then open the pull request it produces. Every page's version, release",
-		"line and date come from that one file, and `bun run check` fails a page that names any other.",
+		"Run `bun run release:update`, commit the snapshot it writes, and open a pull request. Every page's",
+		"version, release line and date come from that one file, and `bun run check` fails a page that names",
+		"any other.",
 		"",
 		"If this issue is still open when the snapshot is current again, the next weekly run closes it.",
 	].join("\n")

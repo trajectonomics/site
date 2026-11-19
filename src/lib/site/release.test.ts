@@ -42,6 +42,19 @@ describe("the release strings a Language prints", () => {
 		)
 	})
 
+	it("rejects a day the month does not have, so no impossible date can reach a page", () => {
+		for (const releasedOn of ["2026-02-30", "2026-04-31", "2026-11-99"]) {
+			expect(codeOf(() => releaseFacts({ ...JANUARY, releasedOn }, SYNTHETIC))).toBe(
+				"RELEASE_DATE_INVALID",
+			)
+		}
+	})
+
+	it("accepts the leap day a year that has one carries", () => {
+		const leap = { ...JANUARY, releasedOn: "2024-02-29" }
+		expect(releaseFacts(leap, SYNTHETIC).releaseDate).toBe("29 M2 2024")
+	})
+
 	it("rejects a Language it has no date words for, so a new Language cannot fall through", () => {
 		expect(codeOf(() => releaseFor("xx"))).toBe("RELEASE_LANGUAGE_UNKNOWN")
 	})
