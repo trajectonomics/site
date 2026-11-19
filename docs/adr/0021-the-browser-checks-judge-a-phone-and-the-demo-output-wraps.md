@@ -87,11 +87,11 @@ answer; making the block keyboard-reachable left the contrast run unjudged and t
   ticket's pull request carries them at 1280, 2000 and 390, dark and light, in both Languages. The 390 renders
   show the After panel, because that is the panel this change is about and the one the tab bar hides by
   default; the visual baseline pins the landing state instead.
-- The axe suite goes from six runs to sixteen: six at the desktop width, where both panels are laid out at
-  once, and ten at the phone width, where each Language home is judged twice because only the panel its tab
-  shows is laid out. A panel behind an unopened tab is a panel axe ignores, so the check presses each tab the
-  viewport offers before it looks. A future `axe-core` upgrade that adds a rule axe cannot decide turns the
-  check red; that is the review this record wants, and `@axe-core/playwright` is pinned to an exact version.
+- The axe suite stays twelve runs, and a phone home is analysed twice inside its run: once as it lands and
+  once with the After panel open, because axe ignores a panel behind an unopened tab. The check presses each
+  tab the viewport offers rather than naming the panels, so a viewport that grows a tab bar is judged without
+  editing it. A future `axe-core` upgrade that adds a rule axe cannot decide turns the check red; that is the
+  review this record wants, and `@axe-core/playwright` is pinned to an exact version.
 - An element that outgrows its box now fails a named check on a phone-wide run instead of reaching production
   unjudged. That is the class this record is about, not the one block it was found on.
 - [ADR 0017](./0017-the-hero-rim-brightens-the-field-outside-the-copy.md)'s Consequences carried the wrong
