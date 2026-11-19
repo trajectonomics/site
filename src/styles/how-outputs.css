@@ -48,6 +48,7 @@
 /* The chart: six bars, the last in the accent, with room above it for the value it reads. */
 .how-output-bars {
 	display: flex;
+	width: 100%;
 	align-items: flex-end;
 	gap: 3px;
 	/* The 40 px the bars draw in, plus the band above them for the value. */
@@ -56,6 +57,8 @@
 }
 
 .how-output-bar {
+	position: relative;
+	display: flex;
 	flex: 1;
 	min-width: 4px;
 	height: var(--bar);
@@ -67,10 +70,13 @@
 	background: var(--ds-color-accent);
 }
 
+/* The value sits centred over the last bar's own top edge, which is the bar it reads. */
 .how-output-value {
 	position: absolute;
-	top: 6px;
-	right: 10px;
+	bottom: 100%;
+	left: 50%;
+	padding-bottom: 2px;
+	transform: translateX(-50%);
 	font-family: var(--font-meta);
 	font-size: 10px;
 	line-height: 1.2;

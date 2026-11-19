@@ -82,8 +82,11 @@ describe("the How it works section in every Language", () => {
 			expect(answer).toBe(dictionary.howOutputChat.join(" "))
 			const bars = withClass(page, "how-output-bar")
 			expect(bars).toHaveLength(6)
-			const chart = textOf(page, one(page, "how-output-chart"))
-			expect(chart).toContain(FI_DEMO_DATE.slice(0, 4))
+			// The value rides the last, accent bar: it is inside that bar's own markup, not the frame.
+			const values = withClass(page, "how-output-value")
+			expect(values).toHaveLength(1)
+			expect(values[0]?.ancestors.includes(bars.at(-1) as HtmlElement)).toBe(true)
+			expect(textOf(page, values[0] as HtmlElement)).toBe(FI_DEMO_DATE.slice(0, 4))
 			const action = textOf(page, one(page, "how-output-action"))
 			expect(action).toContain(dictionary.howOutputStatus)
 			expect(action).toContain(dictionary.howOutputSource)

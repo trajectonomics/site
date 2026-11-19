@@ -90,10 +90,13 @@ const YEAR = FI_DEMO_DATE.slice(0, 4)
 							<span class="layer-chip">{name(1)}</span>
 							<span class="how-output how-output-chart">
 								<span class="how-output-bars">
-									{BARS.map((bar) => <span class="how-output-bar" style={`--bar:${bar}%`} />)}
+									{/* The value rides the last, accent bar: it is what that bar reads. */}
+									{BARS.map((bar) => (
+										<span class="how-output-bar" style={`--bar:${bar}%`}>
+											{bar === BARS.at(-1) ? <span class="how-output-value">{YEAR}</span> : null}
+										</span>
+									))}
 								</span>
-								{/* The value the last, accent bar reads: it sits on that bar, not under the row. */}
-								<span class="how-output-value">{YEAR}</span>
 							</span>
 						</li>
 						<li class="layer-output">
