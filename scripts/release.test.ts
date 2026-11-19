@@ -14,7 +14,7 @@ const FEED: ReleaseFeed = { latest: "0.3.0", releasedOn: "2027-02-01" }
 const RELEASE_CORE = join("src", "lib")
 
 /** The one directory outside the Pure Core: the page's own script, which must call the analytics endpoint. */
-const PAGE_SCRIPT = join("analytics") + "/"
+const PAGE_SCRIPT = "analytics/"
 
 /** The clock, the host locale and the network: the three an offline build and a fixture test cannot have. */
 const IMPURE = /\b(fetch\(|new Date|Date\.now|Intl\.|Math\.random|process\.env)/

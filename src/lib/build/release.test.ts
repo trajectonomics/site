@@ -53,7 +53,7 @@ describe("the release a built page names", () => {
 
 	it("fails a page whose version was removed, so a deleted pill or line cannot ship", () => {
 		expect(pageCodes(replaced("en", TAG))).toEqual([
-			"RELEASE_VERSION_UNKNOWN",
+			"RELEASE_VERSION_MISSING",
 			"RELEASE_LINE_NOT_NAMED",
 		])
 	})

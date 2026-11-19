@@ -9,13 +9,13 @@ const VERSION = /\bv\d+\.\d+\.\d+\b/g
 /** The one version the pages may print, in the tag form the Release snapshot derives. */
 const TAG = `v${RELEASE_SNAPSHOT.version}`
 
-/** Every version a page prints is the snapshot's, and a page that prints none names no release at all. */
+/** A page names the snapshot's version and no other; a page that names none breaks its own rule. */
 export function versionFailures(file: BuiltFile): readonly BuildFailure[] {
 	const printed = [...new Set([...file.content.matchAll(VERSION)].map((match) => match[0]))]
 	if (printed.length === 0) {
 		return [
 			buildFailure(
-				"RELEASE_VERSION_UNKNOWN",
+				"RELEASE_VERSION_MISSING",
 				file.path,
 				`names no version; the Release snapshot names ${TAG}.`,
 			),
