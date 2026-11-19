@@ -1,6 +1,7 @@
 import { describe, expect, it } from "bun:test"
 import { readFileSync } from "node:fs"
 import { join } from "node:path"
+import { describeStatus } from "./release-status"
 
 /** The Release snapshot's Pure Cores and the built-file rules that judge them, relative to this script. */
 const CORE = [
@@ -26,5 +27,26 @@ describe("the Release snapshot's core", () => {
 			readFileSync(join(import.meta.dir, "..", "src", "lib", "site", "release.json"), "utf8"),
 		) as Record<string, unknown>
 		expect(Object.keys(snapshot).sort()).toEqual(["asOf", "releasedOn", "version"])
+	})
+})
+
+describe("where the snapshot stands, in one line", () => {
+	it("says the Site names the release npm publishes when the snapshot is current", () => {
+		const message = describeStatus("current", { latest: "0.2.0", releasedOn: "2026-11-17" })
+		expect(message).toContain("v0.2.0")
+		expect(message.startsWith("the Site names")).toBe(true)
+	})
+
+	it("waits while npm's latest has no published release, and never calls that drift", () => {
+		const message = describeStatus("waiting", { latest: "9.9.9", releasedOn: undefined })
+		expect(message).toContain("waiting")
+		expect(message).toContain("9.9.9")
+		expect(message.includes("Release drift")).toBe(false)
+	})
+
+	it("opens with Release drift and names both versions when the snapshot is behind", () => {
+		const message = describeStatus("drift", { latest: "9.9.9", releasedOn: "2027-01-05" })
+		expect(message.startsWith("Release drift:")).toBe(true)
+		expect(message).toContain("v9.9.9")
 	})
 })
