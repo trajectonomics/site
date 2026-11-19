@@ -78,14 +78,20 @@ answer; making the block keyboard-reachable left the contrast run unjudged and t
 
 ## Consequences
 
-- The two mobile home visual baselines move and were regenerated: the page grows 21 px (English) and 23 px
-  (Thai) at 390×844, because the longest JSON line moves its closing date onto a second line at the left
-  margin. The desktop and Not-found baselines do not change, byte for byte.
+- The mobile home baselines did not move once the comparison became a tabbed pair on a phone
+  ([#95](https://github.com/trajectonomics/site/pull/95)): the phone lands on the Before panel, so the page a
+  baseline pins does not carry the wrapped line at all. The desktop and Not-found baselines do not change,
+  byte for byte. Before that, the wrap grew the phone page 21 px (English) and 23 px (Thai), because the
+  longest JSON line moved its closing date onto a second line at the left margin.
 - The twelve `docs/screenshots/site-<language>-<width>-<scheme>.png` renders were refreshed, because a surface
-  ticket's pull request carries them at 1280, 2000 and 390, dark and light, in both Languages.
-- The axe suite goes from six runs to twelve, and a future `axe-core` upgrade that adds a rule axe cannot
-  decide turns the check red. That is the review this record wants, and `@axe-core/playwright` is pinned to an
-  exact version.
+  ticket's pull request carries them at 1280, 2000 and 390, dark and light, in both Languages. The 390 renders
+  show the After panel, because that is the panel this change is about and the one the tab bar hides by
+  default; the visual baseline pins the landing state instead.
+- The axe suite goes from six runs to sixteen: six at the desktop width, where both panels are laid out at
+  once, and ten at the phone width, where each Language home is judged twice because only the panel its tab
+  shows is laid out. A panel behind an unopened tab is a panel axe ignores, so the check presses each tab the
+  viewport offers before it looks. A future `axe-core` upgrade that adds a rule axe cannot decide turns the
+  check red; that is the review this record wants, and `@axe-core/playwright` is pinned to an exact version.
 - An element that outgrows its box now fails a named check on a phone-wide run instead of reaching production
   unjudged. That is the class this record is about, not the one block it was found on.
 - [ADR 0017](./0017-the-hero-rim-brightens-the-field-outside-the-copy.md)'s Consequences carried the wrong
