@@ -1,6 +1,6 @@
 import type { Language } from "../language/language"
 import { type ReleaseFacts, type ReleaseSnapshot, releaseError, releaseFacts } from "./release"
-import raw from "./release.json"
+import raw from "./release.json" with { type: "json" }
 
 /** The committed snapshot `bun run release:update` writes: the release facts every page prints. */
 export const RELEASE_SNAPSHOT: ReleaseSnapshot = Object.freeze({
