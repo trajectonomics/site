@@ -1,0 +1,108 @@
+/*
+ * The four steps of the layer flow (ADR 0019), in one state machine: pending, running and done all
+ * read the single `data-step` value the Reveal layer sets, and the three outputs fill as it settles.
+ */
+
+@media (prefers-reduced-motion: no-preference) {
+	/* The steps: pending, running and done, all keyed off the one `data-step` value. */
+	.how[data-motion="play"][data-step] .how-step {
+		opacity: 0.45;
+	}
+
+	.how[data-motion="play"][data-step="1"] .how-step:nth-child(1),
+	.how[data-motion="play"][data-step="2"] .how-step:nth-child(-n + 1),
+	.how[data-motion="play"][data-step="2"] .how-step:nth-child(2),
+	.how[data-motion="play"][data-step="3"] .how-step:nth-child(-n + 2),
+	.how[data-motion="play"][data-step="3"] .how-step:nth-child(3),
+	.how[data-motion="play"][data-step="4"] .how-step:nth-child(-n + 3),
+	.how[data-motion="play"][data-step="4"] .how-step:nth-child(4) {
+		opacity: 1;
+	}
+
+	.how[data-motion="play"][data-step="2"] .how-step:nth-child(-n + 1),
+	.how[data-motion="play"][data-step="3"] .how-step:nth-child(-n + 2),
+	.how[data-motion="play"][data-step="4"] .how-step:nth-child(-n + 3) {
+		opacity: 0.8;
+	}
+
+	.how[data-motion="play"][data-step="1"] .how-step:nth-child(1) .how-step-number,
+	.how[data-motion="play"][data-step="1"] .how-step:nth-child(1) .how-step-actor,
+	.how[data-motion="play"][data-step="2"] .how-step:nth-child(2) .how-step-number,
+	.how[data-motion="play"][data-step="2"] .how-step:nth-child(2) .how-step-actor,
+	.how[data-motion="play"][data-step="3"] .how-step:nth-child(3) .how-step-number,
+	.how[data-motion="play"][data-step="3"] .how-step:nth-child(3) .how-step-actor,
+	.how[data-motion="play"][data-step="4"] .how-step:nth-child(4) .how-step-number,
+	.how[data-motion="play"][data-step="4"] .how-step:nth-child(4) .how-step-actor {
+		color: var(--ds-color-accent);
+	}
+
+	.how[data-motion="play"][data-step="1"] .how-step:nth-child(1) .how-step-running,
+	.how[data-motion="play"][data-step="2"] .how-step:nth-child(2) .how-step-running,
+	.how[data-motion="play"][data-step="3"] .how-step:nth-child(3) .how-step-running,
+	.how[data-motion="play"][data-step="4"] .how-step:nth-child(4) .how-step-running {
+		opacity: 1;
+		animation: dots-run 900ms ease-in-out infinite;
+	}
+
+	/* The three outputs wait empty while the flow is out computing, then fill as the answer comes back. */
+	.how[data-motion="play"][data-step="1"] .how-output > *,
+	.how[data-motion="play"][data-step="2"] .how-output > *,
+	.how[data-motion="play"][data-step="3"] .how-output > * {
+		opacity: 0;
+	}
+
+	.how[data-motion="play"][data-step="4"] .how-output > * {
+		animation: chat-in 400ms cubic-bezier(0.16, 1, 0.3, 1) both;
+	}
+
+	.how[data-motion="play"][data-step="4"] .layer-output:nth-child(2) .how-output > * {
+		animation-delay: 220ms;
+	}
+
+	.how[data-motion="play"][data-step="4"] .layer-output:nth-child(3) .how-output > * {
+		animation-delay: 440ms;
+	}
+
+	/*
+	 * A phone: the diagram takes the reading area and the four steps leave it for one card at the
+	 * bottom edge, showing only the step that is running. When the flow settles the card goes and the
+	 * four steps return to the list, so a motion-off visitor reads all four with their actors.
+	 */
+	@media (max-width: 43.999rem) {
+		.how[data-motion="play"][data-step] .how-steps {
+			position: fixed;
+			z-index: 40;
+			right: 0;
+			bottom: 0;
+			left: 0;
+			display: block;
+			margin: 0;
+			padding: 12px 20px calc(12px + env(safe-area-inset-bottom));
+			border-top: 1px solid var(--ds-color-accent);
+			background: var(--ds-color-background);
+		}
+
+		.how[data-motion="play"][data-step] .how-step {
+			display: none;
+			padding: 0;
+			border-bottom: 0;
+		}
+
+		.how[data-motion="play"][data-step="1"] .how-step:nth-child(1),
+		.how[data-motion="play"][data-step="2"] .how-step:nth-child(2),
+		.how[data-motion="play"][data-step="3"] .how-step:nth-child(3),
+		.how[data-motion="play"][data-step="4"] .how-step:nth-child(4) {
+			display: grid;
+		}
+	}
+}
+
+@keyframes dots-run {
+	0%,
+	100% {
+		opacity: 0.35;
+	}
+	50% {
+		opacity: 1;
+	}
+}

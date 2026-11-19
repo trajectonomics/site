@@ -1,7 +1,7 @@
 /*
- * See it in action (ADR 0012): the same question put to an agent alone and to an agent with traj. The
- * left panel is dashed and ragged, because its answers are; the right is solid and even, because its
- * answer is.
+ * See it in action (ADR 0019): the same question put to an agent alone and to an agent with traj, each
+ * panel one chat transcript. The left panel is dashed, because its answers are guesses; the right is
+ * solid, because its answer came from the CLI.
  */
 
 .compare {
@@ -64,29 +64,6 @@
 	flex-direction: column;
 	gap: 14px;
 	padding: 16px;
-}
-
-/* The speaker's name: mono and small, so the words beside it carry the weight. */
-.speaker {
-	flex-shrink: 0;
-	font-family: var(--font-meta);
-	font-size: 10px;
-	letter-spacing: 0.08em;
-	text-transform: uppercase;
-	color: var(--ds-color-muted-foreground);
-}
-
-.compare-question {
-	display: flex;
-	align-items: baseline;
-	gap: 10px;
-	margin: 0;
-	font-size: 15px;
-}
-
-.compare-skill-line {
-	margin: 0;
-	font-size: 13px;
 }
 
 .compare-note {

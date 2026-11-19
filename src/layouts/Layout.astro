@@ -117,5 +117,59 @@ const verification = verificationMetas({
 		<Header language={language} dictionary={dictionary} markCurrent={indexed} />
 		<main class="flex flex-1 flex-col bg-muted text-foreground"><slot /></main>
 		<Footer dictionary={dictionary} />
+		{/*
+			The Reveal layer (ADR 0019). The page as served is the whole story: every message, step, actor
+			and output is in the markup at its resting state, and this script only marks a panel's root so
+			the timeline in the stylesheet can play once. It marks a root the first time it is in view, in
+			the same frame for a root already on screen, so a visitor who lands mid-page never sees a still
+			frame first. It sets the flow's single `data-step` value and takes it, and the motion switch,
+			off again when the sequence has settled, so the settled page is the static page. `Replay` marks
+			a section's own roots again, and the beats themselves are all the stylesheet's. Its comments
+			live here because every byte of this script ships: the whole page has 10,000.
+		*/}
+		<script is:inline>
+		;(() => {
+			const roots = [...document.querySelectorAll(".compare-panel, .how")]
+			if (!roots.length || matchMedia("(prefers-reduced-motion: reduce)").matches) return
+			const play = (root) => {
+				const d = root.dataset
+				const steps = +d.flowSteps
+				// Off, reflow, on: a Replay restarts the beats instead of resuming them.
+				root.removeAttribute("data-motion")
+				root.removeAttribute("data-step")
+				void root.offsetWidth
+				root.setAttribute("data-motion", "play")
+				if (!steps) return
+				clearInterval(root.interval)
+				let step = 1
+				d.step = step
+				root.interval = setInterval(() => {
+					if (step < steps) d.step = ++step
+					else {
+						clearInterval(root.interval)
+						root.removeAttribute("data-step")
+						root.removeAttribute("data-motion")
+					}
+				}, +d.flowMs)
+			}
+			for (const button of document.querySelectorAll("[data-replay]")) {
+				button.removeAttribute("hidden")
+				button.onclick = () => {
+					const section = button.closest("section")
+					for (const root of section?.querySelectorAll(".compare-panel, .how") ?? []) play(root)
+				}
+			}
+			for (const root of roots) {
+				const { top, bottom } = root.getBoundingClientRect()
+				if (bottom > 0 && top < innerHeight) play(root)
+				else if (window.IntersectionObserver)
+					new IntersectionObserver((entries, observer) => {
+						if (!entries.some((entry) => entry.isIntersecting)) return
+						observer.disconnect()
+						play(root)
+					}).observe(root)
+			}
+		})()
+		</script>
 	</body>
 </html>
