@@ -1,7 +1,7 @@
 /*
  * The two compare panels are conversations (ADR 0019): the visitor on the right on the secondary
- * surface, the agent on the left on the card surface with its bot mark, and the CLI's output as the
- * agent's own tool result inside the exchange. No run labels: the re-asks carry the repetition.
+ * surface, the agent on the left on the card surface with its bot mark, and the CLI's own output as
+ * one of the agent's messages. No run labels: the re-asks carry the repetition.
  */
 
 .chat {

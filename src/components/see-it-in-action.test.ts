@@ -2,7 +2,7 @@ import { describe, expect, it } from "bun:test"
 import { elementsByTag, type HtmlElement, textOf } from "../lib/build/html"
 import { LANGUAGES, languageEntry } from "../lib/language/languages"
 import { COMPARE_ALONE, COMPARE_WITH, sequenceTimeline } from "../lib/motion/timeline"
-import { FI_DEMO_COMMAND, FI_DEMO_DATE } from "../lib/site"
+import { FI_DEMO_COMMAND, FI_DEMO_DATE, FI_DEMO_OUTPUT } from "../lib/site"
 import SeeItInAction from "./SeeItInAction.astro"
 import { renderComponent } from "./testing/render"
 import { headings, scanComponent, withAttribute, withClass } from "./testing/scan"
@@ -108,9 +108,9 @@ describe("the See it in action section in every Language", () => {
 			expect(delaysOf(page, "without")).toEqual(
 				alone.beats.map((beat) => `--step-delay:${beat.startMs}ms`),
 			)
-			// Seven messages plus the six lines the CLI prints: thirteen beats, and no beat unused.
-			expect(messagesOf(page, "with")).toHaveLength(guided.beats.length - 6)
-			expect(withClass(page, "terminal-line")).toHaveLength(6)
+			// Seven messages, and one beat per line the CLI prints, with no beat unused.
+			expect(messagesOf(page, "with")).toHaveLength(guided.beats.length - FI_DEMO_OUTPUT.length)
+			expect(withClass(page, "terminal-line")).toHaveLength(FI_DEMO_OUTPUT.length)
 			const last = guided.beats.at(-1)
 			const [answer] = messagesOf(page, "with").slice(-1)
 			if (answer === undefined || last === undefined) throw new Error("the answer has no beat")

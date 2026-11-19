@@ -6,6 +6,7 @@ import { HOW_FLOW } from "../lib/motion/timeline"
 import { DOCS_CLI_PATH, FI_DEMO_DATE, GITHUB_SKILLS_URL } from "../lib/site"
 import Bot from "./icons/Bot.astro"
 import Check from "./icons/Check.astro"
+import LayerAgent from "./LayerAgent.astro"
 
 interface Props {
 	readonly dictionary: Dictionary
@@ -100,16 +101,8 @@ const YEAR = FI_DEMO_DATE.slice(0, 4)
 							</span>
 						</li>
 					</ul>
-					<span class="layer-agent" data-step-chip="1" aria-hidden="true">
-						<Bot class="layer-agent-mark" />
-						<span>{dictionary.howStepActors[0]}</span>
-						<span class="layer-agent-dots dots"><i /><i /><i /></span>
-					</span>
-					<span class="layer-agent" data-step-chip="4" aria-hidden="true">
-						<Bot class="layer-agent-mark" />
-						<span>{dictionary.howStepActors[3]}</span>
-						<span class="layer-agent-dots dots"><i /><i /><i /></span>
-					</span>
+					<LayerAgent step={1} actor={dictionary.howStepActors[0] ?? ""} />
+					<LayerAgent step={4} actor={dictionary.howStepActors[3] ?? ""} />
 					<span class="layers-pulse" aria-hidden="true" />
 				</div>
 
@@ -120,11 +113,7 @@ const YEAR = FI_DEMO_DATE.slice(0, 4)
 							<p class="layers-join-label">
 								<span class="layers-join-name">{dictionary.howSkillsLabel}</span>
 								<span class="text-muted-foreground">{dictionary.howSkillsCopy}</span>
-								<span class="layer-agent" data-step-chip="2" aria-hidden="true">
-									<Bot class="layer-agent-mark" />
-									<span>{dictionary.howStepActors[1]}</span>
-									<span class="layer-agent-dots dots"><i /><i /><i /></span>
-								</span>
+								<LayerAgent step={2} actor={dictionary.howStepActors[1] ?? ""} />
 							</p>
 							<span class="layers-join-line" aria-hidden="true"></span>
 						</div>
@@ -138,11 +127,7 @@ const YEAR = FI_DEMO_DATE.slice(0, 4)
 							<ul class="layer-chips">
 								{dictionary.howLogicItems.map((item) => <li class="layer-chip">{item}</li>)}
 							</ul>
-							<span class="layer-agent" data-step-chip="3" aria-hidden="true">
-								<Bot class="layer-agent-mark" />
-								<span>{dictionary.howStepActors[2]}</span>
-								<span class="layer-agent-dots dots"><i /><i /><i /></span>
-							</span>
+							<LayerAgent step={3} actor={dictionary.howStepActors[2] ?? ""} />
 						</div>
 					</div>
 				</div>

@@ -141,13 +141,13 @@ const verification = verificationMetas({
 				void root.offsetWidth
 				root.setAttribute("data-motion", "play")
 				if (!steps) return
-				clearInterval(root.ticking)
+				clearInterval(root.timerId)
 				let step = 1
 				data.step = step
-				root.ticking = setInterval(() => {
+				root.timerId = setInterval(() => {
 					if (step < steps) data.step = ++step
 					else {
-						clearInterval(root.ticking)
+						clearInterval(root.timerId)
 						root.removeAttribute("data-step")
 						root.removeAttribute("data-motion")
 					}

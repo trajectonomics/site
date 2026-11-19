@@ -5,6 +5,8 @@
  * ([ADR 0019](../../../docs/adr/0019-the-sections-motion-plays-once-on-entry.md)).
  */
 
+import { FI_DEMO_OUTPUT } from "../site"
+
 /** One beat's place in a sequence, in milliseconds from the moment the sequence starts. */
 export interface Beat {
 	readonly startMs: number
@@ -34,8 +36,12 @@ export const SEQUENCE_BOUNDS_MS = Object.freeze({
 /** The agent alone's exchange: eight messages, from the question to the confession. */
 export const COMPARE_ALONE: Sequence = Object.freeze({ beats: 8, beatMs: 480, gapMs: 240 })
 
-/** The agent with traj's exchange: seven messages and the six output lines that arrive one by one. */
-export const COMPARE_WITH: Sequence = Object.freeze({ beats: 13, beatMs: 300, gapMs: 120 })
+/** The agent with traj's exchange: seven messages, and one beat per line the CLI prints. */
+export const COMPARE_WITH: Sequence = Object.freeze({
+	beats: 7 + FI_DEMO_OUTPUT.length,
+	beatMs: 300,
+	gapMs: 120,
+})
 
 /** The layer flow's four steps, at two and three-quarter seconds each. */
 export const HOW_FLOW: Sequence = Object.freeze({ beats: 4, beatMs: 2_750, gapMs: 0 })

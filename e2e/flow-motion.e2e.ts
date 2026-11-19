@@ -1,6 +1,6 @@
 import { expect, type Page, test } from "@playwright/test"
 import { dictionaryFor } from "../src/lib/language/languages"
-import { homeOf, openPage } from "./pages"
+import { expectPulseInLogicLayer, homeOf, openPage } from "./pages"
 
 /** The English home, whose layer flow runs its four steps once (ADR 0019). */
 const HOME = homeOf("en")
@@ -69,14 +69,7 @@ test.describe("the layer flow with motion allowed", () => {
 		expect(
 			Number(await pulse.evaluate((element) => getComputedStyle(element).opacity)),
 		).toBeGreaterThan(0)
-		// The dot waits in the logic layer, whatever the width: its travel is the layer's, not pixels.
-		const dot = await pulse.boundingBox()
-		const logic = await how.locator(".layer-logic").boundingBox()
-		if (dot === null || logic === null) throw new Error("the pulse or the logic layer has no box")
-		// The dot is painted at the foot of the pulse's column, and that foot is the dot's centre.
-		const dotCentre = dot.y + dot.height - 3
-		expect(dotCentre).toBeGreaterThan(logic.y)
-		expect(dotCentre).toBeLessThan(logic.y + logic.height)
+		await expectPulseInLogicLayer(page)
 		// Come back: the three frames fill in turn, and the static page is the state it ends on.
 		await expect(how).not.toHaveAttribute("data-motion", "play", { timeout: 14_000 })
 		for (const output of ["answer", "chart", "action"]) {

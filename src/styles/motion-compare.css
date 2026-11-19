@@ -12,7 +12,7 @@
 		animation-delay: var(--step-delay, 0ms);
 	}
 
-	.compare-panel[data-motion="play"] .chat-text,
+	.compare-panel[data-motion="play"] [data-from="agent"] .chat-text,
 	.compare-panel[data-motion="play"] .chat-provenance {
 		animation: chat-in 220ms cubic-bezier(0.16, 1, 0.3, 1) both;
 		animation-delay: calc(var(--step-delay, 0ms) + 140ms);

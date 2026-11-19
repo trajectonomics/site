@@ -9,7 +9,7 @@ import {
 	type Timeline,
 } from "../lib/motion/timeline"
 import { FI_DEMO_COMMAND, FI_DEMO_OUTPUT } from "../lib/site"
-import Bot from "./icons/Bot.astro"
+import ChatMessage from "./ChatMessage.astro"
 import Check from "./icons/Check.astro"
 import Cross from "./icons/Cross.astro"
 
@@ -21,9 +21,8 @@ const { dictionary } = Astro.props
 // One beat per message, so the stylesheet plays the exchange and this file only says when each starts.
 const alone = sequenceTimeline(COMPARE_ALONE)
 const guided = sequenceTimeline(COMPARE_WITH)
-/** The delay one beat starts at, as the custom property the stylesheet reads. */
-const at = (sequence: Timeline, beat: number) =>
-	`--step-delay:${sequence.beats[beat]?.startMs ?? 0}ms`
+/** The delay one beat starts at, in milliseconds, as the message renders it. */
+const at = (sequence: Timeline, beat: number) => sequence.beats[beat]?.startMs ?? 0
 /** The right chat's beats, in the order its markup renders them: five messages, the CLI, its lines, the answer. */
 const BEAT = {
 	question: 0,
@@ -33,8 +32,8 @@ const BEAT = {
 	data: 4,
 	terminal: 5,
 	lines: 6,
-	answer: 12,
-}
+	answer: 6 + FI_DEMO_OUTPUT.length,
+} as const
 const guesses = dictionary.actionGuesses
 ---
 
@@ -67,54 +66,30 @@ const guesses = dictionary.actionGuesses
 				</div>
 				<div class="compare-body">
 					<ol class="chat">
-						<li class="chat-message" data-from="you" style={at(alone, 0)}>
-							<span class="sr-only">{dictionary.actionYou}</span>
-							<p class="chat-bubble">{dictionary.actionQuestion}</p>
-						</li>
-						<li class="chat-message" data-from="agent" style={at(alone, 1)}>
-							<span class="sr-only">{dictionary.actionAgent}</span>
-							<div class="chat-bubble">
-								<Bot class="chat-mark" />
-								<span class="chat-thinking dots" aria-hidden="true"><i></i><i></i><i></i></span>
-								<p class="chat-text">{guesses[0]}</p>
-							</div>
-						</li>
-						<li class="chat-message" data-from="you" style={at(alone, 2)}>
-							<span class="sr-only">{dictionary.actionYou}</span>
-							<p class="chat-bubble">{dictionary.actionReask}</p>
-						</li>
-						<li class="chat-message" data-from="agent" style={at(alone, 3)}>
-							<span class="sr-only">{dictionary.actionAgent}</span>
-							<div class="chat-bubble">
-								<Bot class="chat-mark" />
-								<span class="chat-thinking dots" aria-hidden="true"><i></i><i></i><i></i></span>
-								<p class="chat-text">{guesses[1]}</p>
-							</div>
-						</li>
-						<li class="chat-message" data-from="you" style={at(alone, 4)}>
-							<span class="sr-only">{dictionary.actionYou}</span>
-							<p class="chat-bubble">{dictionary.actionExplain}</p>
-						</li>
-						<li class="chat-message" data-from="agent" style={at(alone, 5)}>
-							<span class="sr-only">{dictionary.actionAgent}</span>
-							<div class="chat-bubble">
-								<Bot class="chat-mark" />
-								<span class="chat-thinking dots" aria-hidden="true"><i></i><i></i><i></i></span>
-								<p class="chat-text">{dictionary.actionGuessReason}</p>
-							</div>
-						</li>
-						<li class="chat-message" data-from="you" style={at(alone, 6)}>
-							<span class="sr-only">{dictionary.actionYou}</span>
-							<p class="chat-bubble">{dictionary.actionSure}</p>
-						</li>
-						<li class="chat-message" data-from="agent" style={at(alone, 7)}>
-							<span class="sr-only">{dictionary.actionAgent}</span>
-							<div class="chat-bubble">
-								<Bot class="chat-mark" />
-								<span class="chat-thinking dots" aria-hidden="true"><i></i><i></i><i></i></span>
-								<p class="chat-text">{dictionary.actionConfession}</p>
-							</div>
-						</li>
+						<ChatMessage from="you" speaker={dictionary.actionYou} delayMs={at(alone, 0)}>
+							<p class="chat-text">{dictionary.actionQuestion}</p>
+						</ChatMessage>
+						<ChatMessage from="agent" speaker={dictionary.actionAgent} delayMs={at(alone, 1)}>
+							<p class="chat-text">{guesses[0]}</p>
+						</ChatMessage>
+						<ChatMessage from="you" speaker={dictionary.actionYou} delayMs={at(alone, 2)}>
+							<p class="chat-text">{dictionary.actionReask}</p>
+						</ChatMessage>
+						<ChatMessage from="agent" speaker={dictionary.actionAgent} delayMs={at(alone, 3)}>
+							<p class="chat-text">{guesses[1]}</p>
+						</ChatMessage>
+						<ChatMessage from="you" speaker={dictionary.actionYou} delayMs={at(alone, 4)}>
+							<p class="chat-text">{dictionary.actionExplain}</p>
+						</ChatMessage>
+						<ChatMessage from="agent" speaker={dictionary.actionAgent} delayMs={at(alone, 5)}>
+							<p class="chat-text">{dictionary.actionGuessReason}</p>
+						</ChatMessage>
+						<ChatMessage from="you" speaker={dictionary.actionYou} delayMs={at(alone, 6)}>
+							<p class="chat-text">{dictionary.actionSure}</p>
+						</ChatMessage>
+						<ChatMessage from="agent" speaker={dictionary.actionAgent} delayMs={at(alone, 7)}>
+							<p class="chat-text">{dictionary.actionConfession}</p>
+						</ChatMessage>
 					</ol>
 				</div>
 				<p class="compare-note text-muted-foreground">{dictionary.actionWithoutNote}</p>
@@ -127,58 +102,34 @@ const guesses = dictionary.actionGuesses
 				</div>
 				<div class="compare-body">
 					<ol class="chat">
-						<li class="chat-message" data-from="you" style={at(guided, BEAT.question)}>
-							<span class="sr-only">{dictionary.actionYou}</span>
-							<p class="chat-bubble">{dictionary.actionQuestion}</p>
-						</li>
-						<li class="chat-message" data-from="agent" style={at(guided, BEAT.guide)}>
-							<span class="sr-only">{dictionary.actionAgent}</span>
-							<div class="chat-bubble">
-								<Bot class="chat-mark" />
-								<span class="chat-thinking dots" aria-hidden="true"><i></i><i></i><i></i></span>
-								<p class="chat-text">{dictionary.actionGuideQuestion}</p>
+						<ChatMessage from="you" speaker={dictionary.actionYou} delayMs={at(guided, BEAT.question)}>
+							<p class="chat-text">{dictionary.actionQuestion}</p>
+						</ChatMessage>
+						<ChatMessage from="agent" speaker={dictionary.actionAgent} delayMs={at(guided, BEAT.guide)}>
+							<p class="chat-text">{dictionary.actionGuideQuestion}</p>
+						</ChatMessage>
+						<ChatMessage from="you" speaker={dictionary.actionYou} delayMs={at(guided, BEAT.attach)}>
+							<p class="chat-text">{dictionary.actionAttach}</p>
+							<span class="chat-file">{dictionary.actionAttachName}</span>
+						</ChatMessage>
+						<ChatMessage from="agent" speaker={dictionary.actionAgent} delayMs={at(guided, BEAT.needMore)}>
+							<p class="chat-text">{dictionary.actionNeedMore}</p>
+						</ChatMessage>
+						<ChatMessage from="you" speaker={dictionary.actionYou} delayMs={at(guided, BEAT.data)}>
+							<p class="chat-text">{dictionary.actionData}</p>
+						</ChatMessage>
+						<ChatMessage from="agent" speaker={dictionary.actionAgent} delayMs={at(guided, BEAT.terminal)}>
+							<p class="chat-text chat-note">{dictionary.actionSkillLine}</p>
+							<div class="terminal bg-stage text-stage-foreground">
+								<code class="terminal-command"><span class="terminal-prompt" aria-hidden="true">$ </span>{FI_DEMO_COMMAND}</code>
+								<pre class="terminal-output"><code>{FI_DEMO_OUTPUT.map((line, index) => <span class="terminal-line" style={`--step-delay:${at(guided, BEAT.lines + index)}ms`}>{line}</span>)}</code></pre>
+								<p class="terminal-note">{dictionary.actionExampleNote}</p>
 							</div>
-						</li>
-						<li class="chat-message" data-from="you" style={at(guided, BEAT.attach)}>
-							<span class="sr-only">{dictionary.actionYou}</span>
-							<div class="chat-bubble">
-								<p class="chat-text">{dictionary.actionAttach}</p>
-								<span class="chat-file">{dictionary.actionAttachName}</span>
-							</div>
-						</li>
-						<li class="chat-message" data-from="agent" style={at(guided, BEAT.needMore)}>
-							<span class="sr-only">{dictionary.actionAgent}</span>
-							<div class="chat-bubble">
-								<Bot class="chat-mark" />
-								<span class="chat-thinking dots" aria-hidden="true"><i></i><i></i><i></i></span>
-								<p class="chat-text">{dictionary.actionNeedMore}</p>
-							</div>
-						</li>
-						<li class="chat-message" data-from="you" style={at(guided, BEAT.data)}>
-							<span class="sr-only">{dictionary.actionYou}</span>
-							<p class="chat-bubble">{dictionary.actionData}</p>
-						</li>
-						<li class="chat-message" data-from="agent" style={at(guided, BEAT.terminal)}>
-							<span class="sr-only">{dictionary.actionAgent}</span>
-							<div class="chat-bubble chat-cli">
-								<Bot class="chat-mark" />
-								<p class="chat-text chat-note">{dictionary.actionSkillLine}</p>
-								<div class="terminal bg-stage text-stage-foreground">
-									<code class="terminal-command"><span class="terminal-prompt" aria-hidden="true">$ </span>{FI_DEMO_COMMAND}</code>
-									<pre class="terminal-output"><code>{FI_DEMO_OUTPUT.map((line, index) => <span class="terminal-line" style={at(guided, BEAT.lines + index)}>{line}</span>)}</code></pre>
-									<p class="terminal-note">{dictionary.actionExampleNote}</p>
-								</div>
-							</div>
-						</li>
-						<li class="chat-message" data-from="agent" style={at(guided, BEAT.answer)}>
-							<span class="sr-only">{dictionary.actionAgent}</span>
-							<div class="chat-bubble">
-								<Bot class="chat-mark" />
-								<span class="chat-thinking dots" aria-hidden="true"><i></i><i></i><i></i></span>
-								<p class="chat-text">{dictionary.actionAnswer}</p>
-								<p class="chat-provenance">{dictionary.actionProvenance}</p>
-							</div>
-						</li>
+						</ChatMessage>
+						<ChatMessage from="agent" speaker={dictionary.actionAgent} delayMs={at(guided, BEAT.answer)}>
+							<p class="chat-text">{dictionary.actionAnswer}</p>
+							<p class="chat-provenance">{dictionary.actionProvenance}</p>
+						</ChatMessage>
 					</ol>
 				</div>
 				<p class="compare-note text-foreground">{dictionary.actionWithNote}</p>

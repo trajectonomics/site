@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test"
-import { homeOf, openPage } from "./pages"
+import { expectPulseInLogicLayer, homeOf, openPage } from "./pages"
 
 /** The English home, whose flow is the section a phone reads first (ADR 0019). */
 const HOME = homeOf("en")
@@ -32,11 +32,6 @@ test.describe("the layer flow on a phone", () => {
 		const how = page.locator(".how")
 		await how.scrollIntoViewIfNeeded()
 		await expect(how).toHaveAttribute("data-step", "3", { timeout: 12_000 })
-		const dot = await page.locator(".layers-pulse").boundingBox()
-		const logic = await how.locator(".layer-logic").boundingBox()
-		if (dot === null || logic === null) throw new Error("the pulse or the logic layer has no box")
-		const dotCentre = dot.y + dot.height - 3
-		expect(dotCentre).toBeGreaterThan(logic.y)
-		expect(dotCentre).toBeLessThan(logic.y + logic.height)
+		await expectPulseInLogicLayer(page)
 	})
 })
