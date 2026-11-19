@@ -2,16 +2,7 @@ import { describe, expect, it } from "bun:test"
 import { LANGUAGES } from "../language/languages"
 import { type ReleaseSnapshot, releaseFacts } from "./release"
 import { RELEASE_MONTHS, RELEASE_SNAPSHOT, releaseFor } from "./release-snapshot"
-
-/** The code of the error `run` throws, or what it did instead. */
-function codeOf(run: () => unknown): string {
-	try {
-		run()
-	} catch (error) {
-		return (error as { readonly code?: string }).code ?? "no code"
-	}
-	return "no error"
-}
+import { codeOf } from "./testing/error-code"
 
 /** A synthetic month table, so a test proves the Language's own words reach the page. */
 const SYNTHETIC = Array.from({ length: 12 }, (_unused, index) => `M${index + 1}`)

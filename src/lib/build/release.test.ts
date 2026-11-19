@@ -51,6 +51,13 @@ describe("the release a built page names", () => {
 		expect(pageCodes(home("en", `<p>${OTHER_VERSION}</p>`))).toEqual(["RELEASE_VERSION_UNKNOWN"])
 	})
 
+	it("fails a page whose version was removed, so a deleted pill or line cannot ship", () => {
+		expect(pageCodes(replaced("en", TAG))).toEqual([
+			"RELEASE_VERSION_UNKNOWN",
+			"RELEASE_LINE_NOT_NAMED",
+		])
+	})
+
 	it("fails a footer that names another version, so the pill and the footer cannot disagree", () => {
 		expect(pageCodes(replaced("en", TAG, OTHER_VERSION))).toEqual([
 			"RELEASE_VERSION_UNKNOWN",
@@ -69,7 +76,9 @@ describe("the release a built page names", () => {
 	})
 
 	it("fails a footer that does not print the Dictionary's release line", () => {
-		expect(pageCodes(replaced("en", LINE))).toEqual(["RELEASE_LINE_NOT_NAMED"])
+		const built = home("en", `<p>${TAG}</p>`)
+		const without = { path: built.path, content: built.content.split(LINE).join("") }
+		expect(pageCodes(without)).toEqual(["RELEASE_LINE_NOT_NAMED"])
 	})
 
 	it("fails a footer whose date text is not the release day the Dictionary writes", () => {

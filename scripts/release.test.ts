@@ -1,5 +1,5 @@
 import { describe, expect, it } from "bun:test"
-import { readFileSync } from "node:fs"
+import { readdirSync, readFileSync } from "node:fs"
 import { join } from "node:path"
 import type { ReleaseSnapshot } from "../src/lib/site/release"
 import type { ReleaseFeed } from "../src/lib/site/release-feed"
@@ -11,28 +11,40 @@ const SNAPSHOT: ReleaseSnapshot = { version: "0.2.0", releasedOn: "2026-11-17", 
 const FEED: ReleaseFeed = { latest: "0.3.0", releasedOn: "2027-02-01" }
 
 /** The Release snapshot's Pure Cores and the built-file rules that judge them, relative to this script. */
-const CORE = [
-	join("src", "lib", "site", "release.ts"),
-	join("src", "lib", "site", "release-error.ts"),
-	join("src", "lib", "site", "release-snapshot.ts"),
-	join("src", "lib", "site", "release-feed.ts"),
-	join("src", "lib", "build", "release.ts"),
-	join("src", "lib", "build", "release-version.ts"),
-	join("src", "lib", "build", "release-footer.ts"),
-]
+const RELEASE_CORE = join("src", "lib")
+
+/** The one directory outside the Pure Core: the page's own script, which must call the analytics endpoint. */
+const PAGE_SCRIPT = join("analytics") + "/"
 
 /** The clock, the host locale and the network: the three an offline build and a fixture test cannot have. */
 const IMPURE = /\b(fetch\(|new Date|Date\.now|Intl\.|Math\.random|process\.env)/
 
-describe("the Release snapshot's core", () => {
+/** Every TypeScript source under `src/lib`, so this rule judges the whole Pure Core and not one directory. */
+function pureCoreSources(): readonly string[] {
+	return readdirSync(join(import.meta.dir, "..", RELEASE_CORE), {
+		recursive: true,
+		encoding: "utf8",
+	})
+		.filter((path) => path.endsWith(".ts") && !path.startsWith(PAGE_SCRIPT))
+		.map((path) => join(RELEASE_CORE, path))
+}
+
+describe("the Pure Core the Release snapshot belongs to", () => {
 	it("reads no clock, no host locale and no network, so a build stays offline and a page stays fixed", () => {
-		for (const path of CORE) {
-			const source = readFileSync(join(import.meta.dir, "..", path), "utf8")
-			expect({ path, impure: IMPURE.exec(source)?.[0] }).toEqual({ path, impure: undefined })
+		const sources = pureCoreSources()
+		expect(sources.length).toBeGreaterThan(100)
+		for (const path of sources) {
+			expect({
+				path,
+				impure: IMPURE.exec(readFileSync(join(import.meta.dir, "..", path), "utf8"))?.[0],
+			}).toEqual({
+				path,
+				impure: undefined,
+			})
 		}
 	})
 
-	it("is the only place a release fact enters the Site, so no page holds a second copy", () => {
+	it("keeps the Release snapshot the only place a release fact enters the Site, so no page holds a copy", () => {
 		const snapshot = JSON.parse(
 			readFileSync(join(import.meta.dir, "..", "src", "lib", "site", "release.json"), "utf8"),
 		) as Record<string, unknown>

@@ -1,15 +1,6 @@
 import { describe, expect, it } from "bun:test"
 import { latestVersion, releasedOn, releaseStatus, snapshotFor } from "./release-feed"
-
-/** The code of the error `run` throws, or what it did instead. */
-function codeOf(run: () => unknown): string {
-	try {
-		run()
-	} catch (error) {
-		return (error as { readonly code?: string }).code ?? "no code"
-	}
-	return "no error"
-}
+import { codeOf } from "./testing/error-code"
 
 /** The npm registry document, as the adapter hands it on: only the tags are read. */
 const REGISTRY = { "dist-tags": { bootstrap: "0.0.1-bootstrap.0", latest: "0.2.0" } }
