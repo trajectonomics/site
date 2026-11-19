@@ -1,12 +1,7 @@
 import { fileURLToPath } from "node:url"
 import { expect, type Page, test } from "@playwright/test"
 import { expectShippedTheme, openPage, PAGES } from "./pages"
-
-/** The viewports the screenshots cover: the desktop the checks run at, and a phone. */
-const VIEWPORTS = {
-	desktop: { width: 1280, height: 800 },
-	mobile: { width: 390, height: 844 },
-} as const
+import { VIEWPORTS } from "./viewports"
 
 /**
  * The one face the screenshots pin: Thai. The page serves Aleo and Azeret Mono from its build, but
@@ -39,6 +34,8 @@ async function pinFonts(page: Page): Promise<void> {
  * from the host, and a host with another one changes them all.
  * `mcr.microsoft.com/playwright:v1.65.0-noble` (the tag for the version above) with
  * `fonts-dejavu-core` added renders them byte for byte the way the browser check does (site#42).
+ * The sizes come from `./viewports`, so the phone is the same one the other checks judge; the
+ * filenames stay this file's own `desktop` and `mobile` keys, so a shared definition renames nothing.
  */
 test.describe("the built pages as screenshots", () => {
 	test.use({ reducedMotion: "reduce", colorScheme: "light" })
