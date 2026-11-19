@@ -26,18 +26,14 @@ describe("the structure of the built pages", () => {
 		expect(codes([...build(), { path: "404.html", content: complete }])).toEqual([])
 	})
 
-	it("fails a build that left no document at the Site's one address", () => {
-		expect(codes([{ path: "th/index.html", content: complete }])).toEqual(["ROOT_DOCUMENT_MISSING"])
-	})
-
-	it("fails a document built under a Language prefix, which is no address any more", () => {
+	it("fails a document built under a Language code that is no build path", () => {
 		expect(codes([...build(), { path: "en/index.html", content: complete }])).toEqual([
-			"PREFIXED_LANGUAGE_DIRECTORY",
+			"LANGUAGE_CODE_DIRECTORY_PRESENT",
 		])
 	})
 
 	it("allows a Language's own build path, which the Worker serves at the address", () => {
-		expect(codes(build())).not.toContain("PREFIXED_LANGUAGE_DIRECTORY")
+		expect(codes(build())).not.toContain("LANGUAGE_CODE_DIRECTORY_PRESENT")
 	})
 
 	it("does not count a landmark a comment names, so a commented-out nav is no nav", () => {

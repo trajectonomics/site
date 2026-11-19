@@ -50,7 +50,7 @@ describe("the Answer engine files of the host", () => {
 
 	it("fails the short file that links a Language build path instead of the address", () => {
 		const withThai = `${LLMS_TXT}- [ไทย](${SITE_ORIGIN}/th/)\n`
-		expect(codes(built(LLMS_FILE, withThai))).toEqual(["LLMS_HOME_FOREIGN"])
+		expect(codes(built(LLMS_FILE, withThai))).toEqual(["LLMS_BUILD_PATH_PRESENT"])
 	})
 
 	it("passes the full file whether or not it names a home, because that is the short file's job", () => {

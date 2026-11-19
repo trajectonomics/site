@@ -58,8 +58,9 @@ export function languageHomeFile(language: Language): string {
 }
 
 /**
- * The link that stores one Language as the visitor's choice and returns to the address: a setter,
- * not a Language alternate, so it claims no `hreflang` and never puts a prefix in the address bar.
+ * The Language choice link: stores one Language as the visitor's choice, then returns to the
+ * address. It is not a Language alternate, so it claims no `hreflang` and never puts a prefix in
+ * the address bar.
  */
 export function languageChoiceLink(language: Language): string {
 	return `${CLEAN_URL}?${LANGUAGE_CHOICE_PARAM}=${encodeURIComponent(language)}`

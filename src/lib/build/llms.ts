@@ -51,7 +51,7 @@ function homeFailures(files: readonly BuiltFile[]): readonly BuildFailure[] {
 			if (!file.content.includes(link)) return []
 			return [
 				buildFailure(
-					"LLMS_HOME_FOREIGN",
+					"LLMS_BUILD_PATH_PRESENT",
 					LLMS_FILE,
 					`links ${SITE_ORIGIN}/${entry.buildPath}/, which is a build path and not the Site's address.`,
 				),

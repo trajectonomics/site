@@ -8,7 +8,7 @@ export function checkSetCookie(response: ProbeResponse): readonly ProbeFailure[]
 		if (response.setCookies.length === 0) return []
 		return [
 			probeFailure(
-				"SET_COOKIE_PRESENT",
+				"PROBE_SET_COOKIE_PRESENT",
 				probe.path,
 				`sets Set-Cookie: ${response.setCookies.join(" | ")}. The Site stores only the Language choice.`,
 			),
@@ -17,7 +17,7 @@ export function checkSetCookie(response: ProbeResponse): readonly ProbeFailure[]
 	if (response.setCookies.length === 0) {
 		return [
 			probeFailure(
-				"SET_COOKIE_MISSING",
+				"PROBE_SET_COOKIE_MISSING",
 				probe.path,
 				`stores no ${probe.storesChoice} choice, so the next visit is chosen for again.`,
 			),
@@ -26,7 +26,7 @@ export function checkSetCookie(response: ProbeResponse): readonly ProbeFailure[]
 	if (response.setCookies.length > 1) {
 		return [
 			probeFailure(
-				"SET_COOKIE_COUNT_WRONG",
+				"PROBE_SET_COOKIE_COUNT_WRONG",
 				probe.path,
 				`sets ${response.setCookies.length} cookies: ${response.setCookies.join(" | ")}.`,
 			),
@@ -37,7 +37,7 @@ export function checkSetCookie(response: ProbeResponse): readonly ProbeFailure[]
 	if (set === expected) return []
 	return [
 		probeFailure(
-			"SET_COOKIE_WRONG",
+			"PROBE_SET_COOKIE_WRONG",
 			probe.path,
 			`sets Set-Cookie: ${set ?? "none"}, not ${expected}.`,
 		),

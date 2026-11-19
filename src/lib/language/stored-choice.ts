@@ -4,8 +4,8 @@ import { spokenLanguage } from "./languages"
 /** The cookie the Language menu writes: the visitor's one choice, readable by every app on the origin. */
 export const LANGUAGE_CHOICE_COOKIE = "traj_lang"
 
-/** The cookie's one year, in seconds; the longest a browser keeps a choice. */
-export const LANGUAGE_CHOICE_MAX_AGE = 31_536_000
+/** The cookie's one year, in seconds. */
+export const LANGUAGE_CHOICE_MAX_AGE_SECONDS = 31_536_000
 
 /** One cookie, split into its name and the value before any parameter. */
 interface Cookie {
@@ -23,20 +23,14 @@ function cookiesOf(header: string): readonly Cookie[] {
 	})
 }
 
-/**
- * The Language the visitor stored, or `undefined` when no cookie names one the Site speaks. It reads
- * only this one cookie, so a value that is not a Language code is no choice at all.
- */
+/** The Language the visitor's choice cookie names, or `undefined` when it names none the Site speaks. */
 export function languageFromCookie(header: string | null): Language | undefined {
 	if (header === null) return undefined
 	const cookie = cookiesOf(header).find((one) => one.name === LANGUAGE_CHOICE_COOKIE)
 	return cookie === undefined ? undefined : spokenLanguage(cookie.value)
 }
 
-/**
- * The `Set-Cookie` value that stores one Language: functional, first party, readable by every app
- * under the origin through `Path=/`, and nothing else.
- */
+/** The `Set-Cookie` value that stores one Language for every app under the origin. */
 export function languageChoiceCookie(language: Language): string {
-	return `${LANGUAGE_CHOICE_COOKIE}=${language}; Path=/; Secure; SameSite=Lax; Max-Age=${LANGUAGE_CHOICE_MAX_AGE}`
+	return `${LANGUAGE_CHOICE_COOKIE}=${language}; Path=/; Secure; SameSite=Lax; Max-Age=${LANGUAGE_CHOICE_MAX_AGE_SECONDS}`
 }

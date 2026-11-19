@@ -76,7 +76,7 @@ describe("the Languages the Site speaks", () => {
 		expect(ABSOLUTE_CLEAN_URL).toBe(`${SITE_ORIGIN}/`)
 	})
 
-	it("gives every Language a setter link that returns to the address", () => {
+	it("gives every Language a Language choice link that returns to the address", () => {
 		for (const entry of LANGUAGES) {
 			expect(languageChoiceLink(entry.language)).toBe(`/?lang=${entry.language}`)
 		}

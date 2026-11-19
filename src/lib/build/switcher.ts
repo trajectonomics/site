@@ -7,7 +7,7 @@ import { buildFailure } from "./failures"
 import { elementsByTag, scanHtml, textOf } from "./html"
 import { builtHomes } from "./language-home"
 
-/** The switcher on one home: one setter link per other Language, named in that Language. */
+/** The switcher on one home: one Language choice link per other Language, named in that Language. */
 function checkSwitcherFor(file: BuiltFile, language: Language): readonly BuildFailure[] {
 	const page = scanHtml(file.content)
 	const anchors = elementsByTag(page, "a")
@@ -31,7 +31,7 @@ function checkSwitcherFor(file: BuiltFile, language: Language): readonly BuildFa
 				buildFailure(
 					"SWITCHER_CLAIMS_HREFLANG",
 					file.path,
-					`marks ${href} as a Language alternate, but a setter is not one.`,
+					`marks ${href} as a Language alternate, but a Language choice link is not one.`,
 				),
 			]
 		}
@@ -75,7 +75,7 @@ function checkSwitcherFor(file: BuiltFile, language: Language): readonly BuildFa
 	]
 }
 
-/** A home switches to every other Language with a plain setter link, with JavaScript off (ADR 0020). */
+/** A home switches to every other Language with a plain Language choice link, with JavaScript off (ADR 0020). */
 export function checkSwitcher(files: readonly BuiltFile[]): readonly BuildFailure[] {
 	return builtHomes(files).flatMap(({ entry, file }) => checkSwitcherFor(file, entry.language))
 }

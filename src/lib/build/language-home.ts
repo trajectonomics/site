@@ -36,7 +36,7 @@ export function checkLanguageHomes(files: readonly BuiltFile[]): readonly BuildF
 				buildFailure(
 					"LANGUAGE_PAGE_MISSING",
 					pageUrl(path),
-					`the build produced no ${entry.language} home.`,
+					`the build produced no ${entry.language} home at ${pageUrl(path)}.`,
 				),
 			]
 		}

@@ -1,8 +1,9 @@
 import type { Language } from "../language/language"
+import { LANGUAGE_CHOICE_PARAM } from "../language/languages"
 import type { Probe } from "./probe"
 
 /** The media types of an answer that carries no body, so no media type is judged on one. */
-export const NO_BODY: readonly string[] = Object.freeze([])
+const NO_BODY: readonly string[] = Object.freeze([])
 
 /** The media type every page answers with. */
 export const PAGE_MEDIA: readonly string[] = Object.freeze(["text/html"])
@@ -23,14 +24,13 @@ const HOME_CACHE: readonly string[] = Object.freeze(["private", "no-cache"])
 const CHOICE_CACHE: readonly string[] = Object.freeze(["no-store"])
 
 /** An empty list of judged directives. */
-export const NONE: readonly string[] = Object.freeze([])
+const NONE: readonly string[] = Object.freeze([])
 
 /** The facts an answer carries before a probe fills in what it judges: nothing it must prove. */
 const DEFAULT_ANSWER: Omit<Probe, "path" | "status"> = Object.freeze({
 	acceptLanguage: null,
 	country: null,
 	cookie: null,
-	followRedirects: false,
 	location: null,
 	language: null,
 	mediaTypes: NO_BODY,
@@ -62,10 +62,10 @@ export function home(language: Language, signals: Signals = {}): Probe {
 	})
 }
 
-/** The choice link, which stores the Language it names and returns to the address. */
+/** The Language choice link, which stores the Language it names and returns to the address. */
 export function choice(language: Language | null): Probe {
 	return probe({
-		path: `/?lang=${language ?? "zz"}`,
+		path: `/?${LANGUAGE_CHOICE_PARAM}=${language ?? "zz"}`,
 		status: 302,
 		location: "/",
 		cacheControl: CHOICE_CACHE,
@@ -84,7 +84,6 @@ export function answered(
 	status: number,
 	language: Language | null,
 	mediaTypes: readonly string[],
-	followRedirects = false,
 ): Probe {
-	return probe({ path, status, language, mediaTypes, followRedirects })
+	return probe({ path, status, language, mediaTypes })
 }

@@ -95,29 +95,29 @@ describe("the answers the local Worker gives", () => {
 
 	it("fails when the address sets a cookie of its own", () => {
 		expect(codes(withAnswer(ROOT_ENGLISH, { setCookies: ["seen=1"] }))).toEqual([
-			"SET_COOKIE_PRESENT",
+			"PROBE_SET_COOKIE_PRESENT",
 		])
 	})
 
 	it("fails when the choice link stores no choice", () => {
-		expect(codes(withAnswer(CHOICE_THAI, { setCookies: [] }))).toEqual(["SET_COOKIE_MISSING"])
+		expect(codes(withAnswer(CHOICE_THAI, { setCookies: [] }))).toEqual(["PROBE_SET_COOKIE_MISSING"])
 	})
 
 	it("fails when the choice link stores more than one cookie", () => {
 		expect(codes(withAnswer(CHOICE_THAI, { setCookies: ["traj_lang=th", "seen=1"] }))).toEqual([
-			"SET_COOKIE_COUNT_WRONG",
+			"PROBE_SET_COOKIE_COUNT_WRONG",
 		])
 	})
 
 	it("fails when the choice cookie carries the wrong attributes", () => {
 		expect(codes(withAnswer(CHOICE_THAI, { setCookies: ["traj_lang=th; Path=/"] }))).toEqual([
-			"SET_COOKIE_WRONG",
+			"PROBE_SET_COOKIE_WRONG",
 		])
 	})
 
 	it("fails when an unknown Language still stores a cookie", () => {
 		expect(codes(withAnswer(CHOICE_UNKNOWN, { setCookies: ["traj_lang=zz"] }))).toEqual([
-			"SET_COOKIE_PRESENT",
+			"PROBE_SET_COOKIE_PRESENT",
 		])
 	})
 

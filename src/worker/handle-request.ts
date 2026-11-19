@@ -2,6 +2,7 @@ import { chooseLanguage } from "../lib/language/choose"
 import {
 	CLEAN_URL,
 	LANGUAGE_CHOICE_PARAM,
+	LANGUAGES,
 	languageHomePath,
 	spokenLanguage,
 } from "../lib/language/languages"
@@ -10,8 +11,10 @@ import { languageChoiceCookie, languageFromCookie } from "../lib/language/stored
 /** The one path the Worker answers itself; every other path is a static asset (ADR 0020). */
 const ROOT_PATH = CLEAN_URL
 
-/** The prefixes the Site answered at before it had one address; each now moves to it. */
-const OLD_PREFIXES: readonly string[] = Object.freeze(["/en", "/th"])
+/** The prefixes the Site answered at before it had one address: one per Language the Site speaks. */
+const OLD_PREFIXES: readonly string[] = Object.freeze(
+	LANGUAGES.map((entry) => `/${entry.language}`),
+)
 
 /** What the answer at `/` depends on, in the order the response names them. */
 const VARY = "Cookie, Accept-Language, CF-IPCountry"
@@ -25,7 +28,7 @@ const CHOICE_CACHE_CONTROL = "no-store"
 /** The status an old prefix answers with: permanent, because the address will not move back. */
 const MOVED_STATUS = 301
 
-/** The status the choice link answers with: back to the address, with the choice stored. */
+/** The status the choice answer gives: back to the address, with the choice stored. */
 const CHOICE_STATUS = 302
 
 /** The assets binding the Worker hands every path but `/` and the old prefixes back to. */
@@ -33,24 +36,21 @@ export interface Assets {
 	fetch(request: Request): Promise<Response>
 }
 
-/** Whether a path is one the Site answered at before it had one address, such as `/en/`. */
-export function isOldAddress(pathname: string): boolean {
+/** Whether a path is one the Site answered at before it had one address. */
+function isOldAddress(pathname: string): boolean {
 	return OLD_PREFIXES.some((prefix) => pathname === prefix || pathname.startsWith(`${prefix}/`))
 }
 
-/** Every old prefix answers 301 to the Site's one address, so an indexed URL never 404s. */
-export function movedToAddress(): Response {
+/** The 301 every old prefix answers, so an indexed URL never 404s. */
+function movedToAddress(): Response {
 	return new Response(null, {
 		status: MOVED_STATUS,
 		headers: { Location: CLEAN_URL },
 	})
 }
 
-/**
- * The choice link's answer: store the Language when the Site speaks it, then return to `/`. A code
- * the Site does not speak writes no cookie, and the link still lands on the address.
- */
-export function choiceResponse(choice: string | null): Response {
+/** The choice answer: store a Language the Site speaks, then return to `/`. */
+function choiceResponse(choice: string | null): Response {
 	const language = spokenLanguage(choice)
 	const headers = new Headers({ Location: CLEAN_URL, "Cache-Control": CHOICE_CACHE_CONTROL })
 	if (language !== undefined) headers.set("Set-Cookie", languageChoiceCookie(language))
@@ -73,12 +73,8 @@ function bodyOf(request: Request, response: Response): ReadableStream<Uint8Array
 	return response.body
 }
 
-/**
- * Answer `/` in the Language the visitor's choice or signals name: the stored choice first, then
- * `Accept-Language`, then the country, then English. The bytes are that Language's own home, and
- * the response says what it depends on, so a cache cannot hand one Language to another visitor.
- */
-export async function homeResponse(request: Request, assets: Assets): Promise<Response> {
+/** The answer at `/`: the resolved Language's home, with what the answer depends on. */
+async function homeResponse(request: Request, assets: Assets): Promise<Response> {
 	const url = new URL(request.url)
 	const language = chooseLanguage(
 		languageFromCookie(request.headers.get("cookie")),

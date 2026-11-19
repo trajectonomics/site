@@ -21,7 +21,7 @@ describe("the switcher in the header", () => {
 		expect(codes(checkSwitcher, home(language, undefined, link))).toEqual(["SWITCHER_MISSING"])
 	})
 
-	it("fails a setter link that claims to be a Language alternate", () => {
+	it("fails a Language choice link that claims to be a Language alternate", () => {
 		const language = entryAt(0).language
 		const other = otherLanguages(language)[0]
 		if (other === undefined) throw new Error("the Site speaks one Language only")

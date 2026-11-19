@@ -20,7 +20,7 @@ describe("the Language a page script must not choose", () => {
 		expect(codes(checkNoLanguageDetection, page)).toEqual([])
 	})
 
-	it("fails a home whose script reads a stored preference", () => {
+	it("fails a home whose script reads the Language choice from storage", () => {
 		const script = "<script>const saved = localStorage.getItem('language')</script>"
 		const page = edited(entryAt(0).language, /<\/body>/, `${script}</body>`)
 		expect(codes(checkNoLanguageDetection, page)).toEqual(["SCRIPT_DETECTS_LANGUAGE"])

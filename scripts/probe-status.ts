@@ -19,7 +19,7 @@ async function readResponses(baseUrl: string): Promise<readonly ProbeResponse[]>
 	const responses: ProbeResponse[] = []
 	for (const probe of PROBES) {
 		const response = await fetch(`${baseUrl}${probe.path}`, {
-			redirect: probe.followRedirects ? "follow" : "manual",
+			redirect: "manual",
 			headers: headersOf(probe),
 			signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS),
 		})

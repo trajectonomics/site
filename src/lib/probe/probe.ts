@@ -7,7 +7,6 @@ export interface Probe {
 	readonly country: string | null
 	/** The `Cookie` header the request carries, or `null` when the visitor stored nothing. */
 	readonly cookie: string | null
-	readonly followRedirects: boolean
 	readonly status: number
 	readonly location: string | null
 	readonly language: Language | null
@@ -45,10 +44,10 @@ export type ProbeFailureCode =
 	| "PROBE_LOCATION_WRONG"
 	| "PAGE_LANGUAGE_WRONG"
 	| "PROBE_NOT_ASKED"
-	| "SET_COOKIE_PRESENT"
-	| "SET_COOKIE_MISSING"
-	| "SET_COOKIE_COUNT_WRONG"
-	| "SET_COOKIE_WRONG"
+	| "PROBE_SET_COOKIE_PRESENT"
+	| "PROBE_SET_COOKIE_MISSING"
+	| "PROBE_SET_COOKIE_COUNT_WRONG"
+	| "PROBE_SET_COOKIE_WRONG"
 	| "PROBE_VARY_WRONG"
 	| "PROBE_CACHE_CONTROL_WRONG"
 	| "PROBE_ETAG_MISSING"

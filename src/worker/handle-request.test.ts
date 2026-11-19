@@ -1,6 +1,6 @@
 import { describe, expect, it } from "bun:test"
 import type { Assets } from "./handle-request"
-import { handleRequest, isOldAddress } from "./handle-request"
+import { handleRequest } from "./handle-request"
 
 /** One asset answer: the bytes, the validator, and the cache control the assets layer writes. */
 interface Asset {
@@ -207,12 +207,11 @@ describe("the addresses the Site used to answer at", () => {
 		})
 	}
 
-	it("names no prefix for a path that merely begins with one", async () => {
-		expect(isOldAddress("/english")).toBe(false)
-		expect(isOldAddress("/theme")).toBe(false)
-		expect(isOldAddress("/en")).toBe(true)
-		expect(isOldAddress("/en/")).toBe(true)
-		expect(isOldAddress("/th/deep")).toBe(true)
+	it("answers no prefix for a path that merely begins with one", async () => {
+		for (const path of ["/english", "/theme"]) {
+			const response = await handleRequest(get(path), fakeAssets())
+			expect(response.status).toBe(404)
+		}
 	})
 
 	it("hands a deeper path to the assets binding, which answers the one 404", async () => {

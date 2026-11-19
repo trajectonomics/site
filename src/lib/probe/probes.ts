@@ -1,5 +1,6 @@
 import { ROBOTS_FILE } from "../crawl/robots"
 import { SITEMAP_FILE } from "../crawl/sitemap"
+import { LANGUAGE_CHOICE_COOKIE } from "../language/stored-choice"
 import type { Probe } from "./probe"
 import {
 	answered,
@@ -12,7 +13,6 @@ import {
 } from "./probe-requests"
 
 export type { Probe, ProbeFailure, ProbeFailureCode, ProbeResponse } from "./probe"
-export { NO_BODY } from "./probe-requests"
 
 /**
  * Every probe the local Worker must answer: the address in each Language the four inputs choose,
@@ -22,10 +22,10 @@ export const PROBES: readonly Probe[] = Object.freeze([
 	home("en"),
 	home("th", { acceptLanguage: "th" }),
 	home("th", { country: "TH" }),
-	home("th", { cookie: "traj_lang=th" }),
+	home("th", { cookie: `${LANGUAGE_CHOICE_COOKIE}=th` }),
 	home("en", { acceptLanguage: "en", country: "TH" }),
-	home("en", { cookie: "traj_lang=../../etc/passwd" }),
-	home("en", { cookie: "traj_lang=zz" }),
+	home("en", { cookie: `${LANGUAGE_CHOICE_COOKIE}=../../etc/passwd` }),
+	home("en", { cookie: `${LANGUAGE_CHOICE_COOKIE}=zz` }),
 	choice("th"),
 	choice("en"),
 	choice(null),
