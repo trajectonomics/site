@@ -24,9 +24,9 @@ export interface Dictionary {
 	readonly factLabels: readonly string[]
 	/** One fact per label, in the same order: the plain sentence under its label. */
 	readonly factTexts: readonly string[]
-	/** The footer's release line: the stable release, naming both parts. */
+	/** The footer's release line: the Release snapshot's version, naming both parts. */
 	readonly releaseLine: string
-	/** The release date as this Language writes it; the machine-readable date is `RELEASE_DATE`. */
+	/** The release date as this Language writes it; the machine-readable date is the snapshot's `releasedOn`. */
 	readonly releaseDate: string
 	readonly docsLink: string
 	/** The Star menu's summary: the GitHub mark, the count and this name, for a reader who hears it. */
@@ -49,6 +49,10 @@ export interface Dictionary {
 	readonly actionYou: string
 	/** The speaker label of the agent in a transcript. */
 	readonly actionAgent: string
+	/** The comparison's before label: the agent asked alone, shown first on a phone. */
+	readonly actionBeforeLabel: string
+	/** The comparison's after label: the agent with traj, shown once the animation finishes. */
+	readonly actionAfterLabel: string
 	/** The left panel's tab: the agent asked alone. */
 	readonly actionWithoutLabel: string
 	/** The left panel's verdict under its transcript. */

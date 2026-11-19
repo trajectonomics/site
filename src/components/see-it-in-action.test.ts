@@ -28,12 +28,23 @@ describe("the See it in action section in every Language", () => {
 	for (const { language } of LANGUAGES) {
 		const dictionary = languageEntry(language).dictionary
 
-		it(`carries one h2 and no deeper heading (${language})`, async () => {
+		it(`carries no heading: the hero's one h1 is the page's claim (${language})`, async () => {
 			const page = scanComponent(await renderComponent(SeeItInAction, { dictionary }))
-			expect(headings(page).map((element) => element.tag)).toEqual(["h2"])
-			const h2 = elementsByTag(page, "h2")[0]
-			if (h2 === undefined) throw new Error("the section rendered no h2")
-			expect(textOf(page, h2)).toBe(dictionary.actionHeading)
+			expect(headings(page)).toEqual([])
+			expect(withClass(page, "section-head")).toEqual([])
+		})
+
+		it(`labels the panels before and after, and lands on before (${language})`, async () => {
+			const page = scanComponent(await renderComponent(SeeItInAction, { dictionary }))
+			expect(withClass(page, "compare-tab-label").map((element) => textOf(page, element))).toEqual([
+				dictionary.actionBeforeLabel,
+				dictionary.actionAfterLabel,
+			])
+			const wrap = withAttribute(page, "data-action-compare")[0]
+			expect(wrap?.attributes["data-action-stage"]).toBe("without")
+			expect(
+				withClass(page, "compare-tab-button").map((element) => element.attributes["aria-pressed"]),
+			).toEqual(["true", "false"])
 		})
 
 		it(`opens both transcripts with the same question (${language})`, async () => {
@@ -82,7 +93,7 @@ describe("the See it in action section in every Language", () => {
 		it(`shows the CLI command and its JSON one line per element (${language})`, async () => {
 			const page = scanComponent(await renderComponent(SeeItInAction, { dictionary }))
 			const lines = withClass(page, "terminal-line").map((element) => textOf(page, element))
-			expect(lines).toHaveLength(6)
+			expect(lines).toHaveLength(FI_DEMO_OUTPUT.length)
 			expect(lines.join("\n")).toContain(FI_DEMO_DATE)
 			expect(lines[0]).toBe("{")
 		})
@@ -115,6 +126,10 @@ describe("the See it in action section in every Language", () => {
 			const [answer] = messagesOf(page, "with").slice(-1)
 			if (answer === undefined || last === undefined) throw new Error("the answer has no beat")
 			expect(answer.attributes["style"]).toBe(`--step-delay:${last.startMs}ms`)
+			// The Reveal layer reads each panel's own length, and the side the Replay control replays.
+			expect(
+				withAttribute(page, "data-play-ms").map((panel) => panel.attributes["data-play-ms"]),
+			).toEqual([String(alone.totalMs), String(guided.totalMs)])
 		})
 
 		it(`carries no run label, because both panels are conversations now (${language})`, async () => {
@@ -129,12 +144,14 @@ describe("the See it in action section in every Language", () => {
 			const replays = page.elements.filter((element) => "data-replay" in element.attributes)
 			expect(replays.map((element) => element.tag)).toEqual(["button"])
 			expect(replays[0]?.attributes["type"]).toBe("button")
-			// Two controls named only "Replay" would be ambiguous: each names the section it replays.
-			expect(replays[0]?.attributes["aria-label"]).toBe(
-				`${dictionary.replay} — ${dictionary.actionHeading}`,
-			)
 			expect(replays[0]?.attributes["hidden"]).toBeDefined()
-			expect(textOf(page, replays[0] as HtmlElement)).toBe(dictionary.replay)
+			expect(withAttribute(page, "data-replay").map((one) => one.attributes["aria-label"])).toEqual(
+				[`${dictionary.replay} — ${dictionary.actionWithoutLabel}`],
+			)
+			// The control names the side it replays, so the Reveal layer needs no lookup of its own.
+			expect(
+				withAttribute(page, "data-replay").map((one) => one.attributes["data-replay"]),
+			).toEqual(["without"])
 		})
 
 		it(`ships no motion attribute, because the static page is the whole story (${language})`, async () => {

@@ -27,8 +27,7 @@ test.describe("the compare panels with motion allowed", () => {
 		}) => {
 			await openPage(page, HOME)
 			const root = page.locator(`.compare-panel[data-side="${panel.side}"]`)
-			await expect(root).not.toHaveAttribute("data-motion", "play")
-			await root.scrollIntoViewIfNeeded()
+			// The comparison now sits in the hero, so a panel already in view plays on load.
 			await expect(root).toHaveAttribute("data-motion", "play")
 			await expect(root.locator(".chat-message")).toHaveCount(panel.messages)
 			// The last message has not landed yet: its beat is still ahead of the first one.
@@ -80,10 +79,7 @@ test.describe("the compare panels with motion allowed", () => {
 		)
 		// The first beat starts over, so the last message is back at the start of its own delay.
 		await expect(page.locator(bubble("without", 7))).toHaveCSS("opacity", "0")
-		await expect(page.locator('.compare-panel[data-side="with"]')).toHaveAttribute(
-			"data-motion",
-			"play",
-		)
+		// Replay is one section's: the flow below it does not play.
 		await expect(page.locator(".how")).not.toHaveAttribute("data-motion", "play")
 	})
 })

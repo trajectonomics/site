@@ -7,6 +7,8 @@ export const ENGLISH_SECTIONS = Object.freeze({
 	actionQuestion: "When can I stop working?",
 	actionYou: "You",
 	actionAgent: "Agent",
+	actionBeforeLabel: "Before",
+	actionAfterLabel: "After",
 	actionWithoutLabel: "Ask the agent alone",
 	actionWithoutNote: "Made up, then admitted when asked. No source, no date, nothing to check.",
 	actionWithLabel: "Agent + traj skill",

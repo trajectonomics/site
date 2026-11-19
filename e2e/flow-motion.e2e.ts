@@ -80,10 +80,13 @@ test.describe("the layer flow with motion allowed", () => {
 	test("Replay runs the flow again from its first step", async ({ page }) => {
 		await openPage(page, HOME)
 		const how = page.locator(".how")
-		await expect(page.locator("[data-replay]").nth(1)).toHaveText(dictionary.replay)
-		await page.locator("[data-replay]").nth(1).click()
+		// The flow's own control: the comparison's one replays the before panel.
+		const replay = page.locator(".section-muted [data-replay]")
+		await expect(replay).toHaveText(dictionary.replay)
+		await replay.click()
 		await expect(how).toHaveAttribute("data-motion", "play")
-		await expect(how).toHaveAttribute("data-step", "1", { timeout: 2_000 })
+		// The flow marks step 1 on its first tick, one pace after the replay starts.
+		await expect(how).toHaveAttribute("data-step", "1", { timeout: 6_000 })
 	})
 })
 
@@ -100,6 +103,6 @@ test.describe("the layer flow with motion reduced", () => {
 		await expect(page.locator(".how-step")).toHaveCount(4)
 		for (const step of await page.locator(".how-step").all()) await expect(step).toBeVisible()
 		await expect(page.locator(".layers-pulse")).toHaveCSS("opacity", "0")
-		await expect(page.locator("[data-replay]").nth(1)).toBeHidden()
+		await expect(page.locator(".section-muted [data-replay]")).toBeHidden()
 	})
 })
