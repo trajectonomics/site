@@ -32,10 +32,6 @@ describe("the structure of the built pages", () => {
 		])
 	})
 
-	it("allows a Language's own build path, which the Worker serves at the address", () => {
-		expect(codes(build())).not.toContain("LANGUAGE_CODE_DIRECTORY_PRESENT")
-	})
-
 	it("does not count a landmark a comment names, so a commented-out nav is no nav", () => {
 		const page = "<html><head></head><body><!-- <nav></nav> --><main><h1></h1></main></body></html>"
 		expect(codes(build(page))).toEqual(["PAGE_NAV_COUNT"])

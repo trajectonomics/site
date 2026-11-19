@@ -41,11 +41,7 @@ export function spokenLanguage(code: string | null | undefined): Language | unde
 	return LANGUAGES.find((entry) => entry.language === value)?.language
 }
 
-/**
- * The asset path one Language's home is built at, relative to the assets root: `/` for the
- * Language of the Site's address, `/th/` for the one built beside it. The Worker fetches this path
- * through the assets binding; only the address itself is a URL a visitor is ever given.
- */
+/** The asset path one Language's home is built at, relative to the assets root. */
 export function languageHomePath(language: Language): string {
 	const { buildPath } = languageEntry(language)
 	return buildPath === "" ? CLEAN_URL : `/${buildPath}/`
@@ -57,11 +53,7 @@ export function languageHomeFile(language: Language): string {
 	return buildPath === "" ? "index.html" : `${buildPath}/index.html`
 }
 
-/**
- * The Language choice link: stores one Language as the visitor's choice, then returns to the
- * address. It is not a Language alternate, so it claims no `hreflang` and never puts a prefix in
- * the address bar.
- */
+/** The Language choice link: it stores one Language as the visitor's choice, then returns to the address. */
 export function languageChoiceLink(language: Language): string {
 	return `${CLEAN_URL}?${LANGUAGE_CHOICE_PARAM}=${encodeURIComponent(language)}`
 }
