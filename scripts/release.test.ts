@@ -1,14 +1,24 @@
 import { describe, expect, it } from "bun:test"
 import { readFileSync } from "node:fs"
 import { join } from "node:path"
+import type { ReleaseSnapshot } from "../src/lib/site/release"
+import type { ReleaseFeed } from "../src/lib/site/release-feed"
+import { driftBody, driftTitle } from "./release-drift-report"
 import { describeStatus } from "./release-status"
+
+/** A snapshot and a feed one release apart, so every line a report prints names both versions. */
+const SNAPSHOT: ReleaseSnapshot = { version: "0.2.0", releasedOn: "2026-11-17", asOf: "2026-11-19" }
+const FEED: ReleaseFeed = { latest: "0.3.0", releasedOn: "2027-02-01" }
 
 /** The Release snapshot's Pure Cores and the built-file rules that judge them, relative to this script. */
 const CORE = [
 	join("src", "lib", "site", "release.ts"),
+	join("src", "lib", "site", "release-error.ts"),
 	join("src", "lib", "site", "release-snapshot.ts"),
 	join("src", "lib", "site", "release-feed.ts"),
 	join("src", "lib", "build", "release.ts"),
+	join("src", "lib", "build", "release-version.ts"),
+	join("src", "lib", "build", "release-footer.ts"),
 ]
 
 /** The clock, the host locale and the network: the three an offline build and a fixture test cannot have. */
@@ -32,21 +42,39 @@ describe("the Release snapshot's core", () => {
 
 describe("where the snapshot stands, in one line", () => {
 	it("says the Site names the release npm publishes when the snapshot is current", () => {
-		const message = describeStatus("current", { latest: "0.2.0", releasedOn: "2026-11-17" })
-		expect(message).toContain("v0.2.0")
-		expect(message.startsWith("the Site names")).toBe(true)
+		const message = describeStatus(SNAPSHOT, "current", {
+			latest: SNAPSHOT.version,
+			releasedOn: "",
+		})
+		expect(message).toBe(`the Site names v${SNAPSHOT.version}, latest is v${SNAPSHOT.version}`)
 	})
 
 	it("waits while npm's latest has no published release, and never calls that drift", () => {
-		const message = describeStatus("waiting", { latest: "9.9.9", releasedOn: undefined })
+		const message = describeStatus(SNAPSHOT, "waiting", { latest: "9.9.9", releasedOn: undefined })
 		expect(message).toContain("waiting")
 		expect(message).toContain("9.9.9")
 		expect(message.includes("Release drift")).toBe(false)
 	})
 
 	it("opens with Release drift and names both versions when the snapshot is behind", () => {
-		const message = describeStatus("drift", { latest: "9.9.9", releasedOn: "2027-01-05" })
+		const message = describeStatus(SNAPSHOT, "drift", FEED)
 		expect(message.startsWith("Release drift:")).toBe(true)
-		expect(message).toContain("v9.9.9")
+		expect(message).toContain("v0.3.0")
+		expect(message).toContain("v0.2.0")
+	})
+})
+
+describe("the issue a drift is reported as", () => {
+	it("titles it with both versions, so a stale title is visible in the list", () => {
+		expect(driftTitle(SNAPSHOT, FEED)).toBe(
+			"Release drift: the Site names v0.2.0, latest is v0.3.0",
+		)
+	})
+
+	it("names the snapshot, the feed and the one command that repairs it", () => {
+		const body = driftBody(SNAPSHOT, FEED)
+		expect(body).toContain("v0.2.0")
+		expect(body).toContain("0.3.0")
+		expect(body).toContain("bun run release:update")
 	})
 })

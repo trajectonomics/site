@@ -9,14 +9,8 @@
  */
 import { $ } from "bun"
 import { RELEASE_SNAPSHOT } from "../src/lib/site/release-snapshot"
-import { checkRelease, type ReleaseCheck } from "./release-status"
-
-/** The prefix every drift issue's title starts with, so one open issue is found and no second is filed. */
-const TITLE_PREFIX = "Release drift:"
-
-/** What closes an issue whose drift a later run no longer finds. */
-const NOTHING_STALE =
-	"The Site names the release npm publishes again, so this issue closes itself (`bun run release:check`)."
+import { DRIFT_TITLE_PREFIX, driftBody, driftTitle, NOTHING_STALE } from "./release-drift-report"
+import { checkRelease } from "./release-status"
 
 /** One GitHub issue, as `gh issue list` writes it. */
 interface Issue {
@@ -24,33 +18,11 @@ interface Issue {
 	readonly title: string
 }
 
-/** The issue's title: both versions, so a stale title is visible in the list. */
-function title(check: ReleaseCheck): string {
-	return `${TITLE_PREFIX} the Site names v${RELEASE_SNAPSHOT.version}, latest is v${check.feed.latest}`
-}
-
-/** The issue's body: what drifted, the two versions, and the one command that repairs it. */
-function body(check: ReleaseCheck): string {
-	const { version, releasedOn, asOf } = RELEASE_SNAPSHOT
-	return [
-		"The Site prints one release, from the committed Release snapshot in `src/lib/site/release.json`,",
-		"and that snapshot is behind the release npm publishes.",
-		"",
-		`- The snapshot names \`v${version}\`, released ${releasedOn}, read ${asOf}.`,
-		`- npm's \`latest\` is \`${check.feed.latest}\`, released ${check.feed.releasedOn ?? "unknown"}.`,
-		"",
-		"Run `bun run release:update`, then open the pull request it produces. Every page's version, release",
-		"line and date come from that one file, and `bun run check` fails a page that names any other.",
-		"",
-		"If this issue is still open when the snapshot is current again, the next weekly run closes it.",
-	].join("\n")
-}
-
 /** The one open issue whose title carries the prefix, so a second drift never opens a second issue. */
 async function findIssue(): Promise<Issue | undefined> {
 	const listed = await $`gh issue list --state open --limit 1000 --json number,title`.text()
 	const issues = JSON.parse(listed) as readonly Issue[]
-	return issues.find((issue) => issue.title.startsWith(TITLE_PREFIX))
+	return issues.find((issue) => issue.title.startsWith(DRIFT_TITLE_PREFIX))
 }
 
 async function main(): Promise<void> {
@@ -63,12 +35,13 @@ async function main(): Promise<void> {
 		return
 	}
 	if (check.status === "waiting") return
+	const title = driftTitle(RELEASE_SNAPSHOT, check.feed)
+	const body = driftBody(RELEASE_SNAPSHOT, check.feed)
 	if (issue === undefined) {
-		const opened = await $`gh issue create --title ${title(check)} --body ${body(check)}`.text()
-		console.log(opened.trim())
+		console.log((await $`gh issue create --title ${title} --body ${body}`.text()).trim())
 		return
 	}
-	await $`gh issue edit ${issue.number} --title ${title(check)} --body ${body(check)}`.quiet()
+	await $`gh issue edit ${issue.number} --title ${title} --body ${body}`.quiet()
 	console.log(`release:drift: updated #${issue.number}`)
 }
 

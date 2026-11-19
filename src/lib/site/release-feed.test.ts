@@ -64,6 +64,11 @@ describe("what bun run release:update writes", () => {
 		})
 	})
 
+	it("rejects a day it cannot record as the date it was read", () => {
+		const feed = { latest: "0.2.0", releasedOn: "2026-11-17" }
+		expect(codeOf(() => snapshotFor(feed, "17/11/2026"))).toBe("RELEASE_DATE_INVALID")
+	})
+
 	it("refuses a version whose release does not exist yet, naming both values", () => {
 		const write = snapshotFor({ latest: "0.3.0", releasedOn: undefined }, "2026-11-19")
 		expect(write).toEqual({

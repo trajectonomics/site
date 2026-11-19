@@ -50,6 +50,10 @@ describe("the release strings a Language prints", () => {
 			"RELEASE_MONTHS_INCOMPLETE",
 		)
 	})
+
+	it("rejects a Language it has no date words for, so a new Language cannot fall through", () => {
+		expect(codeOf(() => releaseFor("xx"))).toBe("RELEASE_LANGUAGE_UNKNOWN")
+	})
 })
 
 describe("the committed Release snapshot", () => {

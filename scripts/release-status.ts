@@ -1,3 +1,4 @@
+import type { ReleaseSnapshot } from "../src/lib/site/release"
 import type { ReleaseFeed, ReleaseStatus } from "../src/lib/site/release-feed"
 import { releaseStatus } from "../src/lib/site/release-feed"
 import { RELEASE_SNAPSHOT } from "../src/lib/site/release-snapshot"
@@ -11,8 +12,12 @@ export interface ReleaseCheck {
 }
 
 /** The one line a check prints: current, waiting on the release, or behind it. */
-export function describeStatus(status: ReleaseStatus, feed: ReleaseFeed): string {
-	const site = `v${RELEASE_SNAPSHOT.version}`
+export function describeStatus(
+	snapshot: ReleaseSnapshot,
+	status: ReleaseStatus,
+	feed: ReleaseFeed,
+): string {
+	const site = `v${snapshot.version}`
 	if (status === "waiting") {
 		return `waiting on the release: npm's latest is ${feed.latest}, and v${feed.latest} has no published GitHub release yet`
 	}
@@ -24,5 +29,9 @@ export function describeStatus(status: ReleaseStatus, feed: ReleaseFeed): string
 export async function checkRelease(): Promise<ReleaseCheck> {
 	const feed = await readReleaseFeed()
 	const status = releaseStatus(RELEASE_SNAPSHOT, feed)
-	return Object.freeze({ feed, status, message: describeStatus(status, feed) })
+	return Object.freeze({
+		feed,
+		status,
+		message: describeStatus(RELEASE_SNAPSHOT, status, feed),
+	})
 }

@@ -1,4 +1,5 @@
-import { calendarDay, type ReleaseSnapshot, releaseError } from "./release"
+import { calendarDay, type ReleaseSnapshot } from "./release"
+import { releaseError } from "./release-error"
 
 /** What the release feeds say right now: npm's `latest`, and the release day of that same tag. */
 export interface ReleaseFeed {
@@ -51,13 +52,11 @@ export function releasedOn(release: unknown): string {
 	return day
 }
 
-/**
- * Where the snapshot stands against the feed. A `latest` with no published release is `waiting`,
- * never `drift`: the CLI publishes npm before the GitHub release, so that window is minutes long and
- * a report that called it drift would file an issue a release repairs at once (cli ADR-0023).
- */
+/** Where the snapshot stands against the feed; a mid-publish `latest` waits instead of drifting. */
 export function releaseStatus(snapshot: ReleaseSnapshot, feed: ReleaseFeed): ReleaseStatus {
 	if (feed.latest === snapshot.version) return "current"
+	// The CLI publishes to npm before the GitHub release, so that window is minutes long and a report
+	// would file an issue a release repairs at once (cli ADR-0023).
 	return feed.releasedOn === undefined ? "waiting" : "drift"
 }
 

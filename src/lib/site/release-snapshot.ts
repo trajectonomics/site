@@ -1,6 +1,7 @@
 import type { Language } from "../language/language"
-import { type ReleaseFacts, type ReleaseSnapshot, releaseError, releaseFacts } from "./release"
+import { type ReleaseFacts, type ReleaseSnapshot, releaseFacts } from "./release"
 import raw from "./release.json" with { type: "json" }
+import { releaseError } from "./release-error"
 
 /** The committed snapshot `bun run release:update` writes: the release facts every page prints. */
 export const RELEASE_SNAPSHOT: ReleaseSnapshot = Object.freeze({
@@ -9,11 +10,8 @@ export const RELEASE_SNAPSHOT: ReleaseSnapshot = Object.freeze({
 	asOf: raw.asOf,
 })
 
-/**
- * The month words each Language writes a release day with, January first. A new Language adds one
- * row here and gets its release strings by construction; no page holds a second copy of them.
- */
-export const RELEASE_MONTHS: Readonly<Record<string, readonly string[]>> = Object.freeze({
+/** Every Language's twelve month words, January first, so a new Language adds one row and no page holds a copy. */
+export const RELEASE_MONTHS: Readonly<Record<Language, readonly string[]>> = Object.freeze({
 	en: Object.freeze([
 		"Jan",
 		"Feb",
@@ -49,7 +47,7 @@ export function releaseFor(language: Language): ReleaseFacts {
 	const months = RELEASE_MONTHS[language]
 	if (months === undefined) {
 		throw releaseError(
-			"RELEASE_MONTHS_INCOMPLETE",
+			"RELEASE_LANGUAGE_UNKNOWN",
 			"language",
 			`the Site has no release day words for ${language}.`,
 		)

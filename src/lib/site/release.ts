@@ -1,8 +1,10 @@
+import { releaseError } from "./release-error"
+
 /** The committed Release snapshot: the CLI's stable version, the day it was released, and the day it was read. */
 export interface ReleaseSnapshot {
-	/** The bare semver a visitor installs, as npm's `latest` names it: `0.2.0`. */
+	/** The bare semver a visitor installs, as npm's `latest` names it, such as `0.2.0`. */
 	readonly version: string
-	/** The release day as a UTC ISO calendar date: `2026-11-17`. */
+	/** The release day as a UTC ISO calendar date, such as `2026-11-17`. */
 	readonly releasedOn: string
 	/** The day the snapshot was read, as an ISO calendar date. */
 	readonly asOf: string
@@ -23,24 +25,6 @@ export interface ReleaseFacts {
 /** The two part names the release line carries: the same words in every Language, like the version. */
 const CLI_PART = "traj CLI"
 const ONBOARDING_PART = "traj-onboarding"
-
-/** The ways a Release snapshot and a Language's date words can be rejected. One code per rule. */
-export type ReleaseErrorCode =
-	| "RELEASE_DATE_INVALID"
-	| "RELEASE_MONTHS_INCOMPLETE"
-	| "RELEASE_REGISTRY_UNREADABLE"
-	| "RELEASE_PAYLOAD_UNREADABLE"
-
-/** A rejected Release snapshot: the rule's code, and the caller's own field name. */
-export interface ReleaseError extends Error {
-	readonly code: ReleaseErrorCode
-	readonly field: string
-}
-
-/** The rejection of one release rule; `field` mirrors the caller's input path. */
-export function releaseError(code: ReleaseErrorCode, field: string, message: string): ReleaseError {
-	return Object.freeze(Object.assign(new Error(message), { code, field }))
-}
 
 /** A calendar date split into the parts a Language writes: no `Date`, so no clock and no locale. */
 interface CalendarDay {
@@ -66,10 +50,7 @@ export function calendarDay(date: string, field: string): CalendarDay {
 	return Object.freeze({ year: match[1] ?? "", month, day })
 }
 
-/**
- * The release strings one Language prints, from the snapshot and that Language's twelve month words.
- * The version and the part names are Language-neutral; only the month word is the Language's own.
- */
+/** The release strings one Language prints, from the snapshot and that Language's month words. */
 export function releaseFacts(snapshot: ReleaseSnapshot, months: readonly string[]): ReleaseFacts {
 	const day = calendarDay(snapshot.releasedOn, "releasedOn")
 	const month = months[day.month - 1]
