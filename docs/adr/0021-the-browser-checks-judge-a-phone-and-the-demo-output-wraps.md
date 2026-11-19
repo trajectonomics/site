@@ -6,7 +6,7 @@ status: accepted
 
 The browser accessibility check, `e2e/accessibility.e2e.ts`, ran at the Playwright project's desktop
 viewport and nowhere else, so the Site's phone layout was never judged. On 2026-11-18 the hero-rim work
-measured the cost: axe at a 390×844 phone reported two findings on the home pages, in both device schemes,
+measured the cost: axe at a 390×844 phone reported two findings on the Language homes, in both device schemes,
 and
 [ADR 0017](./0017-the-hero-rim-brightens-the-field-outside-the-copy.md)'s Consequences recorded them as
 belonging to neither that change nor CI's path. That record also named the element wrongly, which is how
