@@ -32,7 +32,7 @@ describe("the strings the two conversations need", () => {
 		expect(english.actionProvenance).toContain("2026")
 	})
 
-	it("writes every new line in both Languages, so Thai is never the lesser page", () => {
+	it("writes every new line in both Languages, and Thai is never the English line", () => {
 		const keys = [
 			"actionReask",
 			"actionExplain",
@@ -50,7 +50,6 @@ describe("the strings the two conversations need", () => {
 			"howOutputSource",
 		] as const
 		for (const { language, dictionary } of LANGUAGES) {
-			const thai = dictionaryFor("th")
 			for (const key of keys) {
 				expect({ language, key, written: dictionary[key].trim().length > 0 }).toEqual({
 					language,
@@ -58,12 +57,8 @@ describe("the strings the two conversations need", () => {
 					written: true,
 				})
 			}
-			// Thai is written in Thai script, never left as the English line.
-			expect({ key: "actionConfession", thai: thai.actionConfession }).not.toEqual({
-				key: "actionConfession",
-				thai: dictionaryFor("en").actionConfession,
-			})
 		}
+		expect(dictionaryFor("th").actionConfession).not.toBe(dictionaryFor("en").actionConfession)
 	})
 
 	it("names the one control the sections add, in every Language", () => {
@@ -71,7 +66,7 @@ describe("the strings the two conversations need", () => {
 		expect(dictionaryFor("th").replay).not.toBe("Replay")
 	})
 
-	it("names the three outputs the agent hands back, in place of the four surfaces", () => {
+	it("names the three outputs the agent hands back, in place of the four names", () => {
 		const english = dictionaryFor("en")
 		expect(english.howPresentationItems).toEqual(["Answer", "Interactive chart", "Actions"])
 		expect(english.howStepActors[0]).toContain("you")

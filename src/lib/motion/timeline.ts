@@ -17,11 +17,7 @@ export interface Timeline {
 	readonly totalMs: number
 }
 
-/**
- * One animated sequence: how many beats it has, how long one lasts, and the quiet gap after a beat
- * began before the next one arrives. A larger `beatMs` than `gapMs` still never overlaps, because the
- * beats are spaced by both.
- */
+/** One animated sequence: its beats, each beat's length, and the gap before the next one. */
 export interface Sequence {
 	readonly beats: number
 	readonly beatMs: number
@@ -41,16 +37,8 @@ export const COMPARE_ALONE: Sequence = Object.freeze({ beats: 8, beatMs: 480, ga
 /** The agent with traj's exchange: seven messages and the six output lines that arrive one by one. */
 export const COMPARE_WITH: Sequence = Object.freeze({ beats: 13, beatMs: 300, gapMs: 120 })
 
-/**
- * The layer flow's four steps, at two seconds each: slow enough to read, and inside the twelve-second
- * bound once the last step has settled.
- */
+/** The layer flow's four steps, at two seconds each. */
 export const HOW_FLOW: Sequence = Object.freeze({ beats: 4, beatMs: 2_000, gapMs: 0 })
-
-/** The number of beats one sequence has, as a caller that checks its own markup reads it. */
-export function beatCount(sequence: Sequence): number {
-	return Math.max(0, Math.trunc(sequence.beats))
-}
 
 /** The timeline of one sequence: one beat per message it passes, and the moment it settles. */
 export function sequenceTimeline(sequence: Sequence): Timeline {

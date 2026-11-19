@@ -24,7 +24,7 @@ const guided = sequenceTimeline(COMPARE_WITH)
 /** The delay one beat starts at, as the custom property the stylesheet reads. */
 const at = (sequence: Timeline, beat: number) =>
 	`--step-delay:${sequence.beats[beat]?.startMs ?? 0}ms`
-/** The right chat's beats, in the order its markup renders them: five messages, the tool, its lines, the answer. */
+/** The right chat's beats, in the order its markup renders them: five messages, the CLI, its lines, the answer. */
 const BEAT = {
 	question: 0,
 	guide: 1,
@@ -75,7 +75,7 @@ const guesses = dictionary.actionGuesses
 							<span class="sr-only">{dictionary.actionAgent}</span>
 							<div class="chat-bubble">
 								<Bot class="chat-mark" />
-								<span class="chat-thinking" aria-hidden="true"><i></i><i></i><i></i></span>
+								<span class="chat-thinking dots" aria-hidden="true"><i></i><i></i><i></i></span>
 								<p class="chat-text">{guesses[0]}</p>
 							</div>
 						</li>
@@ -87,7 +87,7 @@ const guesses = dictionary.actionGuesses
 							<span class="sr-only">{dictionary.actionAgent}</span>
 							<div class="chat-bubble">
 								<Bot class="chat-mark" />
-								<span class="chat-thinking" aria-hidden="true"><i></i><i></i><i></i></span>
+								<span class="chat-thinking dots" aria-hidden="true"><i></i><i></i><i></i></span>
 								<p class="chat-text">{guesses[1]}</p>
 							</div>
 						</li>
@@ -99,7 +99,7 @@ const guesses = dictionary.actionGuesses
 							<span class="sr-only">{dictionary.actionAgent}</span>
 							<div class="chat-bubble">
 								<Bot class="chat-mark" />
-								<span class="chat-thinking" aria-hidden="true"><i></i><i></i><i></i></span>
+								<span class="chat-thinking dots" aria-hidden="true"><i></i><i></i><i></i></span>
 								<p class="chat-text">{dictionary.actionGuessReason}</p>
 							</div>
 						</li>
@@ -111,7 +111,7 @@ const guesses = dictionary.actionGuesses
 							<span class="sr-only">{dictionary.actionAgent}</span>
 							<div class="chat-bubble">
 								<Bot class="chat-mark" />
-								<span class="chat-thinking" aria-hidden="true"><i></i><i></i><i></i></span>
+								<span class="chat-thinking dots" aria-hidden="true"><i></i><i></i><i></i></span>
 								<p class="chat-text">{dictionary.actionConfession}</p>
 							</div>
 						</li>
@@ -135,7 +135,7 @@ const guesses = dictionary.actionGuesses
 							<span class="sr-only">{dictionary.actionAgent}</span>
 							<div class="chat-bubble">
 								<Bot class="chat-mark" />
-								<span class="chat-thinking" aria-hidden="true"><i></i><i></i><i></i></span>
+								<span class="chat-thinking dots" aria-hidden="true"><i></i><i></i><i></i></span>
 								<p class="chat-text">{dictionary.actionGuideQuestion}</p>
 							</div>
 						</li>
@@ -150,7 +150,7 @@ const guesses = dictionary.actionGuesses
 							<span class="sr-only">{dictionary.actionAgent}</span>
 							<div class="chat-bubble">
 								<Bot class="chat-mark" />
-								<span class="chat-thinking" aria-hidden="true"><i></i><i></i><i></i></span>
+								<span class="chat-thinking dots" aria-hidden="true"><i></i><i></i><i></i></span>
 								<p class="chat-text">{dictionary.actionNeedMore}</p>
 							</div>
 						</li>
@@ -160,7 +160,7 @@ const guesses = dictionary.actionGuesses
 						</li>
 						<li class="chat-message" data-from="agent" style={at(guided, BEAT.terminal)}>
 							<span class="sr-only">{dictionary.actionAgent}</span>
-							<div class="chat-bubble chat-tool">
+							<div class="chat-bubble chat-cli">
 								<p class="chat-text chat-note">{dictionary.actionSkillLine}</p>
 								<div class="terminal bg-stage text-stage-foreground">
 									<code class="terminal-command"><span class="terminal-prompt" aria-hidden="true">$ </span>{FI_DEMO_COMMAND}</code>
@@ -171,9 +171,9 @@ const guesses = dictionary.actionGuesses
 						</li>
 						<li class="chat-message" data-from="agent" style={at(guided, BEAT.answer)}>
 							<span class="sr-only">{dictionary.actionAgent}</span>
-							<div class="chat-bubble chat-answer">
+							<div class="chat-bubble">
 								<Bot class="chat-mark" />
-								<span class="chat-thinking" aria-hidden="true"><i></i><i></i><i></i></span>
+								<span class="chat-thinking dots" aria-hidden="true"><i></i><i></i><i></i></span>
 								<p class="chat-text">{dictionary.actionAnswer}</p>
 								<p class="chat-provenance">{dictionary.actionProvenance}</p>
 							</div>

@@ -66,23 +66,13 @@
 }
 
 .chat-thinking {
-	display: inline-flex;
-	align-items: center;
-	gap: 3px;
 	height: 4px;
+	color: var(--ds-color-muted-foreground);
 	opacity: 0;
 }
 
-.chat-thinking > i {
-	display: block;
-	width: 4px;
-	height: 4px;
-	border-radius: 50%;
-	background: var(--ds-color-muted-foreground);
-}
-
-/* The agent's tool result: the skill line above the same terminal block, inside the conversation. */
-.chat-tool {
+/* The agent's CLI run: the skill line above the same terminal block, inside the conversation. */
+.chat-cli {
 	gap: 10px;
 }
 

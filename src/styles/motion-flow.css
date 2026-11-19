@@ -60,43 +60,43 @@
 	.how[data-motion="play"][data-step="4"] [data-step-chip="4"] {
 		opacity: 1;
 	}
-}
 
-@keyframes glow-turn {
-	from {
-		--glow-angle: 0deg;
+	@keyframes glow-turn {
+		from {
+			--glow-angle: 0deg;
+		}
+		to {
+			--glow-angle: 360deg;
+		}
 	}
-	to {
-		--glow-angle: 360deg;
-	}
-}
 
-@keyframes layers-pulse {
-	0% {
-		opacity: 0;
-		transform: translateY(0);
-	}
-	8% {
-		opacity: 1;
-		transform: translateY(0);
-	}
-	30% {
-		transform: translateY(34px);
-	}
-	55% {
-		opacity: 1;
-		transform: translateY(112px);
-	}
-	70% {
-		opacity: 1;
-		transform: translateY(112px);
-	}
-	95% {
-		opacity: 1;
-		transform: translateY(0);
-	}
-	100% {
-		opacity: 0;
-		transform: translateY(0);
+	@keyframes layers-pulse {
+		0% {
+			opacity: 0;
+			transform: translateY(0);
+		}
+		8% {
+			opacity: 1;
+			transform: translateY(0);
+		}
+		30% {
+			transform: translateY(34px);
+		}
+		55% {
+			opacity: 1;
+			transform: translateY(112px);
+		}
+		70% {
+			opacity: 1;
+			transform: translateY(112px);
+		}
+		95% {
+			opacity: 1;
+			transform: translateY(0);
+		}
+		100% {
+			opacity: 0;
+			transform: translateY(0);
+		}
 	}
 }

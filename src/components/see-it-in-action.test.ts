@@ -70,7 +70,7 @@ describe("the See it in action section in every Language", () => {
 				`${dictionary.actionAgent} ${dictionary.actionNeedMore}`,
 				`${dictionary.actionYou} ${dictionary.actionData}`,
 			])
-			// The agent's tool message carries the skill line and prints the CLI's output, then one answer.
+			// The agent's CLI message carries the skill line and prints the output, then one answer.
 			expect(spoken[4]).toContain(dictionary.actionSkillLine)
 			expect(spoken[4]).toContain(FI_DEMO_COMMAND)
 			expect(spoken[4]).toContain(dictionary.actionExampleNote)

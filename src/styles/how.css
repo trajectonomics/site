@@ -73,18 +73,7 @@
 
 /* The three dots that say the running step is still working: decoration, invisible at rest. */
 .how-step-running {
-	display: inline-flex;
-	align-items: center;
-	gap: 3px;
 	align-self: center;
 	color: var(--ds-color-accent);
 	opacity: 0;
-}
-
-.how-step-running > i {
-	display: block;
-	width: 4px;
-	height: 4px;
-	border-radius: 50%;
-	background: currentColor;
 }

@@ -9,20 +9,19 @@
 		opacity: 0.45;
 	}
 
-	.how[data-motion="play"][data-step="1"] .how-step:nth-child(1),
-	.how[data-motion="play"][data-step="2"] .how-step:nth-child(-n + 1),
-	.how[data-motion="play"][data-step="2"] .how-step:nth-child(2),
-	.how[data-motion="play"][data-step="3"] .how-step:nth-child(-n + 2),
-	.how[data-motion="play"][data-step="3"] .how-step:nth-child(3),
-	.how[data-motion="play"][data-step="4"] .how-step:nth-child(-n + 3),
-	.how[data-motion="play"][data-step="4"] .how-step:nth-child(4) {
-		opacity: 1;
-	}
-
+	/* The rows the flow has left behind. */
 	.how[data-motion="play"][data-step="2"] .how-step:nth-child(-n + 1),
 	.how[data-motion="play"][data-step="3"] .how-step:nth-child(-n + 2),
 	.how[data-motion="play"][data-step="4"] .how-step:nth-child(-n + 3) {
 		opacity: 0.8;
+	}
+
+	/* The row that is running, wherever the flow is. */
+	.how[data-motion="play"][data-step="1"] .how-step:nth-child(1),
+	.how[data-motion="play"][data-step="2"] .how-step:nth-child(2),
+	.how[data-motion="play"][data-step="3"] .how-step:nth-child(3),
+	.how[data-motion="play"][data-step="4"] .how-step:nth-child(4) {
+		opacity: 1;
 	}
 
 	.how[data-motion="play"][data-step="1"] .how-step:nth-child(1) .how-step-number,
@@ -95,14 +94,15 @@
 			display: grid;
 		}
 	}
-}
 
-@keyframes dots-run {
-	0%,
-	100% {
-		opacity: 0.35;
-	}
-	50% {
-		opacity: 1;
+	/* The dots that say a step is still working. */
+	@keyframes dots-run {
+		0%,
+		100% {
+			opacity: 0.35;
+		}
+		50% {
+			opacity: 1;
+		}
 	}
 }

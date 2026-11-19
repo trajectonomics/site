@@ -122,35 +122,36 @@ const verification = verificationMetas({
 			and output is in the markup at its resting state, and this script only marks a panel's root so
 			the timeline in the stylesheet can play once. It marks a root the first time it is in view, in
 			the same frame for a root already on screen, so a visitor who lands mid-page never sees a still
-			frame first. It sets the flow's single `data-step` value and takes it, and the motion switch,
-			off again when the sequence has settled, so the settled page is the static page. `Replay` marks
-			a section's own roots again, and the beats themselves are all the stylesheet's. Its comments
-			live here because every byte of this script ships: the whole page has 10,000.
+			frame first. It runs the flow's one step value on an interval and takes the value and the motion
+			attribute off when the sequence has settled, so the settled page is the static page. `Replay`
+			marks a section's own roots again, and the beats themselves are all the stylesheet's. The
+			script is marked off and back on around a reflow, so a Replay restarts the beats instead of
+			resuming them. There is no comment inside it: every byte of it ships, and the whole page has
+			10,000.
 		*/}
 		<script is:inline>
 		;(() => {
 			const roots = [...document.querySelectorAll(".compare-panel, .how")]
 			if (!roots.length || matchMedia("(prefers-reduced-motion: reduce)").matches) return
 			const play = (root) => {
-				const d = root.dataset
-				const steps = +d.flowSteps
-				// Off, reflow, on: a Replay restarts the beats instead of resuming them.
+				const data = root.dataset
+				const steps = +data.flowSteps
 				root.removeAttribute("data-motion")
 				root.removeAttribute("data-step")
 				void root.offsetWidth
 				root.setAttribute("data-motion", "play")
 				if (!steps) return
-				clearInterval(root.interval)
+				clearInterval(root.ticking)
 				let step = 1
-				d.step = step
-				root.interval = setInterval(() => {
-					if (step < steps) d.step = ++step
+				data.step = step
+				root.ticking = setInterval(() => {
+					if (step < steps) data.step = ++step
 					else {
-						clearInterval(root.interval)
+						clearInterval(root.ticking)
 						root.removeAttribute("data-step")
 						root.removeAttribute("data-motion")
 					}
-				}, +d.flowMs)
+				}, +data.flowMs)
 			}
 			for (const button of document.querySelectorAll("[data-replay]")) {
 				button.removeAttribute("hidden")
@@ -159,15 +160,19 @@ const verification = verificationMetas({
 					for (const root of section?.querySelectorAll(".compare-panel, .how") ?? []) play(root)
 				}
 			}
+			const observer = window.IntersectionObserver
+				? new IntersectionObserver((entries) => {
+						for (const entry of entries) {
+							if (!entry.isIntersecting) continue
+							observer.unobserve(entry.target)
+							play(entry.target)
+						}
+					})
+				: undefined
 			for (const root of roots) {
 				const { top, bottom } = root.getBoundingClientRect()
 				if (bottom > 0 && top < innerHeight) play(root)
-				else if (window.IntersectionObserver)
-					new IntersectionObserver((entries, observer) => {
-						if (!entries.some((entry) => entry.isIntersecting)) return
-						observer.disconnect()
-						play(root)
-					}).observe(root)
+				else observer?.observe(root)
 			}
 		})()
 		</script>

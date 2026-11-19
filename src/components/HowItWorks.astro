@@ -56,7 +56,7 @@ const YEAR = FI_DEMO_DATE.slice(0, 4)
 									{dictionary.howStepActors[index]}
 								</span>
 							</span>
-							<span class="how-step-running" aria-hidden="true">
+							<span class="how-step-running dots" aria-hidden="true">
 								<i /><i /><i />
 							</span>
 						</li>
@@ -98,7 +98,7 @@ const YEAR = FI_DEMO_DATE.slice(0, 4)
 							<span class="layer-chip">{name(2)}</span>
 							<span class="how-output how-output-action">
 								<Check class="how-output-tick" />
-								<span class="how-output-status">{dictionary.howOutputStatus}</span>
+								<span>{dictionary.howOutputStatus}</span>
 								<span class="how-output-source">{dictionary.howOutputSource}</span>
 							</span>
 						</li>
@@ -106,12 +106,12 @@ const YEAR = FI_DEMO_DATE.slice(0, 4)
 					<span class="layer-agent" data-step-chip="1" aria-hidden="true">
 						<Bot class="layer-agent-mark" />
 						<span>{dictionary.howStepActors[0]}</span>
-						<span class="layer-agent-dots"><i /><i /><i /></span>
+						<span class="layer-agent-dots dots"><i /><i /><i /></span>
 					</span>
-					<span class="layer-agent layer-agent-last" data-step-chip="4" aria-hidden="true">
+					<span class="layer-agent" data-step-chip="4" aria-hidden="true">
 						<Bot class="layer-agent-mark" />
 						<span>{dictionary.howStepActors[3]}</span>
-						<span class="layer-agent-dots"><i /><i /><i /></span>
+						<span class="layer-agent-dots dots"><i /><i /><i /></span>
 					</span>
 					<span class="layers-pulse" aria-hidden="true" />
 				</div>
@@ -126,7 +126,7 @@ const YEAR = FI_DEMO_DATE.slice(0, 4)
 								<span class="layer-agent" data-step-chip="2" aria-hidden="true">
 									<Bot class="layer-agent-mark" />
 									<span>{dictionary.howStepActors[1]}</span>
-									<span class="layer-agent-dots"><i /><i /><i /></span>
+									<span class="layer-agent-dots dots"><i /><i /><i /></span>
 								</span>
 							</p>
 							<span class="layers-join-line" aria-hidden="true"></span>
@@ -144,7 +144,7 @@ const YEAR = FI_DEMO_DATE.slice(0, 4)
 							<span class="layer-agent" data-step-chip="3" aria-hidden="true">
 								<Bot class="layer-agent-mark" />
 								<span>{dictionary.howStepActors[2]}</span>
-								<span class="layer-agent-dots"><i /><i /><i /></span>
+								<span class="layer-agent-dots dots"><i /><i /><i /></span>
 							</span>
 						</div>
 					</div>

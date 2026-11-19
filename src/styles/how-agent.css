@@ -28,12 +28,6 @@
 	pointer-events: none;
 }
 
-/* The join's chip rides the label's own bottom edge, the way the two layers' chips do. */
-.layers-join-label > .layer-agent {
-	bottom: -11px;
-	left: 14px;
-}
-
 .layer-agent-mark {
 	flex-shrink: 0;
 	width: 12px;
@@ -42,18 +36,7 @@
 }
 
 .layer-agent-dots {
-	display: inline-flex;
-	align-items: center;
-	gap: 3px;
 	color: var(--ds-color-accent);
-}
-
-.layer-agent-dots > i {
-	display: block;
-	width: 4px;
-	height: 4px;
-	border-radius: 50%;
-	background: currentColor;
 }
 
 .layers-pulse {
