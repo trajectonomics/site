@@ -1,7 +1,7 @@
 import { expect, test } from "@playwright/test"
 import { dictionaryFor } from "../src/lib/language/languages"
 import { BASE_URL } from "./base-url"
-import { COPY_PROMPT_TEXT, focusableCount } from "./controls"
+import { focusableCount } from "./controls"
 import { expectShippedTheme, PAGES, visit } from "./pages"
 
 /** The homes, whose CTA carries the Copy button and the CLI link. */
