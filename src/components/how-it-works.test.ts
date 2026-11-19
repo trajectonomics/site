@@ -111,6 +111,18 @@ describe("the How it works section in every Language", () => {
 			expect(pulse.ancestors.includes(one(page, "layers"))).toBe(true)
 		})
 
+		it(`carries one agent token that rides the steps, and announces nothing (${language})`, async () => {
+			const page = await pageOf()
+			const tokens = withClass(page, "how-step-token")
+			expect(tokens).toHaveLength(1)
+			expect(tokens[0]?.attributes["aria-hidden"]).toBe("true")
+			// It sits in the list, not inside a row: one element travels, rather than four that blink.
+			expect(tokens[0]?.ancestors.includes(one(page, "how-steps"))).toBe(true)
+			expect(
+				tokens[0]?.ancestors.some((element) => element.attributes["class"] === "how-step"),
+			).toBe(false)
+		})
+
 		it(`carries the flow's numbers, and no state, until a script starts it (${language})`, async () => {
 			const html = await renderComponent(HowItWorks, { dictionary })
 			const page = scanComponent(html)

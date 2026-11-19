@@ -24,7 +24,11 @@
 	}
 }
 
+/* Equal rows, so one token translates by its own height to reach any of them. */
 .how-steps {
+	position: relative;
+	display: grid;
+	grid-auto-rows: 1fr;
 	margin: 0;
 	padding: 0;
 	border-top: 1px solid var(--ds-color-border);
@@ -69,6 +73,41 @@
 	flex-shrink: 0;
 	width: 12px;
 	height: 12px;
+}
+
+/*
+ * One agent token in the step list's margin (ADR 0019): it rests invisible, then rides down the list to
+ * the row that is running and stops there. Its height is one row, so one translate reaches the next one,
+ * and nothing in the script measures a row.
+ */
+.how-step-token {
+	position: absolute;
+	top: 0;
+	left: -1.75rem;
+	align-items: center;
+	justify-content: center;
+	width: 20px;
+	display: none;
+	height: 25%;
+	color: var(--ds-color-accent);
+}
+
+.how-step-token::before {
+	position: absolute;
+	top: 50%;
+	width: 20px;
+	height: 20px;
+	margin-top: -10px;
+	border: 1px solid var(--ds-color-accent);
+	border-radius: 50%;
+	background: var(--ds-color-background);
+	content: "";
+}
+
+.how-step-token-mark {
+	position: relative;
+	width: 11px;
+	height: 11px;
 }
 
 /* The three dots that say the running step is still working: decoration, invisible at rest. */

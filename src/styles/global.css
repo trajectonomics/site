@@ -40,6 +40,8 @@
 @import "./how-growth.css";
 @import "./motion-flow.css";
 @import "./motion-steps.css";
+@import "./motion-outputs.css";
+@import "./motion-phone.css";
 
 /*
  * Tailwind's automatic source detection reads every file it is not told to skip, and the checks' own

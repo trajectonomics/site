@@ -44,6 +44,10 @@ const YEAR = FI_DEMO_DATE.slice(0, 4)
 
 		<div class="how" data-flow-ms={HOW_FLOW.beatMs} data-flow-steps={HOW_FLOW.beats}>
 			<ol class="how-steps">
+				{/* One token rides the list: it translates to the row that is running, and stops there. */}
+				<span class="how-step-token" aria-hidden="true">
+					<Bot class="how-step-token-mark" />
+				</span>
 				{
 					dictionary.howSteps.map((step, index) => (
 						<li class="how-step">
