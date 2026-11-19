@@ -4,6 +4,13 @@ import { expectShippedTheme, openPage, PAGES } from "./pages"
 import { VIEWPORTS } from "./viewports"
 
 /**
+ * The two baselines this file names, and the viewport each one judges. The screenshot filenames stay
+ * this file's own (`-desktop` / `-mobile`), so the shared definition cannot rename a committed
+ * baseline, and a pure refactor reads as no screenshot change.
+ */
+const SNAPSHOTS = { desktop: VIEWPORTS.desktop, mobile: VIEWPORTS.phone } as const
+
+/**
  * The one face the screenshots pin: Thai. The page serves Aleo and Azeret Mono from its build, but
  * Thai still falls through to the visitor's own face, so the pin keeps that family the same on every
  * runner. The `unicode-range` keeps it to Thai code points, so Latin renders in the page's own faces.
@@ -34,15 +41,13 @@ async function pinFonts(page: Page): Promise<void> {
  * from the host, and a host with another one changes them all.
  * `mcr.microsoft.com/playwright:v1.65.0-noble` (the tag for the version above) with
  * `fonts-dejavu-core` added renders them byte for byte the way the browser check does (site#42).
- * The sizes come from `./viewports`, so the phone is the same one the other checks judge; the
- * filenames stay this file's own `desktop` and `mobile` keys, so a shared definition renames nothing.
  */
 test.describe("the built pages as screenshots", () => {
 	test.use({ reducedMotion: "reduce", colorScheme: "light" })
 
 	for (const underTest of PAGES) {
-		for (const [viewportName, viewport] of Object.entries(VIEWPORTS)) {
-			test(`${underTest.name} on ${viewportName}`, async ({ page }) => {
+		for (const [snapshot, viewport] of Object.entries(SNAPSHOTS)) {
+			test(`${underTest.name} on ${snapshot}`, async ({ page }) => {
 				await pinFonts(page)
 				await page.setViewportSize(viewport)
 				await openPage(page, underTest)
@@ -50,7 +55,7 @@ test.describe("the built pages as screenshots", () => {
 				await page.addStyleTag({ content: FONT_CSS })
 				await page.evaluate(() => document.fonts.ready)
 				const slug = underTest.name.toLowerCase().replace(/[^a-z0-9]+/g, "-")
-				await expect(page).toHaveScreenshot(`${slug}-${viewportName}.png`, {
+				await expect(page).toHaveScreenshot(`${slug}-${snapshot}.png`, {
 					fullPage: true,
 				})
 			})

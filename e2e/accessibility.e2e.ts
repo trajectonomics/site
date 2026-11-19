@@ -37,7 +37,7 @@ for (const [viewportName, viewport] of Object.entries(VIEWPORTS)) {
 					expect(violations, `${underTest.path} passes every axe rule`).toEqual([])
 					// An incomplete is axe saying it could not decide, which is how the demo output's
 					// contrast finding passed for months. Naming the rule and its nodes keeps the next
-					// one actionable ([ADR 0021](./docs/adr/0021-the-browser-checks-judge-a-phone-and-the-demo-output-wraps.md)).
+					// one actionable ([ADR 0021](../docs/adr/0021-the-browser-checks-judge-a-phone-and-the-demo-output-wraps.md)).
 					const unjudged = results.incomplete.map(
 						(rule) => `${rule.id}: ${rule.nodes.map((node) => node.target.join(" ")).join(", ")}`,
 					)
@@ -53,7 +53,7 @@ test("the demo output shows its whole answer without scrolling at the phone view
 }) => {
 	// The viewport is set here rather than looped over, so the check holds on its own: it is axe's
 	// own `scrollable-region-focusable` written where a failure can name the element and the widths.
-	await page.setViewportSize(VIEWPORTS.mobile)
+	await page.setViewportSize(VIEWPORTS.phone)
 	await openPage(page, homeOf("en"))
 	const output = page.locator("pre.terminal-output")
 	const measured = await output.evaluate((element) => ({
