@@ -22,7 +22,8 @@ const NOTICE_TIMEOUT_MS = 6000
 		<div class="install-row flex flex-col items-stretch gap-3 p-4">
 			<code
 				data-install-prompt
-				class="install-prompt min-w-0 font-mono text-sm leading-relaxed break-words whitespace-pre-wrap text-foreground sm:text-base"
+				hidden
+				class="install-prompt"
 			>
 				{INSTALL_PROMPT}
 			</code>
@@ -104,7 +105,8 @@ const NOTICE_TIMEOUT_MS = 6000
 			}, timeoutMs)
 		}
 
-		// The button is progressive enhancement: with JavaScript off the prompt alone is the action.
+		// The prompt stays in the page for this button to copy, but the CTA shows only two controls:
+		// this one and the CLI link. With JavaScript off, the CLI link is the remaining way out.
 		button.hidden = false
 		button.addEventListener("click", async () => {
 			const text = prompt.textContent?.trim() ?? ""

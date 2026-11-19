@@ -115,6 +115,11 @@ describe("the Dictionary of every Language", () => {
 		expect(dictionaryFor("th").actionAfterLabel).toBe("หลัง")
 	})
 
+	it("names the CTA's Copy control for the visitor's agent, in both Languages", () => {
+		expect(dictionaryFor("en").copy).toBe("Copy prompt to your AI agents")
+		expect(dictionaryFor("th").copy).toBe("คัดลอกพรอมต์ให้เอเจนต์ของคุณ")
+	})
+
 	it("writes the prompt's two messages and the button's short confirmation, in both Languages", () => {
 		expect(dictionaryFor("en").copied).toBe("Prompt copied")
 		expect(dictionaryFor("en").copyFailed).toBe("Select the prompt and copy it.")
