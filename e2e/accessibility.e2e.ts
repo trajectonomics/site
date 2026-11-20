@@ -29,27 +29,6 @@ async function expectNothingAxeCannotJudge(page: Page, path: string, state: stri
 	expect(unjudged, `${path} ${state} leaves axe no rule it cannot judge`).toEqual([])
 }
 
-/**
- * Judge the page as it lands, then once per panel a visitor can open. The comparison is a tabbed pair
- * at a phone width and axe ignores a panel behind an unopened tab, so the After panel — the one with
- * the demo output — is judged only once its tab is pressed ([compare-tabs.css](../src/styles/compare-tabs.css)).
- * At the desktop width both panels are laid out and the tab bar steps aside, so one analysis covers
- * them; a page with no comparison has no tab to press.
- */
-async function judgeEveryReachableState(page: Page, path: string): Promise<void> {
-	await expectNothingAxeCannotJudge(page, path, "as it lands")
-	const tabs = page.locator("[data-action-compare] [data-action-tab]")
-	for (let index = 0; index < (await tabs.count()); index++) {
-		const tab = tabs.nth(index)
-		if (!(await tab.isVisible())) continue
-		// The pressed tab is the state already judged as the page landed.
-		if ((await tab.getAttribute("aria-pressed")) === "true") continue
-		const label = (await tab.textContent())?.trim() || `panel ${index + 1}`
-		await tab.click()
-		await expectNothingAxeCannotJudge(page, path, `with the ${label} panel shown`)
-	}
-}
-
 for (const [viewportName, viewport] of Object.entries(VIEWPORTS)) {
 	for (const scheme of DEVICE_SCHEMES) {
 		test.describe(`axe at the ${viewportName} viewport of a ${scheme} device`, () => {
@@ -67,39 +46,44 @@ for (const [viewportName, viewport] of Object.entries(VIEWPORTS)) {
 				}) => {
 					await openPage(page, underTest)
 					await expectShippedTheme(page)
-					await judgeEveryReachableState(page, underTest.path)
+					// Reduced motion is what the suite sets below, and it is what lays both comparison
+					// panels out whole: with motion allowed a phone shows them one at a time and the
+					// After panel — the one carrying the demo output — is not in the judged tree
+					// ([ADR 0019](../docs/adr/0019-the-sections-motion-plays-once-on-entry.md)).
+					await expectNothingAxeCannotJudge(page, underTest.path, "as it lands")
 				})
 			}
 		})
 	}
 }
 
-test("the demo output shows its whole answer without scrolling at the phone viewport", async ({
-	page,
-}) => {
-	// The viewport is set here rather than looped over, so the check holds on its own: it is axe's
-	// own `scrollable-region-focusable` written where a failure can name the element and the widths.
-	await page.setViewportSize(VIEWPORTS.phone)
-	await openPage(page, homeOf("en"))
-	const afterTab = page.locator('[data-action-tab="with"]')
-	if (await afterTab.isVisible()) await afterTab.click()
-	const output = page.locator("pre.terminal-output")
-	const measured = await output.evaluate((element) => ({
-		clientWidth: element.clientWidth,
-		scrollWidth: element.scrollWidth,
-		text: element.textContent ?? "",
-	}))
-	expect(
-		measured.clientWidth,
-		"pre.terminal-output sits on a panel the phone lays out",
-	).toBeGreaterThan(0)
-	expect(measured.text, "pre.terminal-output prints the whole fixture").toBe(
-		FI_DEMO_OUTPUT.join("\n"),
-	)
-	expect(
-		measured.scrollWidth,
-		`pre.terminal-output scrolls to ${measured.scrollWidth} px inside ${measured.clientWidth} px`,
-	).toBe(measured.clientWidth)
+test.describe("the demo output at the phone viewport", () => {
+	// Reduced motion lays both comparison panels out, so the demo output is in the judged tree.
+	test.use({ reducedMotion: "reduce" })
+
+	test("shows its whole answer without scrolling", async ({ page }) => {
+		// The viewport is set here rather than looped over, so the check holds on its own: it is axe's
+		// own `scrollable-region-focusable` written where a failure can name the element and the widths.
+		await page.setViewportSize(VIEWPORTS.phone)
+		await openPage(page, homeOf("en"))
+		const output = page.locator("pre.terminal-output")
+		const measured = await output.evaluate((element) => ({
+			clientWidth: element.clientWidth,
+			lines: [...element.querySelectorAll(".terminal-line")].map((line) => line.textContent ?? ""),
+			scrollWidth: element.scrollWidth,
+		}))
+		expect(
+			measured.clientWidth,
+			"pre.terminal-output sits on a panel the phone lays out",
+		).toBeGreaterThan(0)
+		expect(measured.lines, "pre.terminal-output prints the whole fixture").toEqual([
+			...FI_DEMO_OUTPUT,
+		])
+		expect(
+			measured.scrollWidth,
+			`pre.terminal-output scrolls to ${measured.scrollWidth} px inside ${measured.clientWidth} px`,
+		).toBe(measured.clientWidth)
+	})
 })
 
 test("a fixture outside the build with an unnamed button fails axe", async ({ page }) => {

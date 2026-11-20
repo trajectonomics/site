@@ -78,20 +78,21 @@ answer; making the block keyboard-reachable left the contrast run unjudged and t
 
 ## Consequences
 
-- The mobile home baselines did not move once the comparison became a tabbed pair on a phone
-  ([#95](https://github.com/trajectonomics/site/pull/95)): the phone lands on the Before panel, so the page a
-  baseline pins does not carry the wrapped line at all. The desktop and Not-found baselines do not change,
-  byte for byte. Before that, the wrap grew the phone page 21 px (English) and 23 px (Thai), because the
-  longest JSON line moved its closing date onto a second line at the left margin.
+- The comparison's phone layout moved twice after this record was written: #95 made the panels a tabbed
+  pair, #108 rewrote them as two chat transcripts, and #109 settled it on one panel at a time with a control
+  under them. With motion reduced — which is the setting the axe suite runs at — the page lays **both**
+  panels out whole, so the demo output is in the judged tree and the After panel needs no interaction to be
+  reached. The tab pair #95 and #108 carried is gone, and with it the inert After button #108 left behind.
+- The two mobile home baselines move with the layout changes around the wrap, and the desktop and Not-found
+  baselines do not change with the wrap itself, byte for byte.
 - The twelve `docs/screenshots/site-<language>-<width>-<scheme>.png` renders were refreshed, because a surface
-  ticket's pull request carries them at 1280, 2000 and 390, dark and light, in both Languages. The 390 renders
-  show the After panel, because that is the panel this change is about and the one the tab bar hides by
-  default; the visual baseline pins the landing state instead.
-- The axe suite stays twelve runs, and a phone home is analysed twice inside its run: once as it lands and
-  once with the After panel open, because axe ignores a panel behind an unopened tab. The check presses each
-  tab the viewport offers rather than naming the panels, so a viewport that grows a tab bar is judged without
-  editing it. A future `axe-core` upgrade that adds a rule axe cannot decide turns the check red; that is the
-  review this record wants, and `@axe-core/playwright` is pinned to an exact version.
+  ticket's pull request carries them at 1280, 2000 and 390, dark and light, in both Languages. They are
+  captured with motion reduced, so each is the settled page and the 390 ones show both transcripts, the
+  demo output among them.
+- The axe suite stays twelve runs, and a phone home is judged in the state the suite sets: both panels laid
+  out, because reduced motion is what the check asks for and what the page answers with. A future
+  `axe-core` upgrade that adds a rule axe cannot decide turns the check red; that is the review this record
+  wants, and `@axe-core/playwright` is pinned to an exact version.
 - An element that outgrows its box now fails a named check on a phone-wide run instead of reaching production
   unjudged. That is the class this record is about, not the one block it was found on.
 - [ADR 0017](./0017-the-hero-rim-brightens-the-field-outside-the-copy.md)'s Consequences carried the wrong
