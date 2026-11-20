@@ -1,5 +1,5 @@
 /** One viewport the browser checks judge, in CSS pixels. */
-export interface Viewport {
+interface Viewport {
 	readonly height: number
 	readonly width: number
 }

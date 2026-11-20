@@ -7,15 +7,18 @@ import { VIEWPORTS } from "./viewports"
 /** Every WCAG 2.2 AA tag the Site promises; `target-size` is enabled in the same options call. */
 const TAGS = ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa"] as const
 
+/** What every analysis asks axe for: the Site's tags, and the one rule they do not carry. */
+function axeOptions() {
+	return {
+		runOnly: { type: "tag" as const, values: [...TAGS] },
+		rules: { "target-size": { enabled: true } },
+	}
+}
+
 /** Fail on every axe violation the page has, and on every rule axe could not judge. */
 async function expectAxeReportsNothing(page: Page, path: string): Promise<void> {
 	// One options call: a later options() replaces the whole object, tags included.
-	const results = await new AxeBuilder({ page })
-		.options({
-			runOnly: { type: "tag", values: [...TAGS] },
-			rules: { "target-size": { enabled: true } },
-		})
-		.analyze()
+	const results = await new AxeBuilder({ page }).options(axeOptions()).analyze()
 	const violations = results.violations.map(
 		(violation) => `${violation.id} (${violation.impact}): ${violation.help}`,
 	)
@@ -91,8 +94,6 @@ test("a fixture outside the build with an unnamed button fails axe", async ({ pa
 	const fixture =
 		'<html lang="en"><body><main><h1>Fixture</h1><button></button></main></body></html>'
 	await page.setContent(fixture)
-	const results = await new AxeBuilder({ page })
-		.options({ runOnly: { type: "tag", values: [...TAGS] } })
-		.analyze()
+	const results = await new AxeBuilder({ page }).options(axeOptions()).analyze()
 	expect(results.violations.map((violation) => violation.id)).toContain("button-name")
 })

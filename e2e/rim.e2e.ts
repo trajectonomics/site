@@ -6,7 +6,6 @@ import { VIEWPORTS } from "./viewports"
 /** The Language homes, which are the pages that carry the hero. */
 const HOMES = PAGES.filter((underTest) => underTest.status === 200)
 
-/** The hero as a visitor first meets it: a desktop, and a phone whose copy wraps to the full width. */
 for (const [name, viewport] of Object.entries(VIEWPORTS)) {
 	test.describe(`the hero's rim on a ${name}`, () => {
 		// Reduced motion settles the load-in at once, so the copy holds the box a visitor reads.

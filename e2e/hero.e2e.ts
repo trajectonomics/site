@@ -2,7 +2,6 @@ import { expect, test } from "@playwright/test"
 import { homeOf, openPage } from "./pages"
 import { VIEWPORTS } from "./viewports"
 
-/** The first screen the hero owns: a desktop, and a phone whose browser chrome moves its viewport. */
 test.describe("the hero's height", () => {
 	for (const [name, viewport] of Object.entries(VIEWPORTS)) {
 		test(`puts the comparison on the landing view and follows it straight with the next section (${name})`, async ({
