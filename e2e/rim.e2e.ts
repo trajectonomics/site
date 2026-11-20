@@ -6,8 +6,8 @@ import { VIEWPORTS } from "./viewports"
 /** The Language homes, which are the pages that carry the hero. */
 const HOMES = PAGES.filter((underTest) => underTest.status === 200)
 
-for (const [name, viewport] of Object.entries(VIEWPORTS)) {
-	test.describe(`the hero's rim on a ${name}`, () => {
+for (const [viewportName, viewport] of Object.entries(VIEWPORTS)) {
+	test.describe(`the hero's rim on a ${viewportName}`, () => {
 		// Reduced motion settles the load-in at once, so the copy holds the box a visitor reads.
 		test.use({ reducedMotion: "reduce" })
 

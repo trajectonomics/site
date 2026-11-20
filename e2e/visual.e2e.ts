@@ -3,11 +3,7 @@ import { expect, type Page, test } from "@playwright/test"
 import { expectShippedTheme, openPage, PAGES } from "./pages"
 import { VIEWPORTS } from "./viewports"
 
-/**
- * The two baselines this file names, and the viewport each one judges. The screenshot filenames stay
- * this file's own (`-desktop` / `-mobile`), so the shared definition cannot rename a committed
- * baseline, and a pure refactor reads as no screenshot change.
- */
+/** The two baselines this file names, and the viewport each one judges. The filenames are its own. */
 const SNAPSHOTS = { desktop: VIEWPORTS.desktop, mobile: VIEWPORTS.phone } as const
 
 /**

@@ -3,8 +3,8 @@ import { homeOf, openPage } from "./pages"
 import { VIEWPORTS } from "./viewports"
 
 test.describe("the hero's height", () => {
-	for (const [name, viewport] of Object.entries(VIEWPORTS)) {
-		test(`puts the comparison on the landing view and follows it straight with the next section (${name})`, async ({
+	for (const [viewportName, viewport] of Object.entries(VIEWPORTS)) {
+		test(`puts the comparison on the landing view and follows it straight with the next section (${viewportName})`, async ({
 			page,
 		}) => {
 			await page.setViewportSize(viewport)

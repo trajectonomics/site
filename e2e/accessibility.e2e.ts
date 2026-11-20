@@ -7,7 +7,7 @@ import { VIEWPORTS } from "./viewports"
 /** Every WCAG 2.2 AA tag the Site promises; `target-size` is enabled in the same options call. */
 const TAGS = ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa"] as const
 
-/** What every analysis asks axe for: the Site's tags, and the one rule they do not carry. */
+/** What every analysis asks axe for: the Site's tags, plus `target-size`, which axe ships disabled. */
 function axeOptions() {
 	return {
 		runOnly: { type: "tag" as const, values: [...TAGS] },
@@ -49,9 +49,9 @@ for (const [viewportName, viewport] of Object.entries(VIEWPORTS)) {
 				}) => {
 					await openPage(page, underTest)
 					await expectShippedTheme(page)
-					// Reduced motion is what the suite sets below, and it is what lays both comparison
-					// panels out whole: with motion allowed a phone shows them one at a time and the
-					// After panel — the one carrying the demo output — is not in the judged tree
+					// Reduced motion, which this describe sets, lays both comparison panels out whole:
+					// with motion allowed a phone shows them one at a time and the After panel — the one
+					// carrying the demo output — is not in the judged tree
 					// ([ADR 0019](../docs/adr/0019-the-sections-motion-plays-once-on-entry.md)).
 					await expectAxeReportsNothing(page, underTest.path)
 				})
