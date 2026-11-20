@@ -4,7 +4,7 @@ import { FI_DEMO_OUTPUT } from "../src/lib/site"
 import { DEVICE_SCHEMES, expectShippedTheme, homeOf, openPage, PAGES } from "./pages"
 import { VIEWPORTS } from "./viewports"
 
-/** Every WCAG 2.2 AA tag the Site promises; `target-size` is enabled in the same options call. */
+/** Every WCAG 2.2 AA tag the Site promises. */
 const TAGS = ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa"] as const
 
 /** What every analysis asks axe for: the Site's tags, plus `target-size`, which axe ships disabled. */
@@ -38,7 +38,10 @@ for (const [viewportName, viewport] of Object.entries(VIEWPORTS)) {
 			test.use({
 				colorScheme: scheme,
 				// Reduced motion settles the load-in animation at once, so axe judges the shipped pixels
-				// instead of a mid-animation frame whose opacity lowers the computed contrast.
+				// instead of a mid-animation frame whose opacity lowers the computed contrast. It also
+				// lays both comparison panels out whole, where motion allowed shows a phone one at a
+				// time: the After panel, which carries the demo output, is in the judged tree only here
+				// ([ADR 0019](../docs/adr/0019-the-sections-motion-plays-once-on-entry.md)).
 				reducedMotion: "reduce",
 				viewport,
 			})
@@ -49,10 +52,6 @@ for (const [viewportName, viewport] of Object.entries(VIEWPORTS)) {
 				}) => {
 					await openPage(page, underTest)
 					await expectShippedTheme(page)
-					// Reduced motion, which this describe sets, lays both comparison panels out whole:
-					// with motion allowed a phone shows them one at a time and the After panel — the one
-					// carrying the demo output — is not in the judged tree
-					// ([ADR 0019](../docs/adr/0019-the-sections-motion-plays-once-on-entry.md)).
 					await expectAxeReportsNothing(page, underTest.path)
 				})
 			}
@@ -61,7 +60,7 @@ for (const [viewportName, viewport] of Object.entries(VIEWPORTS)) {
 }
 
 test.describe("the demo output at the phone viewport", () => {
-	// Reduced motion lays both comparison panels out, so the demo output is in the judged tree.
+	// The same setting the axe loop uses above, and for the same reason.
 	test.use({ reducedMotion: "reduce" })
 
 	test("shows its whole answer without scrolling", async ({ page }) => {
