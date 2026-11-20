@@ -7,8 +7,8 @@ import { VIEWPORTS } from "./viewports"
 /** Every WCAG 2.2 AA tag the Site promises; `target-size` is enabled in the same options call. */
 const TAGS = ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa"] as const
 
-/** Fail on every axe violation the page has in one state, and on every rule axe could not judge. */
-async function expectNothingAxeCannotJudge(page: Page, path: string, state: string): Promise<void> {
+/** Fail on every axe violation the page has, and on every rule axe could not judge. */
+async function expectAxeReportsNothing(page: Page, path: string): Promise<void> {
 	// One options call: a later options() replaces the whole object, tags included.
 	const results = await new AxeBuilder({ page })
 		.options({
@@ -19,14 +19,14 @@ async function expectNothingAxeCannotJudge(page: Page, path: string, state: stri
 	const violations = results.violations.map(
 		(violation) => `${violation.id} (${violation.impact}): ${violation.help}`,
 	)
-	expect(violations, `${path} ${state} passes every axe rule`).toEqual([])
+	expect(violations, `${path} passes every axe rule`).toEqual([])
 	// An incomplete is axe saying it could not decide, which is how the demo output's contrast
 	// finding passed for months. Naming the rule and its nodes keeps the next one actionable
 	// ([ADR 0021](../docs/adr/0021-the-browser-checks-judge-a-phone-and-the-demo-output-wraps.md)).
 	const unjudged = results.incomplete.map(
 		(rule) => `${rule.id}: ${rule.nodes.map((node) => node.target.join(" ")).join(", ")}`,
 	)
-	expect(unjudged, `${path} ${state} leaves axe no rule it cannot judge`).toEqual([])
+	expect(unjudged, `${path} leaves axe no rule it cannot judge`).toEqual([])
 }
 
 for (const [viewportName, viewport] of Object.entries(VIEWPORTS)) {
@@ -50,7 +50,7 @@ for (const [viewportName, viewport] of Object.entries(VIEWPORTS)) {
 					// panels out whole: with motion allowed a phone shows them one at a time and the
 					// After panel — the one carrying the demo output — is not in the judged tree
 					// ([ADR 0019](../docs/adr/0019-the-sections-motion-plays-once-on-entry.md)).
-					await expectNothingAxeCannotJudge(page, underTest.path, "as it lands")
+					await expectAxeReportsNothing(page, underTest.path)
 				})
 			}
 		})
@@ -62,8 +62,9 @@ test.describe("the demo output at the phone viewport", () => {
 	test.use({ reducedMotion: "reduce" })
 
 	test("shows its whole answer without scrolling", async ({ page }) => {
-		// The viewport is set here rather than looped over, so the check holds on its own: it is axe's
-		// own `scrollable-region-focusable` written where a failure can name the element and the widths.
+		// The viewport is set here rather than looped over, so the check holds on its own. It is stricter
+		// than axe's `scrollable-region-focusable`, which passes a scrollable region that is keyboard
+		// focusable: this asks that there be nothing to scroll, and names the element and both widths.
 		await page.setViewportSize(VIEWPORTS.phone)
 		await openPage(page, homeOf("en"))
 		const output = page.locator("pre.terminal-output")
