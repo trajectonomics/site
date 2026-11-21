@@ -30,34 +30,33 @@ function presenceFailures(files: readonly BuiltFile[], name: string): readonly B
 	]
 }
 
-/** The short file links the Site's one address, and no Language's build path. */
+/** Every Answer engine file links the Site's one address, and no Language's build path. */
 function homeFailures(files: readonly BuiltFile[]): readonly BuildFailure[] {
-	const file = fileAt(files, LLMS_FILE)
-	if (file === undefined) return []
-	const failures: BuildFailure[] = []
-	if (!file.content.includes(CLEAN_LINK)) {
-		failures.push(
-			buildFailure(
-				"LLMS_HOME_MISSING",
-				LLMS_FILE,
-				`links no ${ABSOLUTE_CLEAN_URL}, so a reader reaches no home.`,
-			),
-		)
-	}
-	return [
-		...failures,
-		...LANGUAGES.filter((entry) => entry.buildPath !== "").flatMap((entry) => {
+	return LLMS_FILES.flatMap((name) => {
+		const file = fileAt(files, name)
+		if (file === undefined) return []
+		const missing = file.content.includes(CLEAN_LINK)
+			? []
+			: [
+					buildFailure(
+						"LLMS_HOME_MISSING",
+						name,
+						`links no ${ABSOLUTE_CLEAN_URL}, so a reader reaches no home.`,
+					),
+				]
+		const buildPaths = LANGUAGES.filter((entry) => entry.buildPath !== "").flatMap((entry) => {
 			const link = `](${SITE_ORIGIN}/${entry.buildPath}/)`
 			if (!file.content.includes(link)) return []
 			return [
 				buildFailure(
 					"LLMS_BUILD_PATH_PRESENT",
-					LLMS_FILE,
+					name,
 					`links ${SITE_ORIGIN}/${entry.buildPath}/, which is a build path and not the Site's address.`,
 				),
 			]
-		}),
-	]
+		})
+		return [...missing, ...buildPaths]
+	})
 }
 
 /** Both Answer engine files are in the build, link the one address, and carry only the owner's words. */

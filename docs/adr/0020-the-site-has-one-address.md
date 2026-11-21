@@ -106,20 +106,22 @@ address of its own, and the **Site's own Worker** resolves the Language rather t
 
 ## Deployment note: the loop of 2026-11-19 ([web-router#32](https://github.com/trajectonomics/web-router/issues/32))
 
-This record merged in `site#99` at 17:44 UTC on 2026-11-19 and was reverted in `site#107` twenty-eight
-minutes later: from the merge until the revert, every request to `https://trajectonomics.com/` answered
-`301 Location: /`. Nothing in this record was wrong. The Router in front of the Site was.
+This record merged in `site#99` at 17:44:48 UTC on 2026-11-19 and was reverted in `site#107` at 17:52:20,
+seven and a half minutes later: from the merge until the revert, every request to
+`https://trajectonomics.com/` answered `301 Location: /`. Nothing in this record was wrong. The Router in
+front of the Site was.
 
-The Router had merged `web-router#31` seventeen minutes earlier, which put `"locales": ["en", "th"]` on
-the `/` Route. A Route that declares `locales` resolves a document and forwards it with the Locale Prefix
+The Router had merged `web-router#31` five and a half minutes earlier (`17:39:22`), which put
+`"locales": ["en", "th"]` on the `/` Route. A Route that declares `locales` resolves a document and forwards it with the Locale Prefix
 first (`web-router` ADR 0005, decisions 3 and 4), so the Router sent every `/` to `/en/`. This record
 makes `/en/` answer 301 to `/`. So `/` became: Router forwards `/en/` → the Site 301s `/` → the Router
 forwards `/en/` again. Each half did exactly what its own record says; together they could not answer.
 
-The Site-side fix is `web-router#32`: the Site stopped building a Language directory tree (it builds the
-English home at the root and Thai at `th/`), so the `/` Route must stop declaring `locales`. That is the
-one change that makes this record true, and until it is deployed this record's `/` behaviour cannot be
-served.
+The fix is on the Router side, tracked as `web-router#32` and made in `web-router#33`: the Site stopped
+building a Language directory tree (it builds the English home at the root and Thai at `th/`), so the `/`
+Route must stop declaring `locales`. That is the one change that makes this record true, and until it is
+deployed this record's `/` behaviour cannot be served. Nothing in this repository has to change to fix the
+loop; this record exists so the next reader knows where the loop lived.
 
 **Why no check caught it, and what that means.** It is worth being precise, because the obvious lesson is
 the wrong one. `bun run probe:status` starts the real `wrangler dev`, with the real assets binding, and
@@ -131,6 +133,6 @@ the Router's real route table and its real service binding, and assert that `/` 
 than redirected.
 
 So the gap this leaves is in the Router's own check, not in this repository's, and it is recorded there.
-What this repository keeps is the deployment habit that let the revert land in twenty-eight minutes: the
-probe runs before a merge, the deploy is read from the check run, and the address is fetched afterwards
-rather than assumed.
+What this repository keeps is the deployment habit that let the revert land in seven and a half minutes:
+the probe runs before a merge, the deploy is read from the check run, and the address is fetched
+afterwards rather than assumed.
