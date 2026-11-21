@@ -20,7 +20,7 @@ export const PAGES: readonly PageUnderTest[] = Object.freeze([
 ])
 
 /** The controls a keyboard visitor can reach, excluding anything hidden or disabled. */
-const FOCUSABLE = "a[href], button:not([disabled]):not([hidden]), summary"
+const FOCUSABLE = 'a[href], button:not([disabled]):not([hidden]), summary, [tabindex="0"]'
 
 /**
  * The device schemes the harness sets before navigation. Both are kept although the Site ships one
@@ -59,7 +59,7 @@ export function focusableCount(page: Page): Promise<number> {
 				const panel = element.closest("details:not([open])")
 				if (panel !== null && element.tagName !== "SUMMARY") return false
 				// A control hidden at this width is out of the browser's tab order too, so it must
-				// not be counted here (the comparison's phone slot is hidden on a desktop).
+				// not be counted here (the demo window's hidden chat is not laid out).
 				return element.getClientRects().length > 0
 			}).length,
 		FOCUSABLE,
@@ -100,19 +100,6 @@ export async function tabToCopyButton(page: Page): Promise<boolean> {
 		if (onCopy) return true
 	}
 	return false
-}
-
-/**
- * The pulse's dot waits in the logic layer, whatever the width: its travel is the layer's own height,
- * and the dot is painted at the foot of the pulse's column.
- */
-export async function expectPulseInLogicLayer(page: Page): Promise<void> {
-	const dot = await page.locator(".layers-pulse").boundingBox()
-	const logic = await page.locator(".how .layer-logic").boundingBox()
-	if (dot === null || logic === null) throw new Error("the pulse or the logic layer has no box")
-	const dotCentre = dot.y + dot.height - 3
-	expect(dotCentre, "the dot is inside the logic layer").toBeGreaterThan(logic.y)
-	expect(dotCentre, "the dot is inside the logic layer").toBeLessThan(logic.y + logic.height)
 }
 
 /** The dictionary string one Language announces after a copy. */

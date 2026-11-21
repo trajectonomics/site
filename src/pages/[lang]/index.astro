@@ -3,7 +3,6 @@
 // biome-ignore-all lint/correctness/noUnusedVariables: Biome cannot read an Astro template, so it cannot see these.
 import Features from "../../components/Features.astro"
 import Hero from "../../components/Hero.astro"
-import HowItWorks from "../../components/HowItWorks.astro"
 import Layout from "../../layouts/Layout.astro"
 import type { Language } from "../../lib/language/language"
 import { dictionaryFor } from "../../lib/language/languages"
@@ -28,6 +27,5 @@ const dictionary = dictionaryFor(language)
 	indexed={true}
 >
 	<Hero dictionary={dictionary} />
-	<HowItWorks dictionary={dictionary} />
 	<Features dictionary={dictionary} />
 </Layout>
