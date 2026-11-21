@@ -2,13 +2,11 @@ import { expect, type Page } from "@playwright/test"
 import { PRODUCTION_THEME } from "../src/lib/design/shipped-themes"
 import type { Language } from "../src/lib/language/language"
 
-/** What a check reaches through `./pages`: the page facts, the page-opening and the keyboard helpers. */
-export {
-	expectPulseInLogicLayer,
-	focusableCount,
-	ringVisible,
-	tabToCopyButton,
-} from "./keyboard-page"
+/**
+ * What a check reaches through `./pages`: the page facts, the way a visitor opens one, and the
+ * interaction helpers. Re-exported rather than duplicated so the checks keep one import site.
+ */
+export { expectPulseInLogicLayer, focusableCount, ringVisible, tabToCopyButton } from "./controls"
 export { openPage, visit } from "./visit"
 
 /** One page the browser checks judge, and the status its real response must have. */
