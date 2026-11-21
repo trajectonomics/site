@@ -52,7 +52,7 @@ for (const underTest of HOMES) {
 	test(`${underTest.name}: both transcripts and the flow are whole with no script`, async ({
 		page,
 	}) => {
-		await page.goto(underTest.path)
+		await visit(page, underTest)
 		const dictionary = dictionaryFor(underTest.language)
 		const alone = page.locator('.compare-panel[data-side="without"]')
 		const guided = page.locator('.compare-panel[data-side="with"]')
@@ -86,13 +86,7 @@ for (const underTest of HOMES) {
 test("the Language menu switches and remembers with JavaScript off, at the one address", async ({
 	page,
 }) => {
-	await visit(page, {
-		path: "/",
-		language: "en",
-		name: "English home",
-		status: 200,
-		storedChoice: null,
-	})
+	await page.goto("/")
 	await expect(page.locator("html")).toHaveAttribute("lang", "en")
 	// A first visit stores nothing, so no choice is set before the visitor makes one.
 	expect((await page.context().cookies()).map((cookie) => cookie.name)).not.toContain("traj_lang")
