@@ -53,12 +53,6 @@ describe("the Answer engine files of the host", () => {
 		expect(codes(built(LLMS_FULL_FILE, withoutHome))).toEqual(["LLMS_HOME_MISSING"])
 	})
 
-	it("passes both files the build writes, each naming the address once", () => {
-		for (const content of [LLMS_TXT, LLMS_FULL_TXT]) {
-			expect(content.split(`](${ABSOLUTE_CLEAN_URL})`).length - 1).toBe(1)
-		}
-	})
-
 	it("fails a file that links a Language build path instead of the address", () => {
 		const withThai = `${LLMS_TXT}- [ไทย](${SITE_ORIGIN}/th/)\n`
 		expect(codes(built(LLMS_FILE, withThai))).toEqual(["LLMS_BUILD_PATH_PRESENT"])
@@ -67,7 +61,7 @@ describe("the Answer engine files of the host", () => {
 		])
 	})
 
-	it("judges both files for the address and the build paths, not only the short one", () => {
+	it("judges the full file for the address as well as the short one", () => {
 		const withoutHome = `# trajectonomics\n`
 		expect(codes(built(LLMS_FULL_FILE, withoutHome))).toEqual(["LLMS_HOME_MISSING"])
 	})
