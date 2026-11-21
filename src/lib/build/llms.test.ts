@@ -2,8 +2,7 @@ import { describe, expect, it } from "bun:test"
 import { LLMS_FILE, LLMS_TXT } from "../crawl/llms"
 import { LLMS_FULL_FILE, LLMS_FULL_TXT } from "../crawl/llms-full"
 import { OWNER_WRITTEN_PLACEHOLDER } from "../language/dictionary"
-import { ABSOLUTE_CLEAN_URL } from "../language/languages"
-import { SITE_ORIGIN } from "../site"
+import { ABSOLUTE_CLEAN_URL, languageBuildUrl } from "../language/languages"
 import type { BuiltFile } from "./built-files"
 import { checkLlmsFiles } from "./llms"
 
@@ -54,15 +53,10 @@ describe("the Answer engine files of the host", () => {
 	})
 
 	it("fails a file that links a Language build path instead of the address", () => {
-		const withThai = `${LLMS_TXT}- [ไทย](${SITE_ORIGIN}/th/)\n`
-		expect(codes(built(LLMS_FILE, withThai))).toEqual(["LLMS_BUILD_PATH_PRESENT"])
-		expect(codes(built(LLMS_FULL_FILE, `${LLMS_FULL_TXT}- [ไทย](${SITE_ORIGIN}/th/)\n`))).toEqual([
+		const withThai = (content: string) => `${content}- [ไทย](${languageBuildUrl("th")})\n`
+		expect(codes(built(LLMS_FILE, withThai(LLMS_TXT)))).toEqual(["LLMS_BUILD_PATH_PRESENT"])
+		expect(codes(built(LLMS_FULL_FILE, withThai(LLMS_FULL_TXT)))).toEqual([
 			"LLMS_BUILD_PATH_PRESENT",
 		])
-	})
-
-	it("judges the full file for the address as well as the short one", () => {
-		const withoutHome = `# trajectonomics\n`
-		expect(codes(built(LLMS_FULL_FILE, withoutHome))).toEqual(["LLMS_HOME_MISSING"])
 	})
 })

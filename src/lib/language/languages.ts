@@ -53,6 +53,14 @@ export function languageHomeFile(language: Language): string {
 	return buildPath === "" ? "index.html" : `${buildPath}/index.html`
 }
 
+/**
+ * One Language's build path as an absolute URL: a path the build writes and no address names.
+ * Derived rather than written out, so a rule that forbids it keeps forbidding it after a rename.
+ */
+export function languageBuildUrl(language: Language): string {
+	return `${SITE_ORIGIN}${languageHomePath(language)}`
+}
+
 /** The Language choice link: it stores one Language as the visitor's choice, then returns to the address. */
 export function languageChoiceLink(language: Language): string {
 	return `${CLEAN_URL}?${LANGUAGE_CHOICE_PARAM}=${encodeURIComponent(language)}`

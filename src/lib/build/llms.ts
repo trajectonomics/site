@@ -1,8 +1,7 @@
 import { LLMS_FILE } from "../crawl/llms"
 import { LLMS_FULL_FILE } from "../crawl/llms-full"
 import { OWNER_WRITTEN_PLACEHOLDER } from "../language/dictionary"
-import { ABSOLUTE_CLEAN_URL, LANGUAGES } from "../language/languages"
-import { SITE_ORIGIN } from "../site"
+import { ABSOLUTE_CLEAN_URL, LANGUAGES, languageBuildUrl } from "../language/languages"
 import type { BuiltFile } from "./built-files"
 import { fileAt } from "./built-files"
 import type { BuildFailure } from "./failures"
@@ -45,13 +44,13 @@ function homeFailures(files: readonly BuiltFile[]): readonly BuildFailure[] {
 					),
 				]
 		const buildPaths = LANGUAGES.filter((entry) => entry.buildPath !== "").flatMap((entry) => {
-			const link = `](${SITE_ORIGIN}/${entry.buildPath}/)`
+			const link = `](${languageBuildUrl(entry.language)})`
 			if (!file.content.includes(link)) return []
 			return [
 				buildFailure(
 					"LLMS_BUILD_PATH_PRESENT",
 					name,
-					`links ${SITE_ORIGIN}/${entry.buildPath}/, which is a build path and not the Site's address.`,
+					`links ${languageBuildUrl(entry.language)}, which is a build path and not the Site's address.`,
 				),
 			]
 		})

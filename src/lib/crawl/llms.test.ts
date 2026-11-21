@@ -1,7 +1,7 @@
 import { describe, expect, it } from "bun:test"
 import { OWNER_WRITTEN_PLACEHOLDER } from "../language/dictionary"
 import { FALLBACK_LANGUAGE } from "../language/language"
-import { ABSOLUTE_CLEAN_URL, dictionaryFor } from "../language/languages"
+import { ABSOLUTE_CLEAN_URL, dictionaryFor, languageBuildUrl } from "../language/languages"
 import {
 	DOCS_CLI_INSTALL_PATH,
 	DOCS_CLI_PATH,
@@ -14,6 +14,7 @@ import {
 	SKILLS_LICENCE_URL,
 } from "../site"
 import { LLMS_FILE, LLMS_TXT } from "./llms"
+import { linkCount } from "./llms-markdown"
 
 /** The `## ` section titles the file states, in order. */
 function titles(): readonly string[] {
@@ -37,9 +38,8 @@ describe("the short Answer engine file", () => {
 	})
 
 	it("links the Site's one address, once, and no Language build path", () => {
-		expect(LLMS_TXT).toContain(`](${ABSOLUTE_CLEAN_URL})`)
-		expect(LLMS_TXT.match(new RegExp(`\\]\\(${ABSOLUTE_CLEAN_URL}\\)`, "g"))).toHaveLength(1)
-		expect(LLMS_TXT).not.toContain("](https://trajectonomics.com/th/)")
+		expect(linkCount(LLMS_TXT, ABSOLUTE_CLEAN_URL)).toBe(1)
+		expect(LLMS_TXT).not.toContain(`](${languageBuildUrl("th")})`)
 	})
 
 	it("links the Docs Portal, both repositories and the MIT licence the footer links", () => {
