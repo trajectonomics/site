@@ -89,3 +89,8 @@ panel; and remove the whole How it works section.
   are first drafts, and no Thai speaker has read them.
 - `FOCUSABLE` in `e2e/pages.ts` counts a `tabindex="0"` stop, because the keyboard check must count the transcript.
 - The ripple ignores a click inside the window, as it ignores one on a control.
+- The hero's own load-in (the copy rising in four steps of 80 ms) is now declared only under `no-preference`, as
+  [ADR 0019](./0019-the-sections-motion-plays-once-on-entry.md) already requires of every delayed beat. The kill
+  switch zeroes a duration and leaves a delay alone, so under `reduce` the subline and the buttons waited, invisible,
+  up to 240 ms, and a capture taken then showed the headline, a blank gap the height of the missing copy, and the
+  window. A visitor who asks for less motion now gets the copy on the first frame.
