@@ -54,8 +54,10 @@ export function languageHomeFile(language: Language): string {
 }
 
 /**
- * One Language's build path as an absolute URL: a path the build writes and no address names.
- * Derived rather than written out, so a rule that forbids it keeps forbidding it after a rename.
+ * One Language's home as an absolute URL, under its build path. The fallback Language's build path is
+ * the assets root, so its URL is the Site's address; a caller that forbids a build path must skip it
+ * and use `languageEntry(language).buildPath !== ""` to tell the two apart. Derived rather than
+ * written out, so such a rule keeps working after a build path is renamed.
  */
 export function languageBuildUrl(language: Language): string {
 	return `${SITE_ORIGIN}${languageHomePath(language)}`

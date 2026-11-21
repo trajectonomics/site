@@ -4,9 +4,10 @@ import { BASE_URL } from "./base-url"
 import type { PageUnderTest } from "./pages"
 
 /**
- * The one way a check opens a page a visitor could reach: the Site's address, with the Language
- * choice the visitor stored carried as a cookie. No check navigates to a Language build path,
- * because no visitor is ever given one (ADR 0020).
+ * How a check opens a page a visitor could reach: the Site's address, with the Language choice the
+ * visitor stored carried as a cookie. No check navigates to a Language build path, because no
+ * visitor is ever given one (ADR 0020). A check that must see a first visit's own cookie handling
+ * calls `page.goto` itself, because seeding the choice here would hide what it asserts.
  */
 
 /** Open one page and return the status its real response carried. */
